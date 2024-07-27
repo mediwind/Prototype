@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://c8esnr6wiyyjb"]
+
+[ext_resource type="Script" path="res://scenes/game_object/bullet/basic_bullet.gd" id="1_kg45e"]
+[ext_resource type="Texture2D" uid="uid://cl75qu8imifh" path="res://scenes/game_object/bullet/red_bullet.png" id="2_mquq5"]
+[ext_resource type="PackedScene" uid="uid://cs5qsx3kqhqh3" path="res://component/hitbox_component.tscn" id="3_fmxcp"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bo37f"]
+radius = 3.0
+height = 24.0
+
+[node name="BasicBullet" type="Node2D"]
+position = Vector2(0, 1)
+script = ExtResource("1_kg45e")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_mquq5")
+
+[node name="HitboxComponent" parent="." instance=ExtResource("3_fmxcp")]
+collision_layer = 4
+collision_mask = 32
+damage = 5.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
+position = Vector2(2, -1)
+rotation = 1.57079
+shape = SubResource("CapsuleShape2D_bo37f")

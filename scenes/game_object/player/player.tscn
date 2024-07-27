@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://df6r3kykdxlm6"]
+
+[ext_resource type="Script" path="res://scenes/game_object/player/player.gd" id="1_4oj80"]
+[ext_resource type="Texture2D" uid="uid://bp0n2qwqrdekb" path="res://icon.svg" id="2_5nbsv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hu8nf"]
+radius = 9.0
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+position = Vector2(0, -2)
+collision_layer = 2
+script = ExtResource("1_4oj80")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.164063, 0.164063)
+texture = ExtResource("2_5nbsv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_hu8nf")
+
+[node name="ShootingRange" type="RayCast2D" parent="."]
+target_position = Vector2(0, -700)
+collision_mask = 5
+
+[node name="ShootCooltime" type="Timer" parent="."]
+wait_time = 0.1
