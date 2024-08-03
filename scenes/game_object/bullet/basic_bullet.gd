@@ -14,6 +14,7 @@ func _ready():
     # max_distance의 제곱값을 계산하여 저장
     max_distance_squared = max_distance * max_distance
 
+
 func _process(delta):
     position += speed * direction * delta
     # 총알이 처음 위치에서 일정 거리 이상 벗어나면 제거
