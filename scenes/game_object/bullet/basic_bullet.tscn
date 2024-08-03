@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cs5qsx3kqhqh3" path="res://component/hitbox_component.tscn" id="3_fmxcp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ci4h5"]
-size = Vector2(1.50001, 0.999992)
+size = Vector2(10, 10)
 
 [node name="BasicBullet" type="Node2D"]
 position = Vector2(0, 1)

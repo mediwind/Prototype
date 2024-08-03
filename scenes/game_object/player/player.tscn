@@ -1,26 +1,149 @@
-[gd_scene load_steps=4 format=3 uid="uid://df6r3kykdxlm6"]
+[gd_scene load_steps=11 format=3 uid="uid://df6r3kykdxlm6"]
 
 [ext_resource type="Script" path="res://scenes/game_object/player/player.gd" id="1_4oj80"]
-[ext_resource type="Texture2D" uid="uid://bp0n2qwqrdekb" path="res://icon.svg" id="2_5nbsv"]
+[ext_resource type="Texture2D" uid="uid://dk0rg844clque" path="res://scenes/game_object/player/player_arms.png" id="2_aaopr"]
+[ext_resource type="Texture2D" uid="uid://bu2kdevu1kbxh" path="res://scenes/game_object/player/player_torso.png" id="2_dh6qs"]
+[ext_resource type="Texture2D" uid="uid://88g13atmqjog" path="res://scenes/game_object/player/player_legs.png" id="2_yag2u"]
+[ext_resource type="Texture2D" uid="uid://53gi5jxni7q1" path="res://scenes/game_object/player/player_head.png" id="3_fi2yu"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_hu8nf"]
-radius = 9.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ornvc"]
+radius = 7.0
+height = 42.0
+
+[sub_resource type="Animation" id="Animation_f2ba1"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprite/Legs:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerSprite/Torso:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -25)]
+}
+
+[sub_resource type="Animation" id="Animation_tpj14"]
+resource_name = "walk_forward"
+length = 0.8
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprite/Legs:frame")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerSprite/Torso:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -25), Vector2(0, -26), Vector2(0, -25), Vector2(-1, -26), Vector2(-1, -26), Vector2(1, -26), Vector2(1, -25.286)]
+}
+
+[sub_resource type="Animation" id="Animation_jdqpn"]
+resource_name = "walk_bakcward"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprite/Legs:frame")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [8, 7, 6, 5, 4, 3, 2, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6scx5"]
+_data = {
+"RESET": SubResource("Animation_f2ba1"),
+"walk_backward": SubResource("Animation_jdqpn"),
+"walk_forward": SubResource("Animation_tpj14")
+}
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 position = Vector2(0, -2)
 collision_layer = 2
 script = ExtResource("1_4oj80")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.164063, 0.164063)
-texture = ExtResource("2_5nbsv")
+[node name="PlayerSprite" type="Node2D" parent="."]
+
+[node name="Torso" type="Sprite2D" parent="PlayerSprite"]
+position = Vector2(0, -25)
+texture = ExtResource("2_dh6qs")
+flip_h = true
+
+[node name="Head" type="Sprite2D" parent="PlayerSprite/Torso"]
+position = Vector2(-1, -11)
+texture = ExtResource("3_fi2yu")
+flip_h = true
+
+[node name="ArmFront" type="Sprite2D" parent="PlayerSprite/Torso"]
+position = Vector2(-5, -7)
+texture = ExtResource("2_aaopr")
+offset = Vector2(6, 1)
+flip_h = true
+hframes = 2
+frame = 1
+
+[node name="Hand" type="Marker2D" parent="PlayerSprite/Torso/ArmFront"]
+position = Vector2(14, 0)
+
+[node name="ArmBack" type="Sprite2D" parent="PlayerSprite/Torso"]
+z_index = -1
+position = Vector2(1, -8)
+texture = ExtResource("2_aaopr")
+offset = Vector2(5, 3)
+flip_h = true
+hframes = 2
+
+[node name="Legs" type="Sprite2D" parent="PlayerSprite"]
+position = Vector2(0, -14)
+texture = ExtResource("2_yag2u")
+hframes = 9
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_hu8nf")
-
-[node name="ShootingRange" type="RayCast2D" parent="."]
-target_position = Vector2(0, -700)
-collision_mask = 5
+visible = false
+position = Vector2(0, -21)
+shape = SubResource("CapsuleShape2D_ornvc")
 
 [node name="ShootCooltime" type="Timer" parent="."]
 wait_time = 0.1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_6scx5")
+}
+
+[node name="AimPivot" type="Marker2D" parent="."]
+position = Vector2(0, -31)

@@ -2,12 +2,18 @@ extends CharacterBody2D
 
 signal shoot
 
-@onready var shooting_range = $ShootingRange
 @onready var shoot_cool_time = $ShootCooltime
+@onready var player_sprite = $PlayerSprite
+@onready var arm_front = $PlayerSprite/Torso/ArmFront
+@onready var arm_back = $PlayerSprite/Torso/ArmBack
+@onready var hand = $PlayerSprite/Torso/ArmFront/Hand
+@onready var aim_pivot = $AimPivot
+@onready var animation_player = $AnimationPlayer
 
 const MAX_SPEED = 200
 
 var can_shoot : bool
+var facing_right : bool
 
 
 func _ready():
@@ -16,35 +22,56 @@ func _ready():
 
 
 func _process(delta):
-	var direction = get_movement_vector()
+	var movement_vector = get_movement_vector()
+	var direction = movement_vector.normalized()
 	velocity = direction * MAX_SPEED
 	move_and_slide()
 
-	global_rotation = global_position.direction_to(get_global_mouse_position()).angle() + PI / 2
+	# 마우스 위치에 따라 PlayerSprite의 scale.x를 변경합니다.
+	var mouse_position = get_global_mouse_position()
+	if mouse_position.x >= global_position.x:
+		player_sprite.scale.x = 1
+		facing_right = true
+	else:
+		player_sprite.scale.x = -1
+		facing_right = false
+	
+	# 팔을 마우스 방향으로 회전시킵니다.
+	arm_front.look_at(mouse_position)
+	arm_back.look_at(hand.global_position)
+
+	# 입력 방향에 따라 애니메이션을 변경합니다.
+	if movement_vector.x == 0:
+		if movement_vector.y != 0:
+			animation_player.play("walk_forward")
+		else:
+			animation_player.play("RESET")
+	else:
+		if movement_vector.x > 0:
+			if facing_right:
+				animation_player.play("walk_forward")
+			else:
+				animation_player.play("walk_backward")
+		elif movement_vector.x < 0:
+			if facing_right:
+				animation_player.play("walk_backward")
+			else:
+				animation_player.play("walk_forward")
 
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and can_shoot:
 		print("Shooting!")
-		var dir = get_global_mouse_position() - global_position
+		var dir = get_global_mouse_position() - hand.global_position
 		var bullet_direction = atan2(dir.y, dir.x)
-		shoot.emit(global_position, dir, bullet_direction)
+		shoot.emit(hand.global_position, dir, bullet_direction)
 		can_shoot = false
 		shoot_cool_time.start()
-		# check_shooting_range()
 
 
 func get_movement_vector():
 	var x_movement = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	var y_movement = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
 
-	return Vector2(x_movement, y_movement).normalized()
-
-
-# func check_shooting_range():
-#     if shooting_range.is_colliding() and shooting_range.get_collider().is_in_group("enemy"):
-#         shooting_range.get_collider().queue_free()
-#         print("Enemy killed!")
-#     else:
-#         print("No enemy in range!")
+	return Vector2(x_movement, y_movement)
 
 
 func on_shoot_cool_time_timeout():

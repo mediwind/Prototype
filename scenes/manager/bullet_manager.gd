@@ -10,7 +10,10 @@ func _ready():
 
 func on_player_shoot(pos, dir, bullet_direction):
     var bullet = bullet_scene.instantiate()
-    add_child(bullet)
-    bullet.position = pos
+
+    bullet.global_position = pos
     bullet.rotation = bullet_direction
     bullet.direction = dir.normalized()
+
+    var foreground = get_tree().get_first_node_in_group("foreground_layer")
+    foreground.add_child(bullet)
