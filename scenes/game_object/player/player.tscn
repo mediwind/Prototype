@@ -115,7 +115,6 @@ position = Vector2(0, -21)
 shape = SubResource("CapsuleShape2D_ornvc")
 
 [node name="ShootCooltime" type="Timer" parent="."]
-wait_time = 0.1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
