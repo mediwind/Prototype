@@ -13,7 +13,7 @@ func _ready():
 func counting_penetration(other_area: Area2D):
     if not other_area is HurtboxComponent:
         return
-    print("number_of_penetration: ", number_of_penetration)
+    # print("number_of_penetration: ", number_of_penetration)
     number_of_penetration += 1
     if number_of_penetration >= 2:
         owner.queue_free()

@@ -10,7 +10,7 @@ signal shoot
 @onready var aim_pivot = $AimPivot
 @onready var animation_player = $AnimationPlayer
 
-const MAX_SPEED = 200
+const MAX_SPEED = 100
 
 var can_shoot : bool
 var facing_right : bool
@@ -28,10 +28,10 @@ func _process(delta):
 	update_animation()
 
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and can_shoot:
-		print("Shooting!")
+		# print("Shooting!")
 		var dir = get_global_mouse_position() - hand.global_position
 		var bullet_direction = atan2(dir.y, dir.x)
-		print("hand_position:", hand.global_position)
+		# print("hand_position:", hand.global_position)
 		shoot.emit(hand.global_position, dir, bullet_direction)
 		can_shoot = false
 		shoot_cool_time.start()

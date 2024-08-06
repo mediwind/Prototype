@@ -18,21 +18,21 @@ layer_0/tile_data = PackedInt32Array(5636252, 65538, 4, 5570716, 2, 4, 5505180, 
 
 [node name="BulletManager" parent="." instance=ExtResource("1_7dujj")]
 
-[node name="BasicEnemy" parent="." instance=ExtResource("4_phin4")]
-position = Vector2(370, 92)
-
-[node name="BasicEnemy2" parent="." instance=ExtResource("4_phin4")]
-position = Vector2(412, 92)
-
-[node name="BasicEnemy3" parent="." instance=ExtResource("4_phin4")]
-position = Vector2(452, 91)
-
-[node name="BasicEnemy4" parent="." instance=ExtResource("4_phin4")]
-position = Vector2(487, 94)
-
 [node name="Entities" type="Node2D" parent="." groups=["entities_layer"]]
 
 [node name="Player" parent="Entities" instance=ExtResource("1_rwiuc")]
 position = Vector2(236, 121)
+
+[node name="BasicEnemy" parent="Entities" instance=ExtResource("4_phin4")]
+position = Vector2(420, 102)
+
+[node name="BasicEnemy2" parent="Entities" instance=ExtResource("4_phin4")]
+position = Vector2(397, 152)
+
+[node name="BasicEnemy3" parent="Entities" instance=ExtResource("4_phin4")]
+position = Vector2(376, 198)
+
+[node name="BasicEnemy4" parent="Entities" instance=ExtResource("4_phin4")]
+position = Vector2(324, 228)
 
 [node name="Foreground" type="Node2D" parent="." groups=["foreground_layer"]]

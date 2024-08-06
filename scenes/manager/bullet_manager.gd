@@ -10,9 +10,7 @@ func _ready():
 
 func on_player_shoot(pos, dir, bullet_direction):
     var bullet = bullet_scene.instantiate()
-    print("bullet.global_position:", bullet.global_position)
     bullet.global_position = pos
-    print("pos:", pos)
     bullet.rotation = bullet_direction
     bullet.direction = dir.normalized()
 
