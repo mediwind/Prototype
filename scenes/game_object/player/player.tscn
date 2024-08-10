@@ -1,10 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://df6r3kykdxlm6"]
+[gd_scene load_steps=12 format=3 uid="uid://df6r3kykdxlm6"]
 
 [ext_resource type="Script" path="res://scenes/game_object/player/player.gd" id="1_4oj80"]
 [ext_resource type="Texture2D" uid="uid://dk0rg844clque" path="res://scenes/game_object/player/player_arms.png" id="2_aaopr"]
 [ext_resource type="Texture2D" uid="uid://bu2kdevu1kbxh" path="res://scenes/game_object/player/player_torso.png" id="2_dh6qs"]
 [ext_resource type="Texture2D" uid="uid://cjuvbe6upt3yy" path="res://scenes/game_object/player/player_legs.png" id="2_yag2u"]
 [ext_resource type="Texture2D" uid="uid://53gi5jxni7q1" path="res://scenes/game_object/player/player_head.png" id="3_fi2yu"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oc266"]
+radius = 50.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ornvc"]
 radius = 7.0
@@ -70,8 +73,16 @@ _data = {
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 position = Vector2(0, -2)
-collision_layer = 2
+collision_layer = 0
 script = ExtResource("1_4oj80")
+
+[node name="PickupArea2D" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea2D"]
+position = Vector2(0, -17)
+shape = SubResource("CircleShape2D_oc266")
 
 [node name="PlayerSprite" type="Node2D" parent="."]
 
@@ -110,7 +121,6 @@ texture = ExtResource("2_yag2u")
 hframes = 9
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(0, -21)
 shape = SubResource("CapsuleShape2D_ornvc")
 
