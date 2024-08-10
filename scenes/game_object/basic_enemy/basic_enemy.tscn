@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ctxi6elq72pyh"]
+[gd_scene load_steps=10 format=3 uid="uid://ctxi6elq72pyh"]
 
 [ext_resource type="Script" path="res://scenes/game_object/basic_enemy/basic_enemy.gd" id="1_l8ae0"]
 [ext_resource type="Texture2D" uid="uid://cmlvx6oj88em7" path="res://scenes/game_object/basic_enemy/basic_enemy.png" id="1_ooc1j"]
@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://cdpwqed5wu1ub" path="res://scenes/component/hurt_box_component.tscn" id="4_1ih2o"]
 [ext_resource type="PackedScene" uid="uid://q5456waekfa7" path="res://scenes/component/death_component.tscn" id="4_kprfv"]
 [ext_resource type="PackedScene" uid="uid://dgmtaln3oqmw4" path="res://scenes/component/lootcomponent/currency_drop_component.tscn" id="4_tbbtv"]
-[ext_resource type="PackedScene" uid="uid://d4d4o5mtsii5q" path="res://scenes/game_object/loot/collectable_gold_object.tscn" id="5_1g55e"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_uc0nb"]
 
@@ -25,7 +24,6 @@ script = ExtResource("1_l8ae0")
 
 [node name="CurrencyDropComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("4_tbbtv")]
 health_component = NodePath("../HealthComponent")
-gold_scene = ExtResource("5_1g55e")
 
 [node name="DeathComponent" parent="." node_paths=PackedStringArray("health_component", "sprite") instance=ExtResource("4_kprfv")]
 health_component = NodePath("../HealthComponent")

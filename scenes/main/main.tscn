@@ -28,6 +28,5 @@ position = Vector2(1282, 776)
 
 [node name="CollectableGoldObject" parent="Entities" instance=ExtResource("6_xbs7d")]
 position = Vector2(1415, 638)
-amount = 1
 
 [node name="Foreground" type="Node2D" parent="." groups=["foreground_layer"]]

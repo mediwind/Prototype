@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://d4d4o5mtsii5q"]
 
 [ext_resource type="Script" path="res://scenes/game_object/loot/collectable_gold_object.gd" id="1_n262e"]
-[ext_resource type="Texture2D" uid="uid://dkj73fdkok1uf" path="res://scenes/resources/collectable/currency/gold.png" id="2_c1ceu"]
+[ext_resource type="Texture2D" uid="uid://dkj73fdkok1uf" path="res://scenes/game_object/loot/gold.png" id="2_2nvds"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qliv6"]
 radius = 105.005
@@ -11,7 +11,7 @@ script = ExtResource("1_n262e")
 amount = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_c1ceu")
+texture = ExtResource("2_2nvds")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0
