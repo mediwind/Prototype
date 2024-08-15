@@ -1,0 +1,58 @@
+[gd_scene load_steps=2 format=3 uid="uid://ddvqb30ex6dp3"]
+
+[ext_resource type="PackedScene" uid="uid://ugmw2gl1gade" path="res://scenes/ui/skill/skill_button.tscn" id="1_qo7x0"]
+
+[node name="SkillTree" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SkillButton" parent="." instance=ExtResource("1_qo7x0")]
+layout_mode = 0
+offset_left = 354.0
+offset_top = 279.0
+offset_right = 394.0
+offset_bottom = 319.0
+
+[node name="SkillButton2" parent="SkillButton" instance=ExtResource("1_qo7x0")]
+layout_mode = 0
+offset_left = 92.0
+offset_top = -81.0
+offset_right = 132.0
+offset_bottom = -41.0
+disabled = true
+
+[node name="SkillButton4" parent="SkillButton/SkillButton2" instance=ExtResource("1_qo7x0")]
+layout_mode = 0
+offset_left = 68.0
+offset_top = -87.0
+offset_right = 108.0
+offset_bottom = -47.0
+disabled = true
+
+[node name="SkillButton5" parent="SkillButton/SkillButton2" instance=ExtResource("1_qo7x0")]
+layout_mode = 0
+offset_left = -62.0
+offset_top = -87.0
+offset_right = -22.0
+offset_bottom = -47.0
+disabled = true
+
+[node name="SkillButton3" parent="SkillButton" instance=ExtResource("1_qo7x0")]
+layout_mode = 0
+offset_left = -85.0
+offset_top = -81.0
+offset_right = -45.0
+offset_bottom = -41.0
+disabled = true

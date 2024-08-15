@@ -1,15 +1,24 @@
-[gd_scene load_steps=7 format=3 uid="uid://dqhq6mmnxq438"]
+[gd_scene load_steps=8 format=3 uid="uid://dqhq6mmnxq438"]
 
 [ext_resource type="TileSet" uid="uid://bhpjte4l1h6wi" path="res://resources/tileset.tres" id="1_1xlid"]
 [ext_resource type="PackedScene" uid="uid://c3i6iffpbjwdo" path="res://scenes/manager/bullet_manager.tscn" id="1_7dujj"]
 [ext_resource type="PackedScene" uid="uid://bkgb4p0vuag2s" path="res://scenes/manager/enemy_manager.tscn" id="1_8gj33"]
+[ext_resource type="PackedScene" uid="uid://blvhpn680cxc0" path="res://scenes/ui/arena_time_ui.tscn" id="1_mkdjg"]
 [ext_resource type="PackedScene" uid="uid://df6r3kykdxlm6" path="res://scenes/game_object/player/player.tscn" id="1_rwiuc"]
+[ext_resource type="PackedScene" uid="uid://djaf8sd5iuh4y" path="res://scenes/manager/arena_time_manager.tscn" id="2_bv2bs"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="2_p1h8n"]
-[ext_resource type="PackedScene" uid="uid://d4d4o5mtsii5q" path="res://scenes/game_object/loot/collectable_gold_object.tscn" id="6_xbs7d"]
 
 [node name="Main" type="Node"]
 
-[node name="EnemyManager" parent="." instance=ExtResource("1_8gj33")]
+[node name="ArenaTimeUI" parent="." node_paths=PackedStringArray("arena_time_manager") instance=ExtResource("1_mkdjg")]
+arena_time_manager = NodePath("../ArenaTimeManager")
+
+[node name="ArenaTimeManager" parent="." instance=ExtResource("2_bv2bs")]
+
+[node name="EnemyManager" parent="." node_paths=PackedStringArray("arena_time_manager") instance=ExtResource("1_8gj33")]
+arena_time_manager = NodePath("../ArenaTimeManager")
+
+[node name="BulletManager" parent="." instance=ExtResource("1_7dujj")]
 
 [node name="TileMap" type="TileMap" parent="."]
 z_index = -1
@@ -19,14 +28,9 @@ layer_0/tile_data = PackedInt32Array(5636252, 65538, 4, 5570716, 2, 4, 5505180, 
 
 [node name="GameCamera" parent="." groups=["game_camera"] instance=ExtResource("2_p1h8n")]
 
-[node name="BulletManager" parent="." instance=ExtResource("1_7dujj")]
-
 [node name="Entities" type="Node2D" parent="." groups=["entities_layer"]]
 
 [node name="Player" parent="Entities" instance=ExtResource("1_rwiuc")]
 position = Vector2(1282, 776)
-
-[node name="CollectableGoldObject" parent="Entities" instance=ExtResource("6_xbs7d")]
-position = Vector2(1415, 638)
 
 [node name="Foreground" type="Node2D" parent="." groups=["foreground_layer"]]

@@ -27,7 +27,7 @@ health_component = NodePath("../HealthComponent")
 
 [node name="DeathComponent" parent="." node_paths=PackedStringArray("health_component", "sprite") instance=ExtResource("4_kprfv")]
 health_component = NodePath("../HealthComponent")
-sprite = NodePath("../Sprite2D")
+sprite = NodePath("../Visuals/Sprite2D")
 
 [node name="HurtboxComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("4_1ih2o")]
 health_component = NodePath("../HealthComponent")
@@ -35,7 +35,9 @@ health_component = NodePath("../HealthComponent")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent"]
 shape = SubResource("CircleShape2D_uc0nb")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Visuals"]
 texture = ExtResource("1_ooc1j")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
