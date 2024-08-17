@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://cmqvvth3hy45i"]
+
+[ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
+[ext_resource type="PackedScene" uid="uid://df6r3kykdxlm6" path="res://scenes/game_object/player/player.tscn" id="2_qyaw7"]
+[ext_resource type="PackedScene" uid="uid://d4d4o5mtsii5q" path="res://scenes/game_object/loot/collectable_gold_object.tscn" id="3_darsw"]
+
+[node name="Town" type="Node"]
+
+[node name="GameCamera" parent="." instance=ExtResource("1_kmwi7")]
+
+[node name="Player" parent="." instance=ExtResource("2_qyaw7")]
+position = Vector2(154, 103)
+
+[node name="CollectableGoldObject" parent="." instance=ExtResource("3_darsw")]
+position = Vector2(344, 71)

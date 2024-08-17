@@ -34,6 +34,7 @@ gold_amount_range = 30
 [node name="DeathComponent" parent="." node_paths=PackedStringArray("health_component", "sprite") instance=ExtResource("2_4k1da")]
 health_component = NodePath("../HealthComponent")
 sprite = NodePath("../Visuals/Sprite2D")
+experience_to_player = 3
 
 [node name="HurtboxComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("5_ybob3")]
 health_component = NodePath("../HealthComponent")

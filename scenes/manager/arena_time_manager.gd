@@ -4,7 +4,8 @@ signal arena_difficulty_increased(arena_difficulty: int)
 
 const DIFFICULTY_INTERVAL = 5
 
-@export var end_screen_scene: PackedScene
+# @export var end_screen_scene: PackedScene
+@export var town_scene: PackedScene
 
 @onready var timer = $Timer
 
@@ -27,7 +28,12 @@ func get_time_elapsed():
 
 
 func on_timer_timeout():
-	var end_screen_instance = end_screen_scene.instantiate()
-	add_child(end_screen_instance)
+	# 아레나 시간이 끝났을 때 end_screen이 팝업된다.
+	# var end_screen_instance = end_screen_scene.instantiate()
+	# add_child(end_screen_instance)
 	# end_screen_instance.play_jingle()
 	# MetaProgression.save()
+
+	# 원래는 end_screen을 클릭하고 마을로 이동하지만, 지금 단계에서는 바로 마을로 이동한다.
+	# I want to go to the town scene after the arena ends
+	get_tree().change_scene_to_packed(town_scene)

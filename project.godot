@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 CurrencyManager="*res://scenes/autoload/currency_manager.gd"
+LevelAndExp="*res://scenes/autoload/level_and_exp.gd"
+Skill="*res://scenes/autoload/skill.gd"
 
 [display]
 

@@ -26,7 +26,7 @@ func collect():
     # 훗날 경험치 관련 아이템이 획득된 경우를 위해 주석 처리
 	# GameEvents.emit_experience_vial_collected(1)
 	CurrencyManager.add_currency("gold", amount)  # CurrencyManager를 사용하여 금액을 추가합니다.
-	print("Collected gold and amount is: ", amount, " and Total gold is: ", CurrencyManager.currency_data.gold)
+	# print("Collected gold and amount is: ", amount, " and Total gold is: ", CurrencyManager.currency_data.gold)
 	queue_free()
 
 
