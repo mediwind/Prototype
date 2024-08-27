@@ -1,10 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://cmqvvth3hy45i"]
+[gd_scene load_steps=7 format=3 uid="uid://cmqvvth3hy45i"]
 
+[ext_resource type="Script" path="res://scenes/town/town.gd" id="1_i0lau"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
 [ext_resource type="PackedScene" uid="uid://df6r3kykdxlm6" path="res://scenes/game_object/player/player.tscn" id="2_qyaw7"]
+[ext_resource type="PackedScene" uid="uid://ddvqb30ex6dp3" path="res://scenes/ui/skill/skill_tree.tscn" id="2_ud7wb"]
 [ext_resource type="PackedScene" uid="uid://d4d4o5mtsii5q" path="res://scenes/game_object/loot/collectable_gold_object.tscn" id="3_darsw"]
+[ext_resource type="PackedScene" uid="uid://bhmc4t4dtf2u" path="res://scenes/ui/town_ui.tscn" id="4_53e74"]
 
 [node name="Town" type="Node"]
+script = ExtResource("1_i0lau")
+skill_tree_scene = ExtResource("2_ud7wb")
 
 [node name="GameCamera" parent="." instance=ExtResource("1_kmwi7")]
 
@@ -13,3 +18,6 @@ position = Vector2(154, 103)
 
 [node name="CollectableGoldObject" parent="." instance=ExtResource("3_darsw")]
 position = Vector2(344, 71)
+
+[node name="TownUI" parent="." instance=ExtResource("4_53e74")]
+process_mode = 3
