@@ -14,7 +14,7 @@ func on_died():
     if owner == null or not owner is Node2D:
         return
 
-    LevelAndExp.add_experience(experience_to_player)
+    LevelAndExpManager.add_experience(experience_to_player)
     var spawn_position = owner.global_position
 
     var entities = get_tree().get_first_node_in_group("entities_layer")

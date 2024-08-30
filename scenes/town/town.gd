@@ -7,6 +7,7 @@ extends Node
 
 
 func _ready():
+    SaveManager.save_game_data()
     skill_ui_button.pressed.connect(on_skill_ui_button_pressed)
 
 
