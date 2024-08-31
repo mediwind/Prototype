@@ -17,9 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-SaveManager="*res://scenes/autoload/save_manager.gd"
 CurrencyManager="*res://scenes/autoload/currency_manager.gd"
 SkillManager="*res://scenes/autoload/skill_manager.gd"
+SaveManager="*res://scenes/autoload/save_manager.gd"
 LevelAndExpManager="*res://scenes/autoload/level_and_exp_manager.gd"
 
 [display]
