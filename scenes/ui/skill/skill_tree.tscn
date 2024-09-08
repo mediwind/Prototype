@@ -1,11 +1,50 @@
-[gd_scene load_steps=3 format=3 uid="uid://ddvqb30ex6dp3"]
+[gd_scene load_steps=9 format=3 uid="uid://ddvqb30ex6dp3"]
 
 [ext_resource type="PackedScene" uid="uid://ugmw2gl1gade" path="res://scenes/ui/skill/skill_button.tscn" id="1_qo7x0"]
 [ext_resource type="Script" path="res://scenes/ui/skill/skill_tree.gd" id="1_tktmr"]
+[ext_resource type="Resource" uid="uid://bgr5ts2k3r8o0" path="res://scenes/resources/skill/bullet_damage.tres" id="3_rjki1"]
+[ext_resource type="Script" path="res://scenes/resources/skill/skill_template.gd" id="4_gggrs"]
+
+[sub_resource type="Resource" id="Resource_oa68a"]
+resource_local_to_scene = true
+script = ExtResource("4_gggrs")
+id = "not assigned yet"
+max_level = 1
+skill_point_cost = 1
+title = "not assigned yet"
+description = "not assigned yet"
+
+[sub_resource type="Resource" id="Resource_bao8d"]
+resource_local_to_scene = true
+script = ExtResource("4_gggrs")
+id = "not assigned yet"
+max_level = 1
+skill_point_cost = 1
+title = "not assigned yet"
+description = "not assigned yet"
+
+[sub_resource type="Resource" id="Resource_ia4xo"]
+resource_local_to_scene = true
+script = ExtResource("4_gggrs")
+id = "not assigned yet"
+max_level = 1
+skill_point_cost = 1
+title = "not assigned yet"
+description = "not assigned yet"
+
+[sub_resource type="Resource" id="Resource_7m21o"]
+resource_local_to_scene = true
+script = ExtResource("4_gggrs")
+id = "not assigned yet"
+max_level = 1
+skill_point_cost = 1
+title = "not assigned yet"
+description = "not assigned yet"
 
 [node name="SkillTree" type="Control"]
 process_mode = 3
 layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
@@ -30,6 +69,7 @@ offset_left = 354.0
 offset_top = 279.0
 offset_right = 394.0
 offset_bottom = 319.0
+skill_template = ExtResource("3_rjki1")
 
 [node name="SkillButton2" parent="SkillButton" instance=ExtResource("1_qo7x0")]
 layout_mode = 0
@@ -38,6 +78,7 @@ offset_top = -81.0
 offset_right = 132.0
 offset_bottom = -41.0
 disabled = true
+skill_template = SubResource("Resource_oa68a")
 
 [node name="SkillButton4" parent="SkillButton/SkillButton2" instance=ExtResource("1_qo7x0")]
 layout_mode = 0
@@ -46,6 +87,7 @@ offset_top = -87.0
 offset_right = 108.0
 offset_bottom = -47.0
 disabled = true
+skill_template = SubResource("Resource_bao8d")
 
 [node name="SkillButton5" parent="SkillButton/SkillButton2" instance=ExtResource("1_qo7x0")]
 layout_mode = 0
@@ -54,6 +96,7 @@ offset_top = -87.0
 offset_right = -22.0
 offset_bottom = -47.0
 disabled = true
+skill_template = SubResource("Resource_ia4xo")
 
 [node name="SkillButton3" parent="SkillButton" instance=ExtResource("1_qo7x0")]
 layout_mode = 0
@@ -62,3 +105,14 @@ offset_top = -81.0
 offset_right = -45.0
 offset_bottom = -41.0
 disabled = true
+skill_template = SubResource("Resource_7m21o")
+
+[node name="SkillPointsLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 23.0
+grow_horizontal = 0
+text = "Skill Points: 0"

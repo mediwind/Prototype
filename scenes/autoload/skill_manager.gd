@@ -1,5 +1,7 @@
 extends Node
 
+signal skill_point_used
+
 
 func add_skill_point(amount: int):
     var skill_data = SaveManager.game_data.skill_data
@@ -7,11 +9,22 @@ func add_skill_point(amount: int):
     # SaveManager.save_game_data()
 
 
-func use_skill_point(skill_name: String):
+func use_skill_point(skill_name: String) -> bool:
     var skill_data = SaveManager.game_data.skill_data
     if skill_data.skill_points > 0:
         skill_data.skill_points -= 1
-        skill_data.acquired_skills[skill_name] = true
+        skill_point_used.emit()
+        skill_data.acquired_skills[skill_name] = \
+        {"quantity": skill_data.acquired_skills.get(skill_name, {"quantity": 0})["quantity"] + 1}
         # SaveManager.save_game_data()
+        return true
     else:
         print("Not enough skill points")
+        return false
+
+
+func get_skill_level(skill_name: String) -> int:
+    var skill_data = SaveManager.game_data.skill_data
+    if skill_data.acquired_skills.has(skill_name):
+        return skill_data.acquired_skills[skill_name]["quantity"]
+    return 0
