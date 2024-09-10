@@ -42,3 +42,17 @@ func activate_skill_button():
     for skill in skills:
         if skill is SkillNode and level >= 1:
             skill.disabled = false
+
+
+func retrieve_skill_point():
+    var skill_data = SaveManager.game_data.skill_data
+    if skill_data.acquired_skills.has(skill_template.id):
+        var quantity = skill_data.acquired_skills[skill_template.id]["quantity"]
+        skill_data.skill_points += quantity
+        skill_data.acquired_skills.erase(skill_template.id)
+        level = 0
+        label.text = str(level) + "/" + str(skill_template.max_level)
+        # Deactivate the line color
+        panel.show_behind_parent = false
+        line_2d.default_color = Color(0.21, 0.21, 0.21)
+        print("Skill points retrieved for skill: " + skill_template.id)
