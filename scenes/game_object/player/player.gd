@@ -21,12 +21,15 @@ func _ready():
 	shoot_cool_time.timeout.connect(on_shoot_cool_time_timeout)
 
 
-func _process(delta):
+func _process(_delta):
 	handle_movement()
 	update_sprite_direction()
 	rotate_arms()
 	update_animation()
 
+
+# Handle player shooting based on input
+func _input(_event):
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and can_shoot:
 		# print("Shooting!")
 		var dir = get_global_mouse_position() - hand.global_position

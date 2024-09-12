@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://c8esnr6wiyyjb"]
 
-[ext_resource type="Script" path="res://scenes/game_object/bullet/basic_bullet.gd" id="1_kg45e"]
-[ext_resource type="Texture2D" uid="uid://b2jlvme0fx6i2" path="res://scenes/game_object/bullet/red_bullet2.png" id="2_v0bu5"]
+[ext_resource type="Script" path="res://scenes/game_object/projectile/bullet/basic_bullet.gd" id="1_kg45e"]
+[ext_resource type="Texture2D" uid="uid://b2jlvme0fx6i2" path="res://scenes/game_object/projectile/bullet/red_bullet2.png" id="2_v0bu5"]
 [ext_resource type="PackedScene" uid="uid://cs5qsx3kqhqh3" path="res://scenes/component/hitbox_component.tscn" id="3_fmxcp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ci4h5"]

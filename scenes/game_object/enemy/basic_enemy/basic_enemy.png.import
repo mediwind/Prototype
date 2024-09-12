@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cl75qu8imifh"
-path="res://.godot/imported/red_bullet.png-dab3bff94e4fd1e1998b806d33358f16.ctex"
+uid="uid://cmlvx6oj88em7"
+path="res://.godot/imported/basic_enemy.png-954c05e6f6452b1aa2ace3452d6a51bf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://scenes/game_object/bullet/red_bullet.png"
-dest_files=["res://.godot/imported/red_bullet.png-dab3bff94e4fd1e1998b806d33358f16.ctex"]
+source_file="res://scenes/game_object/enemy/basic_enemy/basic_enemy.png"
+dest_files=["res://.godot/imported/basic_enemy.png-954c05e6f6452b1aa2ace3452d6a51bf.ctex"]
 
 [params]
 

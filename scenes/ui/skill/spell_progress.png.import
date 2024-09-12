@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cmlvx6oj88em7"
-path="res://.godot/imported/basic_enemy.png-ae6d2d95d69f96d6decd6443b9362f0c.ctex"
+uid="uid://brsdiwr6ky3tg"
+path="res://.godot/imported/spell_progress.png-9b6c16c68ccfe2ccbdeab96e2907b35a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://scenes/game_object/basic_enemy/basic_enemy.png"
-dest_files=["res://.godot/imported/basic_enemy.png-ae6d2d95d69f96d6decd6443b9362f0c.ctex"]
+source_file="res://scenes/ui/skill/spell_progress.png"
+dest_files=["res://.godot/imported/spell_progress.png-9b6c16c68ccfe2ccbdeab96e2907b35a.ctex"]
 
 [params]
 
