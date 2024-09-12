@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://8oo6f7ygjkrj"]
+
+[ext_resource type="PackedScene" uid="uid://ckillpnvnedij" path="res://scenes/ui/skill/spell_button.tscn" id="1_4bxtw"]
+
+[node name="SkillDragDropTest" type="Node"]
+
+[node name="SpellButton" parent="." instance=ExtResource("1_4bxtw")]
+offset_left = 216.0
+offset_top = 152.0
+offset_right = 256.0
+offset_bottom = 192.0
+
+[node name="SpellButton2" parent="." instance=ExtResource("1_4bxtw")]
+offset_left = 320.0
+offset_top = 152.0
+offset_right = 360.0
+offset_bottom = 192.0
+texture_normal = null

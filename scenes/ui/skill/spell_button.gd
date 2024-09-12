@@ -42,3 +42,26 @@ func _on_timer_timeout():
     remaining_time.text = ""
     cooldown.value = 0
     set_process(false)
+
+
+func _get_drag_data(at_position):
+    var preview_texture = TextureButton.new()
+
+    preview_texture.texture_normal = texture_normal
+    preview_texture.size = Vector2(40, 40)
+
+    var preview = Control.new()
+    preview.add_child(preview_texture)
+
+    set_drag_preview(preview)
+    texture_normal = null
+
+    return preview_texture.texture_normal
+
+
+func _can_drop_data(at_position, data):
+    return data is Texture2D
+
+
+func _drop_data(at_position, data):
+    texture_normal = data
