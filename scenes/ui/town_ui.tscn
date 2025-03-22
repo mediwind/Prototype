@@ -1,6 +1,11 @@
-[gd_scene format=3 uid="uid://bhmc4t4dtf2u"]
+[gd_scene load_steps=3 format=3 uid="uid://bhmc4t4dtf2u"]
+
+[ext_resource type="Script" path="res://scenes/ui/town_ui.gd" id="1_3mlkv"]
+[ext_resource type="PackedScene" uid="uid://2yog34xmngmr" path="res://scenes/ui/currency/currency_display.tscn" id="2_xen83"]
 
 [node name="TownUI" type="CanvasLayer"]
+script = ExtResource("1_3mlkv")
+currency_display_scene = ExtResource("2_xen83")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 anchors_preset = 3
