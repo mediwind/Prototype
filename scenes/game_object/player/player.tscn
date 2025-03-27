@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://df6r3kykdxlm6"]
 
-[ext_resource type="Script" path="res://scenes/game_object/player/player.gd" id="1_4oj80"]
+[ext_resource type="Script" uid="uid://mc45yti6dj16" path="res://scenes/game_object/player/player.gd" id="1_4oj80"]
 [ext_resource type="Texture2D" uid="uid://dk0rg844clque" path="res://scenes/game_object/player/player_arms.png" id="2_aaopr"]
 [ext_resource type="Texture2D" uid="uid://bu2kdevu1kbxh" path="res://scenes/game_object/player/player_torso.png" id="2_dh6qs"]
 [ext_resource type="Texture2D" uid="uid://cjuvbe6upt3yy" path="res://scenes/game_object/player/player_legs.png" id="2_yag2u"]
@@ -66,9 +66,9 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_6scx5"]
 _data = {
-"RESET": SubResource("Animation_f2ba1"),
-"walk_backward": SubResource("Animation_jdqpn"),
-"walk_forward": SubResource("Animation_tpj14")
+&"RESET": SubResource("Animation_f2ba1"),
+&"walk_backward": SubResource("Animation_jdqpn"),
+&"walk_forward": SubResource("Animation_tpj14")
 }
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
@@ -128,7 +128,7 @@ shape = SubResource("CapsuleShape2D_ornvc")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_6scx5")
+&"": SubResource("AnimationLibrary_6scx5")
 }
 
 [node name="AimPivot" type="Marker2D" parent="."]

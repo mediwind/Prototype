@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ckillpnvnedij"]
 
 [ext_resource type="Texture2D" uid="uid://bp0n2qwqrdekb" path="res://icon.svg" id="1_n7eu5"]
-[ext_resource type="Script" path="res://scenes/ui/skill/spell_button.gd" id="2_8qch8"]
+[ext_resource type="Script" uid="uid://clb1uvofmwg7x" path="res://scenes/ui/skill/spell_button.gd" id="2_8qch8"]
 [ext_resource type="Texture2D" uid="uid://brsdiwr6ky3tg" path="res://scenes/ui/skill/spell_progress.png" id="2_k5lic"]
 
 [node name="SpellButton" type="TextureButton"]

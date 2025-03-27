@@ -56,3 +56,8 @@ func retrieve_skill_point():
         panel.show_behind_parent = false
         line_2d.default_color = Color(0.21, 0.21, 0.21)
         print("Skill points retrieved for skill: " + skill_template.id)
+        # Disable all child skills
+        var skills = get_children()
+        for skill in skills:
+            if skill is SkillNode:
+                skill.disabled = true

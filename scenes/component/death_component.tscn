@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://q5456waekfa7"]
 
 [ext_resource type="Texture2D" uid="uid://cmlvx6oj88em7" path="res://scenes/game_object/enemy/basic_enemy/basic_enemy.png" id="1_ibhhn"]
-[ext_resource type="Script" path="res://scenes/component/death_component.gd" id="1_owaii"]
+[ext_resource type="Script" uid="uid://dxxr0jd47n7no" path="res://scenes/component/death_component.gd" id="1_owaii"]
 
 [sub_resource type="Animation" id="Animation_xobnl"]
 length = 0.001
@@ -49,8 +49,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_hx2bs"]
 _data = {
-"RESET": SubResource("Animation_xobnl"),
-"default": SubResource("Animation_lt8qd")
+&"RESET": SubResource("Animation_xobnl"),
+&"default": SubResource("Animation_lt8qd")
 }
 
 [sub_resource type="Curve" id="Curve_mq6y5"]
@@ -76,14 +76,14 @@ script = ExtResource("1_owaii")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_hx2bs")
+&"": SubResource("AnimationLibrary_hx2bs")
 }
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 1
-process_material = SubResource("ParticleProcessMaterial_56tc3")
 texture = ExtResource("1_ibhhn")
 lifetime = 0.5
 one_shot = true
 fixed_fps = 0
+process_material = SubResource("ParticleProcessMaterial_56tc3")

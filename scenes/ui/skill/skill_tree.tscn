@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://ddvqb30ex6dp3"]
 
 [ext_resource type="PackedScene" uid="uid://ugmw2gl1gade" path="res://scenes/ui/skill/skill_button.tscn" id="1_qo7x0"]
-[ext_resource type="Script" path="res://scenes/ui/skill/skill_tree.gd" id="1_tktmr"]
+[ext_resource type="Script" uid="uid://b5pwc2b0mn0gh" path="res://scenes/ui/skill/skill_tree.gd" id="1_tktmr"]
 [ext_resource type="Resource" uid="uid://bgr5ts2k3r8o0" path="res://scenes/resources/skill/bullet_damage.tres" id="3_rjki1"]
 [ext_resource type="Resource" uid="uid://c1acrdkxc1ajq" path="res://scenes/resources/skill/fire_rate.tres" id="4_px7st"]
 [ext_resource type="Resource" uid="uid://b7o3eaxiwfipd" path="res://scenes/resources/skill/test2.tres" id="5_dfwkc"]

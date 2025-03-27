@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://2rgdl0vpw7h7"]
 
 [ext_resource type="FontFile" uid="uid://1s6fpytnwvk2" path="res://resources/theme/Rockboxcond12.ttf" id="1_hnrmq"]
-[ext_resource type="Script" path="res://scenes/ui/floating_text.gd" id="1_yx1ia"]
+[ext_resource type="Script" uid="uid://cwqh1j2qlm7y7" path="res://scenes/ui/floating_text.gd" id="1_yx1ia"]
 
 [node name="FloatingText" type="Node2D"]
 script = ExtResource("1_yx1ia")

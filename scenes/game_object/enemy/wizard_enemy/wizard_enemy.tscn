@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://d1rjj3m2ryj4n"]
 
-[ext_resource type="Script" path="res://scenes/game_object/enemy/wizard_enemy/wizard_enemy.gd" id="1_u0oxw"]
+[ext_resource type="Script" uid="uid://b2erqr5ocdg8n" path="res://scenes/game_object/enemy/wizard_enemy/wizard_enemy.gd" id="1_u0oxw"]
 [ext_resource type="PackedScene" uid="uid://bob443ncb55kj" path="res://scenes/component/velocity_component.tscn" id="2_r17se"]
 [ext_resource type="PackedScene" uid="uid://dehqlgwaydqil" path="res://scenes/component/health_component.tscn" id="3_qj7h4"]
 [ext_resource type="PackedScene" uid="uid://dgmtaln3oqmw4" path="res://scenes/component/lootcomponent/currency_drop_component.tscn" id="4_2k7ew"]

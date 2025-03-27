@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://2yog34xmngmr"]
 
-[ext_resource type="Script" path="res://scenes/ui/currency/currency_display.gd" id="1_vi5bt"]
+[ext_resource type="Script" uid="uid://befggi548fnsq" path="res://scenes/ui/currency/currency_display.gd" id="1_vi5bt"]
 [ext_resource type="Texture2D" uid="uid://r7a2kvybtpmg" path="res://scenes/ui/currency/gold_coins_pile.png" id="2_8p8tg"]
 [ext_resource type="Texture2D" uid="uid://ooqpkgewww1w" path="res://scenes/ui/currency/faith_praying.png" id="3_p7psk"]
 [ext_resource type="Texture2D" uid="uid://nf212bri6lph" path="res://scenes/ui/currency/soul.png" id="4_dtgtl"]
@@ -12,6 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_vi5bt")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]

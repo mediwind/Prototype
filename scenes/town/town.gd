@@ -7,11 +7,11 @@ extends Node
 
 
 func _ready():
-    SaveManager.save_game_data()
-    skill_ui_button.pressed.connect(on_skill_ui_button_pressed)
+	SaveManager.save_game_data()
+	skill_ui_button.pressed.connect(on_skill_ui_button_pressed)
 
 
 func on_skill_ui_button_pressed():
-    var skill_tree = skill_tree_scene.instantiate()
-    town_ui.add_child(skill_tree)
-    get_tree().paused = true
+	var skill_tree = skill_tree_scene.instantiate()
+	town_ui.add_child(skill_tree)
+	get_tree().paused = true
