@@ -1,9 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://2yog34xmngmr"]
+[gd_scene load_steps=2 format=3 uid="uid://2yog34xmngmr"]
 
 [ext_resource type="Script" uid="uid://befggi548fnsq" path="res://scenes/ui/currency/currency_display.gd" id="1_vi5bt"]
-[ext_resource type="Texture2D" uid="uid://r7a2kvybtpmg" path="res://scenes/ui/currency/gold_coins_pile.png" id="2_8p8tg"]
-[ext_resource type="Texture2D" uid="uid://ooqpkgewww1w" path="res://scenes/ui/currency/faith_praying.png" id="3_p7psk"]
-[ext_resource type="Texture2D" uid="uid://nf212bri6lph" path="res://scenes/ui/currency/soul.png" id="4_dtgtl"]
 
 [node name="CurrencyDisplay" type="Control"]
 layout_mode = 3
@@ -32,33 +29,3 @@ theme_override_constants/margin_bottom = 5
 [node name="GridContainer" type="GridContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
 columns = 2
-
-[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer/GridContainer"]
-layout_mode = 2
-texture = ExtResource("2_8p8tg")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/GridContainer"]
-layout_mode = 2
-text = "100"
-
-[node name="TextureRect2" type="TextureRect" parent="PanelContainer/MarginContainer/GridContainer"]
-layout_mode = 2
-texture = ExtResource("3_p7psk")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/GridContainer"]
-layout_mode = 2
-text = "200"
-
-[node name="TextureRect3" type="TextureRect" parent="PanelContainer/MarginContainer/GridContainer"]
-layout_mode = 2
-texture = ExtResource("4_dtgtl")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Label3" type="Label" parent="PanelContainer/MarginContainer/GridContainer"]
-layout_mode = 2
-text = "300"
