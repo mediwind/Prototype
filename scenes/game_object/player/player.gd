@@ -21,7 +21,7 @@ func _ready():
 	shoot_cool_time.timeout.connect(on_shoot_cool_time_timeout)
 
 
-func _process(_delta):
+func _physics_process(_delta):
 	handle_movement()
 	update_sprite_direction()
 	rotate_arms()
