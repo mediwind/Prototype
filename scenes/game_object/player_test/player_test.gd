@@ -1,11 +1,13 @@
 extends CharacterBody2D
 
 var direction = Vector2.ZERO
+const MAX_SPEED = 100
 
 @onready var animation_tree = $AnimationTree
 
 
 func _physics_process(delta: float) -> void:
+    velocity = direction * MAX_SPEED
     move_and_slide()
 
 
