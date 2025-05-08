@@ -18,9 +18,10 @@ position = Vector2(0, 2)
 shape = SubResource("CircleShape2D_s3670")
 
 [node name="ShootCooltime" type="Timer" parent="."]
-wait_time = 0.7
+wait_time = 0.1
 
 [node name="Marker2D" type="Marker2D" parent="."]
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_s3670")
+volume_db = -10.0
