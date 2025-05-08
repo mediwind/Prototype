@@ -1,134 +1,26 @@
-[gd_scene load_steps=12 format=3 uid="uid://df6r3kykdxlm6"]
+[gd_scene load_steps=5 format=3 uid="uid://df6r3kykdxlm6"]
 
 [ext_resource type="Script" uid="uid://mc45yti6dj16" path="res://scenes/game_object/player/player.gd" id="1_4oj80"]
-[ext_resource type="Texture2D" uid="uid://dk0rg844clque" path="res://scenes/game_object/player/player_arms.png" id="2_aaopr"]
-[ext_resource type="Texture2D" uid="uid://bu2kdevu1kbxh" path="res://scenes/game_object/player/player_torso.png" id="2_dh6qs"]
-[ext_resource type="Texture2D" uid="uid://cjuvbe6upt3yy" path="res://scenes/game_object/player/player_legs.png" id="2_yag2u"]
-[ext_resource type="Texture2D" uid="uid://53gi5jxni7q1" path="res://scenes/game_object/player/player_head.png" id="3_fi2yu"]
+[ext_resource type="Texture2D" uid="uid://dpiinft7yc3n" path="res://scenes/game_object/player/player.png" id="2_6b2fh"]
+[ext_resource type="AudioStream" uid="uid://cl3trf7u84x58" path="res://assets/sound/072807_heavy-machine-gun-50-caliber-39765.mp3" id="3_s3670"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_oc266"]
-radius = 50.0
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ornvc"]
-radius = 7.0
-height = 42.0
-
-[sub_resource type="Animation" id="Animation_f2ba1"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerSprite/Legs:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
-[sub_resource type="Animation" id="Animation_jdqpn"]
-resource_name = "walk_bakcward"
-length = 0.8
-loop_mode = 1
-step = 0.05
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerSprite/Legs:frame")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [8, 7, 6, 5, 4, 3, 2, 1]
-}
-
-[sub_resource type="Animation" id="Animation_tpj14"]
-resource_name = "walk_forward"
-length = 0.8
-loop_mode = 1
-step = 0.05
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerSprite/Legs:frame")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6, 7]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_6scx5"]
-_data = {
-&"RESET": SubResource("Animation_f2ba1"),
-&"walk_backward": SubResource("Animation_jdqpn"),
-&"walk_forward": SubResource("Animation_tpj14")
-}
+[sub_resource type="CircleShape2D" id="CircleShape2D_s3670"]
+radius = 5.0
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
-collision_layer = 0
 script = ExtResource("1_4oj80")
 
-[node name="PickupArea2D" type="Area2D" parent="."]
-collision_layer = 16
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea2D"]
-position = Vector2(0, -17)
-shape = SubResource("CircleShape2D_oc266")
-
-[node name="PlayerSprite" type="Node2D" parent="."]
-
-[node name="Torso" type="Sprite2D" parent="PlayerSprite"]
-position = Vector2(0, -25)
-texture = ExtResource("2_dh6qs")
-flip_h = true
-
-[node name="Head" type="Sprite2D" parent="PlayerSprite/Torso"]
-position = Vector2(-1, -11)
-texture = ExtResource("3_fi2yu")
-flip_h = true
-
-[node name="ArmFront" type="Sprite2D" parent="PlayerSprite/Torso"]
-position = Vector2(-5, -7)
-texture = ExtResource("2_aaopr")
-offset = Vector2(6, 1)
-flip_h = true
-hframes = 2
-frame = 1
-
-[node name="Hand" type="Marker2D" parent="PlayerSprite/Torso/ArmFront"]
-position = Vector2(14, 0)
-
-[node name="ArmBack" type="Sprite2D" parent="PlayerSprite/Torso"]
-z_index = -1
-position = Vector2(1, -8)
-texture = ExtResource("2_aaopr")
-offset = Vector2(5, 3)
-flip_h = true
-hframes = 2
-
-[node name="Legs" type="Sprite2D" parent="PlayerSprite"]
-position = Vector2(0, -14)
-texture = ExtResource("2_yag2u")
-hframes = 9
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_6b2fh")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -21)
-shape = SubResource("CapsuleShape2D_ornvc")
+position = Vector2(0, 2)
+shape = SubResource("CircleShape2D_s3670")
 
 [node name="ShootCooltime" type="Timer" parent="."]
+wait_time = 0.7
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_6scx5")
-}
+[node name="Marker2D" type="Marker2D" parent="."]
 
-[node name="AimPivot" type="Marker2D" parent="."]
-position = Vector2(0, -31)
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_s3670")

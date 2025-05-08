@@ -9,6 +9,14 @@ script = ExtResource("1_7scja")
 basic_enemy_scene = ExtResource("2_wo617")
 wizard_enemy_scene = ExtResource("3_us130")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="NormalTimer" type="Timer" parent="."]
 one_shot = true
+autostart = true
+
+[node name="CircleTimer" type="Timer" parent="."]
+wait_time = 30.0
+autostart = true
+
+[node name="SwarmTimer" type="Timer" parent="."]
+wait_time = 10.0
 autostart = true
