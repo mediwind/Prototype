@@ -6,7 +6,7 @@ signal shoot
 @onready var marker2d = $Marker2D
 @onready var audio_stream_player = $AudioStreamPlayer
 
-const MAX_SPEED = 0
+const MAX_SPEED = 100
 
 var can_shoot : bool
 var is_mouse_pressed : bool = false  # 마우스 버튼 상태 추적

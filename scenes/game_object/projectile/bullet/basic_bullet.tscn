@@ -1,18 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://c8esnr6wiyyjb"]
+[gd_scene load_steps=8 format=3 uid="uid://c8esnr6wiyyjb"]
 
 [ext_resource type="Script" uid="uid://c42kasfot2qko" path="res://scenes/game_object/projectile/bullet/basic_bullet.gd" id="1_kg45e"]
-[ext_resource type="Texture2D" uid="uid://b2jlvme0fx6i2" path="res://scenes/game_object/projectile/bullet/red_bullet2.png" id="2_v0bu5"]
+[ext_resource type="Texture2D" uid="uid://cl75qu8imifh" path="res://scenes/game_object/projectile/bullet/red_bullet.png" id="2_3f01n"]
 [ext_resource type="PackedScene" uid="uid://cs5qsx3kqhqh3" path="res://scenes/component/hitbox_component.tscn" id="3_fmxcp"]
+[ext_resource type="PackedScene" uid="uid://bnds2makfe4rf" path="res://scenes/game_object/projectile/trail_effect.tscn" id="4_3f01n"]
+[ext_resource type="Script" uid="uid://b1bfmkn380omm" path="res://scenes/game_object/projectile/object_trail_effect.gd" id="5_kslpn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ci4h5"]
-size = Vector2(10, 116)
+size = Vector2(3.00001, 12)
+
+[sub_resource type="Gradient" id="Gradient_kslpn"]
+offsets = PackedFloat32Array(0, 0.915323)
+colors = PackedColorArray(1, 1, 0, 1, 1, 1, 1, 1)
 
 [node name="BasicBullet" type="Node2D"]
 script = ExtResource("1_kg45e")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_v0bu5")
-offset = Vector2(50, 0)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_3f01n")
 
 [node name="HitboxComponent" parent="." instance=ExtResource("3_fmxcp")]
 collision_layer = 4
@@ -20,6 +26,11 @@ collision_mask = 32
 damage = 5.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
-position = Vector2(51, -0.999667)
+position = Vector2(1, -0.499994)
 rotation = 1.57079
 shape = SubResource("RectangleShape2D_ci4h5")
+
+[node name="TrailEffect" parent="." instance=ExtResource("4_3f01n")]
+width = 1.0
+gradient = SubResource("Gradient_kslpn")
+script = ExtResource("5_kslpn")

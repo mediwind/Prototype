@@ -15,5 +15,5 @@ func counting_penetration(other_area: Area2D):
         return
     # print("number_of_penetration: ", number_of_penetration)
     number_of_penetration += 1
-    if number_of_penetration >= 2:
+    if number_of_penetration >= 1:
         owner.queue_free()

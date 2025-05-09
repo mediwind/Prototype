@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="Currency" load_steps=2 format=3 uid="uid://c8fmgxyl71lgh"]
-
-[ext_resource type="Script" uid="uid://ceevyilr6chj6" path="res://scenes/resources/collectable/currency_resource.gd" id="1_ilq8g"]
-
-[resource]
-script = ExtResource("1_ilq8g")
-currency_name = "gold"
-currency_value = 0

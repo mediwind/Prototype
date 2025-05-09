@@ -1,11 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://df6r3kykdxlm6"]
+[gd_scene load_steps=8 format=3 uid="uid://df6r3kykdxlm6"]
 
 [ext_resource type="Script" uid="uid://mc45yti6dj16" path="res://scenes/game_object/player/player.gd" id="1_4oj80"]
 [ext_resource type="Texture2D" uid="uid://dpiinft7yc3n" path="res://scenes/game_object/player/player.png" id="2_6b2fh"]
 [ext_resource type="AudioStream" uid="uid://cl3trf7u84x58" path="res://assets/sound/072807_heavy-machine-gun-50-caliber-39765.mp3" id="3_s3670"]
+[ext_resource type="PackedScene" uid="uid://bnds2makfe4rf" path="res://scenes/game_object/projectile/trail_effect.tscn" id="4_ss5pk"]
+[ext_resource type="Script" uid="uid://b1bfmkn380omm" path="res://scenes/game_object/projectile/object_trail_effect.gd" id="5_tj6oj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_s3670"]
 radius = 5.0
+
+[sub_resource type="Gradient" id="Gradient_tj6oj"]
+offsets = PackedFloat32Array(0, 0.915323)
+colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 1)
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("1_4oj80")
@@ -24,4 +30,10 @@ wait_time = 0.1
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_s3670")
-volume_db = -10.0
+volume_db = -20.0
+
+[node name="TrailEffect" parent="." instance=ExtResource("4_ss5pk")]
+z_index = -1
+gradient = SubResource("Gradient_tj6oj")
+script = ExtResource("5_tj6oj")
+MAX_LENGTH = 10
