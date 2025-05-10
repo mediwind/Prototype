@@ -3,8 +3,9 @@ extends CharacterBody2D
 signal shoot
 
 @onready var shoot_cool_time = $ShootCooltime
-@onready var marker2d = $Marker2D
+@onready var muzzle = %Muzzle
 @onready var audio_stream_player = $AudioStreamPlayer
+@onready var turret_sprite = $TurretSprite
 
 const MAX_SPEED = 100
 
@@ -32,7 +33,7 @@ func get_movement_vector():
 
 func turn():
     var enemy_position = get_global_mouse_position()
-    self.look_at(enemy_position)
+    turret_sprite.look_at(enemy_position)
 
 
 # Handle player shooting based on input
@@ -49,9 +50,14 @@ func _input(event):
 
 # 발사 로직을 별도 함수로 분리
 func shoot_bullet():
-    var dir = get_global_mouse_position() - marker2d.global_position
+    var dir = get_global_mouse_position() - turret_sprite.global_position
     var bullet_direction = atan2(dir.y, dir.x)  # 올바른 각도 계산
-    shoot.emit(marker2d.global_position, dir, bullet_direction)  # 위치와 방향 전달
+    shoot.emit(muzzle.global_position, dir, bullet_direction)  # 위치와 방향 전달
+
+    # 발사 애니메이션 재생
+    turret_sprite.play("fire")
+
+    # 쿨타임 시작
     can_shoot = false
     shoot_cool_time.start()
     audio_stream_player.play()  # 총소리 재생

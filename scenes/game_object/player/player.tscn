@@ -1,13 +1,78 @@
-[gd_scene load_steps=8 format=3 uid="uid://df6r3kykdxlm6"]
+[gd_scene load_steps=18 format=3 uid="uid://df6r3kykdxlm6"]
 
 [ext_resource type="Script" uid="uid://mc45yti6dj16" path="res://scenes/game_object/player/player.gd" id="1_4oj80"]
-[ext_resource type="Texture2D" uid="uid://dpiinft7yc3n" path="res://scenes/game_object/player/player.png" id="2_6b2fh"]
+[ext_resource type="Texture2D" uid="uid://dkwudthn8d7q4" path="res://assets/turret/ground_shaker_asset/Blue/Bodies/body_tracks.png" id="2_pknkg"]
+[ext_resource type="Texture2D" uid="uid://chf2qoo7ltb7" path="res://assets/turret/ground_shaker_asset/Blue/Weapons/turret_01_mk1.png" id="2_tj6oj"]
 [ext_resource type="AudioStream" uid="uid://cl3trf7u84x58" path="res://assets/sound/072807_heavy-machine-gun-50-caliber-39765.mp3" id="3_s3670"]
 [ext_resource type="PackedScene" uid="uid://bnds2makfe4rf" path="res://scenes/game_object/projectile/trail_effect.tscn" id="4_ss5pk"]
 [ext_resource type="Script" uid="uid://b1bfmkn380omm" path="res://scenes/game_object/projectile/object_trail_effect.gd" id="5_tj6oj"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_s3670"]
-radius = 5.0
+[sub_resource type="AtlasTexture" id="AtlasTexture_pknkg"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rix40"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dy4tu"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gqr5v"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 384, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_28lpv"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 512, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gbew5"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 640, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oxhc3"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 768, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mxgtx"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 896, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l1g56"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pknkg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rix40")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dy4tu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gqr5v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_28lpv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gbew5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oxhc3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mxgtx")
+}],
+"loop": false,
+"name": &"fire",
+"speed": 60.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pknkg"]
+size = Vector2(100, 100)
 
 [sub_resource type="Gradient" id="Gradient_tj6oj"]
 offsets = PackedFloat32Array(0, 0.915323)
@@ -16,17 +81,24 @@ colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 1)
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("1_4oj80")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_6b2fh")
+[node name="BaseSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_pknkg")
+
+[node name="TurretSprite" type="AnimatedSprite2D" parent="."]
+rotation = 7.01826e-05
+sprite_frames = SubResource("SpriteFrames_l1g56")
+animation = &"fire"
+
+[node name="Muzzle" type="Marker2D" parent="TurretSprite"]
+unique_name_in_owner = true
+position = Vector2(51, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 2)
-shape = SubResource("CircleShape2D_s3670")
+position = Vector2(0.5, 0)
+shape = SubResource("RectangleShape2D_pknkg")
 
 [node name="ShootCooltime" type="Timer" parent="."]
 wait_time = 0.1
-
-[node name="Marker2D" type="Marker2D" parent="."]
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_s3670")
