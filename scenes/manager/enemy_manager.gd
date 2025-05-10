@@ -82,7 +82,7 @@ func on_circle_timer_timeout():
 	if player == null:
 		return
 
-	var num_enemies = 30  # 원형으로 소환할 적의 수
+	var num_enemies = 10  # 원형으로 소환할 적의 수
 	var angle_step = TAU / num_enemies  # 각도 간격
 	var positions = []
 
@@ -100,7 +100,7 @@ func on_swarm_timer_timeout():
 	if player == null:
 		return
 
-	var num_enemies = 15  # 한 번에 소환할 적의 수
+	var num_enemies = 5  # 한 번에 소환할 적의 수
 	var random_direction = Vector2.RIGHT.rotated(randf_range(0, TAU))  # 무작위 방향
 	var spawn_origin = player.global_position + random_direction * SPAWN_RADIUS
 	var positions = []

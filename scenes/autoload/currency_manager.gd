@@ -4,6 +4,7 @@ signal currency_updated(currency_name: String, new_amount: int)
 
 var currencies = {}
 var currency_data
+var battle_currencies = { "gold": 0, "faith": 0, "soul": 0 }
 
 
 func _ready():
@@ -30,11 +31,16 @@ func _ready():
         # emit_signal("currency_unlocked", name)
 
 
-func add_currency(type: String, amount: int):
+func add_currency(type: String, amount: int, is_battle: bool = false):
     if currencies.has(type):
-        currencies[type]["amount"] += amount
-        currency_data.set(type, currencies[type]["amount"])  # SaveManager의 currency_data 업데이트
-        currency_updated.emit(type, currencies[type]["amount"])  # 신호 발생
+        if is_battle:
+            battle_currencies[type] += amount # 전투 중 임시 기록록
+            currency_data.set(type, battle_currencies[type])  # SaveManager의 currency_data 업데이트
+            currency_updated.emit(type, battle_currencies[type])  # 신호 발생
+        else:
+            currencies[type]["amount"] += amount
+            currency_data.set(type, currencies[type]["amount"])  # SaveManager의 currency_data 업데이트
+            currency_updated.emit(type, currencies[type]["amount"])  # 신호 발생
         # SaveManager.save_game_data()
     else:
         print("Unknown currency type: ", type)
@@ -55,3 +61,13 @@ func spend_currency(type: String, amount: int) -> bool:
     else:
         print("Unknown currency type: ", type)
         return false
+
+
+func finalize_battle_rewards():
+    for type in battle_currencies.keys():
+        var amount = battle_currencies[type]
+        if amount > 0:
+            currencies[type]["amount"] += amount
+            currency_data.set(type, currencies[type]["amount"])  # SaveManager 업데이트
+            currency_updated.emit(type, currencies[type]["amount"])
+    battle_currencies = { "gold": 0, "faith": 0, "soul": 0 }  # 초기화

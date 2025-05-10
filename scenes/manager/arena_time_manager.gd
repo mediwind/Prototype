@@ -36,4 +36,5 @@ func on_timer_timeout():
 
 	# 원래는 end_screen을 클릭하고 마을로 이동하지만, 지금 단계에서는 바로 마을로 이동한다.
 	# I want to go to the town scene after the arena ends
+	CurrencyManager.finalize_battle_rewards()
 	get_tree().change_scene_to_packed(town_scene)
