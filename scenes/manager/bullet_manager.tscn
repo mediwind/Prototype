@@ -1,8 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://c3i6iffpbjwdo"]
-
-[ext_resource type="Script" uid="uid://gcsq354ay1fj" path="res://scenes/manager/bullet_manager.gd" id="1_ycmw0"]
-[ext_resource type="PackedScene" uid="uid://c8esnr6wiyyjb" path="res://scenes/game_object/projectile/bullet/basic_bullet.tscn" id="2_jyt3n"]
-
-[node name="BulletManager" type="Node"]
-script = ExtResource("1_ycmw0")
-bullet_scene = ExtResource("2_jyt3n")
