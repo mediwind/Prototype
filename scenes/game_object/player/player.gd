@@ -1,7 +1,5 @@
 extends CharacterBody2D
 
-signal shoot
-
 @onready var shooter_component = $ShooterComponent
 @onready var shoot_cool_time = $ShootCooltime
 @onready var muzzle = %Muzzle
