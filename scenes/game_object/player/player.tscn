@@ -83,8 +83,8 @@ animations = [{
 "speed": 60.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pknkg"]
-size = Vector2(100, 100)
+[sub_resource type="CircleShape2D" id="CircleShape2D_gqr5v"]
+radius = 60.0
 
 [sub_resource type="Gradient" id="Gradient_tj6oj"]
 offsets = PackedFloat32Array(0, 0.915323)
@@ -111,7 +111,7 @@ position = Vector2(51, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0.5, 0)
-shape = SubResource("RectangleShape2D_pknkg")
+shape = SubResource("CircleShape2D_gqr5v")
 
 [node name="ShootCooltime" type="Timer" parent="."]
 wait_time = 0.1
