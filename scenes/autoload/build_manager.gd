@@ -13,7 +13,7 @@ var is_building: bool = false
 var entities_node: Node = null  # 보조 터렛을 실제로 배치할 곳
 
 
-func _process(delta):
+func _process(_delta):
     if is_building and preview_instance and tilemap:
         var mouse_pos = tilemap.get_global_mouse_position()
         var cell = tilemap.local_to_map(mouse_pos)
@@ -52,7 +52,7 @@ func start_build_mode(scene: PackedScene, size: Vector2i, tilemap_ref: TileMapLa
     is_building = true
 
     # Entities 노드 참조 저장
-    entities_node = get_tree().get_current_scene().get_node("Entities")
+    entities_node = get_tree().get_first_node_in_group("entities_layer")
 
     if preview_instance:
         preview_instance.queue_free()
