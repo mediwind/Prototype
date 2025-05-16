@@ -11,13 +11,31 @@ const MAX_SPEED = 0
 
 var can_shoot : bool
 var enemies_in_range : Array = [] # 범위내 적들을 저장하는 배열
+var is_preview: bool = false # 미리보기 상태인지 여부
 
 
 func _ready():
+    if is_preview:
+        set_preview_mode()
+        return
+
     can_shoot = true
     shoot_cool_time.timeout.connect(on_shoot_cool_time_timeout)
     attack_range.body_entered.connect(on_body_entered)
     attack_range.body_exited.connect(on_body_exited)
+
+
+func set_preview_mode():
+    # 공격 범위, 쿨타임, 사운드 등 비활성화
+    if has_node("AttackRange"):
+        $AttackRange.monitoring = false
+        $AttackRange.set_deferred("monitorable", false)
+    if has_node("CollisionShape2D"):
+        $CollisionShape2D.disabled = true
+    if has_node("ShootCooltime"):
+        $ShootCooltime.stop()
+    if has_node("AudioStreamPlayer"):
+        $AudioStreamPlayer.stop()
 
 
 # 발사 로직을 별도 함수로 분리

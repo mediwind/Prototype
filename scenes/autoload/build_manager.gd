@@ -58,6 +58,9 @@ func start_build_mode(scene: PackedScene, size: Vector2i, tilemap_ref: TileMapLa
         preview_instance.queue_free()
 
     preview_instance = current_building.instantiate()
+    if preview_instance.has_method("set"):
+        preview_instance.set("is_preview", true)
+    
     tilemap.add_child(preview_instance)  # 프리뷰는 tilemap 위에 표시
     preview_instance.modulate = Color(1, 1, 1, 0.5)
 
@@ -123,6 +126,21 @@ func check_build_possible(start_tile: Vector2i) -> bool:
             var tile_data = tilemap.get_cell_tile_data(tile_pos)
             if tile_data and tile_data.get_custom_data("build_blocked") == true:
                 return false
+
+            # 플레이어나 적이 있는지 검사
+            var world_pos = tilemap.map_to_local(tile_pos)
+            var space_state = tilemap.get_world_2d().direct_space_state
+
+            var params = PhysicsPointQueryParameters2D.new()
+            params.position = world_pos
+            params.collide_with_areas = true
+            params.collide_with_bodies = true
+
+            var result = space_state.intersect_point(params)
+            for hit in result:
+                var collider = hit.collider
+                if collider.is_in_group("player") or collider.is_in_group("enemy"):
+                    return false
 
     return true
 
