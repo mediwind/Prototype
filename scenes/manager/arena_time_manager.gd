@@ -6,6 +6,7 @@ const DIFFICULTY_INTERVAL = 5
 
 # @export var end_screen_scene: PackedScene
 @export var town_scene: PackedScene
+@export var currency_report_window_scene: PackedScene
 
 @onready var timer = $Timer
 
@@ -16,7 +17,7 @@ func _ready():
 	timer.timeout.connect(on_timer_timeout)
 
 
-func _process(delta):
+func _process(_delta):
 	var next_time_target = timer.wait_time - ((arena_difficulty + 1) * DIFFICULTY_INTERVAL)
 	if timer.time_left <= next_time_target:
 		arena_difficulty += 1
@@ -34,7 +35,16 @@ func on_timer_timeout():
 	# end_screen_instance.play_jingle()
 	# MetaProgression.save()
 
-	# 원래는 end_screen을 클릭하고 마을로 이동하지만, 지금 단계에서는 바로 마을로 이동한다.
-	# I want to go to the town scene after the arena ends
+	get_tree().paused = true
+
+	var report_window = currency_report_window_scene.instantiate()
+	add_child(report_window)
+	report_window.show_report(CurrencyManager.battle_currencies)
 	CurrencyManager.finalize_battle_rewards()
+	report_window.report_confirmed.connect(_on_report_confirmed)
+
+
+func _on_report_confirmed():
+	get_tree().paused = false
+	# report_window가 "OK" 버튼을 클릭했을 때 마을로 이동한다.
 	get_tree().change_scene_to_packed(town_scene)

@@ -6,17 +6,17 @@ class_name ShooterComponent
 
 
 func shoot(target_position: Vector2):
-    var bullet = bullet_data.bullet_scene.instantiate()
-    bullet.global_position = muzzle.global_position
+	var bullet = bullet_data.bullet_scene.instantiate()
+	bullet.global_position = muzzle.global_position
 
-    # 방향 설정
-    bullet.direction = (target_position - muzzle.global_position).normalized()
+	# 방향 설정
+	bullet.direction = (target_position - muzzle.global_position).normalized()
 
-    # 회전 설정
-    bullet.rotation = atan2(bullet.direction.y, bullet.direction.x)
+	# 회전 설정
+	bullet.rotation = atan2(bullet.direction.y, bullet.direction.x)
 
-    # BulletData 리소스를 설정
-    bullet.bullet_data = bullet_data
+	# BulletData 리소스를 설정
+	bullet.bullet_data = bullet_data
 
-    var foreground = get_tree().get_first_node_in_group("foreground_layer")
-    foreground.add_child(bullet)
+	var foreground = get_tree().get_first_node_in_group("foreground_layer")
+	foreground.add_child(bullet)

@@ -1,0 +1,73 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwcpikr4k55ah"]
+
+[ext_resource type="Texture2D" uid="uid://r7a2kvybtpmg" path="res://scenes/ui/currency/gold_coins_pile.png" id="1_1cbxd"]
+[ext_resource type="Script" uid="uid://ba4om6x428o7j" path="res://scenes/ui/currency/currency_report_window.gd" id="1_nm86q"]
+[ext_resource type="Texture2D" uid="uid://ooqpkgewww1w" path="res://scenes/ui/currency/faith_praying.png" id="2_nm86q"]
+[ext_resource type="Texture2D" uid="uid://nf212bri6lph" path="res://scenes/ui/currency/soul.png" id="3_pj5co"]
+
+[node name="CurrencyReportWindow" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nm86q")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.5
+offset_top = -56.0
+offset_right = 35.5
+offset_bottom = 56.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1, 0.962955)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="Gold" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="GoldIcon" type="TextureRect" parent="PanelContainer/VBoxContainer/Gold"]
+layout_mode = 2
+texture = ExtResource("1_1cbxd")
+expand_mode = 2
+
+[node name="GoldAmount" type="Label" parent="PanelContainer/VBoxContainer/Gold"]
+layout_mode = 2
+text = "300"
+
+[node name="Faith" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="FaithIcon" type="TextureRect" parent="PanelContainer/VBoxContainer/Faith"]
+layout_mode = 2
+texture = ExtResource("2_nm86q")
+expand_mode = 2
+
+[node name="FaithAmount" type="Label" parent="PanelContainer/VBoxContainer/Faith"]
+layout_mode = 2
+text = "200"
+
+[node name="Soul" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SoulIcon" type="TextureRect" parent="PanelContainer/VBoxContainer/Soul"]
+layout_mode = 2
+texture = ExtResource("3_pj5co")
+expand_mode = 2
+
+[node name="SoulAmount" type="Label" parent="PanelContainer/VBoxContainer/Soul"]
+layout_mode = 2
+text = "100"
+
+[node name="Button" type="Button" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Confirm"

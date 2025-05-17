@@ -14,18 +14,24 @@ var entities_node: Node = null  # 보조 터렛을 실제로 배치할 곳
 
 
 func _process(_delta):
-    if is_building and preview_instance and tilemap:
-        var mouse_pos = tilemap.get_global_mouse_position()
-        var cell = tilemap.local_to_map(mouse_pos)
-        var world_pos = tilemap.map_to_local(cell)
+    if not is_building or preview_instance == null or tilemap == null:
+        return
+    if not is_instance_valid(preview_instance) or not is_instance_valid(tilemap):
+        return
+    if not preview_instance.is_inside_tree() or not tilemap.is_inside_tree():
+        return
 
-        # 미리보기 위치 갱신
-        preview_instance.global_position = world_pos
+    var mouse_pos = tilemap.get_global_mouse_position()
+    var cell = tilemap.local_to_map(mouse_pos)
+    var world_pos = tilemap.map_to_local(cell)
 
-        # 설치 가능 여부에 따라 색상 변경
-        can_build = check_build_possible(cell)
-        var color = Color(0, 1, 0, 0.5) if can_build else Color(1, 0, 0, 0.5)
-        preview_instance.modulate = color
+    # 미리보기 위치 갱신
+    preview_instance.global_position = world_pos
+
+    # 설치 가능 여부에 따라 색상 변경
+    can_build = check_build_possible(cell)
+    var color = Color(0, 1, 0, 0.5) if can_build else Color(1, 0, 0, 0.5)
+    preview_instance.modulate = color
 
 
 func _unhandled_input(event):
@@ -107,7 +113,7 @@ func confirm_build():
 
 
 func check_build_possible(start_tile: Vector2i) -> bool:
-    if tilemap == null:
+    if tilemap == null or not is_instance_valid(tilemap) or not tilemap.is_inside_tree():
         return false
 
     for y in range(build_size.y):

@@ -11,16 +11,17 @@
 [node name="Main" type="Node"]
 
 [node name="ArenaTimeUI" parent="." node_paths=PackedStringArray("arena_time_manager") instance=ExtResource("1_mkdjg")]
-arena_time_manager = NodePath("../ArenaTimeManager")
-
-[node name="ArenaTimeManager" parent="." instance=ExtResource("2_bv2bs")]
+arena_time_manager = NodePath("../UI/ArenaTimeManager")
 
 [node name="EnemyManager" parent="." node_paths=PackedStringArray("arena_time_manager") instance=ExtResource("1_8gj33")]
-arena_time_manager = NodePath("../ArenaTimeManager")
+arena_time_manager = NodePath("../UI/ArenaTimeManager")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="."]
+process_mode = 3
 
-[node name="BuildingUI" parent="CanvasLayer" instance=ExtResource("4_yyfjg")]
+[node name="ArenaTimeManager" parent="UI" instance=ExtResource("2_bv2bs")]
+
+[node name="BuildingUI" parent="UI" instance=ExtResource("4_yyfjg")]
 mouse_filter = 2
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]

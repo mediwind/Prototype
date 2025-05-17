@@ -18,4 +18,4 @@ func on_died():
 			if amount > 0:
 				CurrencyManager.add_currency(drop_info.currency_type, amount, true)
 				# print("owner: ", owner.name, " dropped ", amount, " ", drop_info.currency_type)
-				# print("now_battle_currencies: ", CurrencyManager.battle_currencies)
+				print("now_battle_currencies: ", CurrencyManager.battle_currencies)
