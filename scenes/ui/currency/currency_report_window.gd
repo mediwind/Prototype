@@ -5,8 +5,6 @@ signal report_confirmed
 @onready var vbox = $PanelContainer/VBoxContainer
 @onready var confirm_button = $PanelContainer/VBoxContainer/Button
 
-var count_speed := 0.001  # 카운트업 속도(초당 증가 단위, 필요시 조정)
-
 
 func _ready():
     # Button 클릭 시 _on_Button_pressed() 함수 호출
@@ -44,7 +42,10 @@ func show_report(currency_dict: Dictionary):
 
         # Tween으로 카운트업 애니메이션
         var tween = create_tween()
-        tween.tween_property(label, "text", str(amount), max(0.5, amount * count_speed)).set_trans(Tween.TRANS_LINEAR)
+        tween.tween_method(
+            func(val): label.text = str(int(val)),
+            0, amount, 1
+        ).set_ease(Tween.EASE_OUT)
         tweens.append(tween)
 
     # 모든 Tween 완료 후 버튼 활성화

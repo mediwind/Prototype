@@ -10,6 +10,6 @@ town_scene = ExtResource("2_68okg")
 currency_report_window_scene = ExtResource("3_w7axh")
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 10.0
+wait_time = 60.0
 one_shot = true
 autostart = true
