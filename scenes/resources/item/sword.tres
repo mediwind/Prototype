@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://btqlrsumgi3yc"]
+
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://scenes/resources/item/item_data.gd" id="1_fue41"]
+[ext_resource type="Texture2D" uid="uid://bychrtj8026wk" path="res://assets/item/tile_0104.png" id="1_odnky"]
+
+[resource]
+script = ExtResource("1_fue41")
+name = "Sword"
+icon = ExtResource("1_odnky")
+description = "Swing!"
+metadata/_custom_type_script = "uid://c5x21ww1vgp4q"

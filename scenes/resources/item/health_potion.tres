@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://b67b0mntyy8q3"]
+
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://scenes/resources/item/item_data.gd" id="1_83lkl"]
+[ext_resource type="Texture2D" uid="uid://bgyhug1ws02on" path="res://assets/item/tile_0115.png" id="1_sfkip"]
+
+[resource]
+script = ExtResource("1_83lkl")
+name = "Health Potion"
+icon = ExtResource("1_sfkip")
+description = "Drink!"
+metadata/_custom_type_script = "uid://c5x21ww1vgp4q"
