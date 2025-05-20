@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SkillTemplate" load_steps=2 format=3 uid="uid://c48lkfrfglwft"]
+
+[ext_resource type="Script" uid="uid://cqk4ufmwwyse2" path="res://scenes/resources/skill/skill_template.gd" id="1_au1ej"]
+
+[resource]
+script = ExtResource("1_au1ej")
+id = "not assigned yet"
+max_level = 1
+skill_point_cost = 1
+title = "not assigned yet"
+description = "not assigned yet"

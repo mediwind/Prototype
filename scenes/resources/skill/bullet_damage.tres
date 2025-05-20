@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SkillTemplate" load_steps=2 format=3 uid="uid://bgr5ts2k3r8o0"]
+
+[ext_resource type="Script" uid="uid://cqk4ufmwwyse2" path="res://scenes/resources/skill/skill_template.gd" id="1_eh2lw"]
+
+[resource]
+script = ExtResource("1_eh2lw")
+id = "bullet_damage"
+max_level = 5
+skill_point_cost = 1
+title = "Increase Bullet Damage"
+description = "Increase bullet damage by 10%."

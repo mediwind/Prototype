@@ -1,0 +1,118 @@
+[gd_scene load_steps=4 format=3 uid="uid://bulnv1je8d0i3"]
+
+[ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="1_hifxq"]
+[ext_resource type="Resource" uid="uid://b67b0mntyy8q3" path="res://scenes/resources/item/health_potion.tres" id="2_1qdgs"]
+[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://scenes/resources/item/sword.tres" id="3_aui2s"]
+
+[node name="Inventory" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InventoryUI" type="CanvasLayer" parent="."]
+
+[node name="GridContainer" type="GridContainer" parent="InventoryUI"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 4
+
+[node name="Slot" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+item_data = ExtResource("2_1qdgs")
+amount = 2
+
+[node name="Slot2" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot3" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot4" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot5" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot6" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot7" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot8" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot9" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot10" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot11" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot12" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot13" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot14" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot15" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot16" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="InventoryUI"]
+custom_minimum_size = Vector2(20, 20)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Slot" parent="InventoryUI/HBoxContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+item_data = ExtResource("3_aui2s")
+amount = 1
+
+[node name="Slot2" parent="InventoryUI/HBoxContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot3" parent="InventoryUI/HBoxContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot4" parent="InventoryUI/HBoxContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot5" parent="InventoryUI/HBoxContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot6" parent="InventoryUI/HBoxContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot7" parent="InventoryUI/HBoxContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+
+[node name="Slot8" parent="InventoryUI/HBoxContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2

@@ -1,0 +1,79 @@
+[gd_scene load_steps=14 format=3 uid="uid://d1rjj3m2ryj4n"]
+
+[ext_resource type="Script" uid="uid://b2erqr5ocdg8n" path="res://scenes/game_object/enemy/wizard_enemy/wizard_enemy.gd" id="1_u0oxw"]
+[ext_resource type="PackedScene" uid="uid://bob443ncb55kj" path="res://scenes/component/velocity_component.tscn" id="2_r17se"]
+[ext_resource type="PackedScene" uid="uid://dehqlgwaydqil" path="res://scenes/component/health_component.tscn" id="3_qj7h4"]
+[ext_resource type="PackedScene" uid="uid://dgmtaln3oqmw4" path="res://scenes/component/lootcomponent/currency_drop_component.tscn" id="4_2k7ew"]
+[ext_resource type="Script" uid="uid://cc4th0xibwd3" path="res://scenes/resources/currency/currency_drop_info.gd" id="5_eavxl"]
+[ext_resource type="PackedScene" uid="uid://q5456waekfa7" path="res://scenes/component/death_component.tscn" id="5_i2eab"]
+[ext_resource type="PackedScene" uid="uid://cdpwqed5wu1ub" path="res://scenes/component/hurt_box_component.tscn" id="6_abcad"]
+[ext_resource type="Texture2D" uid="uid://cbt7rc6ndkwuk" path="res://scenes/game_object/enemy/wizard_enemy/wizard_enemy.png" id="7_ta3au"]
+
+[sub_resource type="Resource" id="Resource_eavxl"]
+script = ExtResource("5_eavxl")
+currency_type = "gold"
+drop_percent = 0.4
+min_amount = 3
+max_amount = 10
+metadata/_custom_type_script = "uid://cc4th0xibwd3"
+
+[sub_resource type="Resource" id="Resource_ntpda"]
+script = ExtResource("5_eavxl")
+currency_type = "faith"
+drop_percent = 0.1
+min_amount = 2
+max_amount = 3
+metadata/_custom_type_script = "uid://cc4th0xibwd3"
+
+[sub_resource type="Resource" id="Resource_fgngi"]
+script = ExtResource("5_eavxl")
+currency_type = "soul"
+drop_percent = 0.1
+min_amount = 1
+max_amount = 2
+metadata/_custom_type_script = "uid://cc4th0xibwd3"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ugcai"]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_srgws"]
+radius = 4.0
+
+[node name="WizardEnemy" type="CharacterBody2D" groups=["enemy"]]
+scale = Vector2(-1, 1)
+collision_layer = 8
+collision_mask = 9
+script = ExtResource("1_u0oxw")
+
+[node name="VelocityComponent" parent="." instance=ExtResource("2_r17se")]
+max_speed = 60
+acceleration = 20.0
+
+[node name="HealthComponent" parent="." instance=ExtResource("3_qj7h4")]
+max_health = 15.0
+
+[node name="CurrencyDropComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("4_2k7ew")]
+health_component = NodePath("../HealthComponent")
+currency_drop_infos = Array[ExtResource("5_eavxl")]([SubResource("Resource_eavxl"), SubResource("Resource_ntpda"), SubResource("Resource_fgngi")])
+
+[node name="DeathComponent" parent="." node_paths=PackedStringArray("health_component", "sprite") instance=ExtResource("5_i2eab")]
+health_component = NodePath("../HealthComponent")
+sprite = NodePath("../Visuals/Sprite2D")
+experience_to_player = 3
+
+[node name="HurtboxComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("6_abcad")]
+health_component = NodePath("../HealthComponent")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent"]
+position = Vector2(0, -8)
+shape = SubResource("CircleShape2D_ugcai")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Visuals"]
+position = Vector2(0, -8)
+texture = ExtResource("7_ta3au")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -4)
+shape = SubResource("CircleShape2D_srgws")

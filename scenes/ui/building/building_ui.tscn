@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://dk2ejswm22v7c"]
+
+[ext_resource type="Script" uid="uid://cteeyx4uaisv3" path="res://scenes/ui/building/building_ui.gd" id="1_gshfm"]
+[ext_resource type="PackedScene" uid="uid://ckqu5kqln2reb" path="res://scenes/game_object/turret/turret.tscn" id="2_r6gga"]
+
+[node name="BuildingUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gshfm")
+available_buildings = Array[PackedScene]([ExtResource("2_r6gga")])
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
