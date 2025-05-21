@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://chf2qoo7ltb7" path="res://assets/turret/ground_shaker_asset/Blue/Weapons/turret_01_mk1.png" id="2_tj6oj"]
 [ext_resource type="PackedScene" uid="uid://c8esnr6wiyyjb" path="res://scenes/game_object/projectile/bullet/basic_bullet.tscn" id="3_gqr5v"]
 [ext_resource type="AudioStream" uid="uid://cl3trf7u84x58" path="res://assets/sound/072807_heavy-machine-gun-50-caliber-39765.mp3" id="3_s3670"]
-[ext_resource type="Script" uid="uid://dxdxhyyeptl8a" path="res://scenes/resources/bullet/bullet_data.gd" id="4_28lpv"]
+[ext_resource type="Script" uid="uid://dxdxhyyeptl8a" path="res://resources/bullet/bullet_data.gd" id="4_28lpv"]
 [ext_resource type="PackedScene" uid="uid://bnds2makfe4rf" path="res://scenes/game_object/projectile/trail_effect.tscn" id="4_ss5pk"]
 [ext_resource type="Script" uid="uid://b1bfmkn380omm" path="res://scenes/game_object/projectile/object_trail_effect.gd" id="5_tj6oj"]
 

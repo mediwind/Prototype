@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cdpwqed5wu1ub" path="res://scenes/component/hurt_box_component.tscn" id="4_1ih2o"]
 [ext_resource type="PackedScene" uid="uid://q5456waekfa7" path="res://scenes/component/death_component.tscn" id="4_kprfv"]
 [ext_resource type="PackedScene" uid="uid://dgmtaln3oqmw4" path="res://scenes/component/lootcomponent/currency_drop_component.tscn" id="4_tbbtv"]
-[ext_resource type="Script" uid="uid://cc4th0xibwd3" path="res://scenes/resources/currency/currency_drop_info.gd" id="5_u1gnu"]
+[ext_resource type="Script" uid="uid://cc4th0xibwd3" path="res://resources/currency/currency_drop_info.gd" id="5_u1gnu"]
 
 [sub_resource type="Resource" id="Resource_u1gnu"]
 script = ExtResource("5_u1gnu")

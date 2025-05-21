@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://b67b0mntyy8q3"]
+
+[ext_resource type="Script" uid="uid://cf3hcica2a1w1" path="res://resources/item/consumable_data.gd" id="1_snwni"]
+[ext_resource type="Texture2D" uid="uid://bgyhug1ws02on" path="res://assets/item/tile_0115.png" id="2_1t2yb"]
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/item_data.gd" id="3_1m0mc"]
+
+[resource]
+script = ExtResource("3_1m0mc")
+name = "Health Potion"
+icon = ExtResource("2_1t2yb")
+description = "Drink!"
+max_stack = 1
+consumable_data = ExtResource("1_snwni")
+metadata/_custom_type_script = "uid://c5x21ww1vgp4q"

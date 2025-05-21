@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bob443ncb55kj" path="res://scenes/component/velocity_component.tscn" id="2_r17se"]
 [ext_resource type="PackedScene" uid="uid://dehqlgwaydqil" path="res://scenes/component/health_component.tscn" id="3_qj7h4"]
 [ext_resource type="PackedScene" uid="uid://dgmtaln3oqmw4" path="res://scenes/component/lootcomponent/currency_drop_component.tscn" id="4_2k7ew"]
-[ext_resource type="Script" uid="uid://cc4th0xibwd3" path="res://scenes/resources/currency/currency_drop_info.gd" id="5_eavxl"]
+[ext_resource type="Script" uid="uid://cc4th0xibwd3" path="res://resources/currency/currency_drop_info.gd" id="5_eavxl"]
 [ext_resource type="PackedScene" uid="uid://q5456waekfa7" path="res://scenes/component/death_component.tscn" id="5_i2eab"]
 [ext_resource type="PackedScene" uid="uid://cdpwqed5wu1ub" path="res://scenes/component/hurt_box_component.tscn" id="6_abcad"]
 [ext_resource type="Texture2D" uid="uid://cbt7rc6ndkwuk" path="res://scenes/game_object/enemy/wizard_enemy/wizard_enemy.png" id="7_ta3au"]

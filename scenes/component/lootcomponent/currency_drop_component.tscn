@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://dgmtaln3oqmw4"]
 
 [ext_resource type="Script" uid="uid://doei76fujgfyu" path="res://scenes/component/lootcomponent/currency_drop_component.gd" id="1_hfvk6"]
-[ext_resource type="Script" uid="uid://cc4th0xibwd3" path="res://scenes/resources/currency/currency_drop_info.gd" id="2_tdsqt"]
+[ext_resource type="Script" uid="uid://cc4th0xibwd3" path="res://resources/currency/currency_drop_info.gd" id="2_tdsqt"]
 
 [sub_resource type="Resource" id="Resource_tdsqt"]
 script = ExtResource("2_tdsqt")
