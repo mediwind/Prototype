@@ -2,15 +2,19 @@ extends Node
 
 signal skill_point_used
 
+var skill_data: SkillData
+
+
+func _ready():
+    skill_data = SaveManager.game_data.skill_data
+
 
 func add_skill_point(amount: int):
-    var skill_data = SaveManager.game_data.skill_data
     skill_data.skill_points += amount
     # SaveManager.save_game_data()
 
 
 func use_skill_point(skill_name: String) -> bool:
-    var skill_data = SaveManager.game_data.skill_data
     if skill_data.skill_points > 0:
         skill_data.skill_points -= 1
         skill_point_used.emit()

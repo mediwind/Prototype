@@ -2,9 +2,14 @@ extends Node
 
 signal level_up
 
+var level_and_exp_data: LevelAndExpData
+
+
+func _ready():
+    level_and_exp_data = SaveManager.game_data.level_and_exp_data
+
 
 func add_experience(amount: int):
-    var level_and_exp_data = SaveManager.game_data.level_and_exp_data
     level_and_exp_data.experience += amount
     check_and_level_up(level_and_exp_data)
     # SaveManager.save_game_data()

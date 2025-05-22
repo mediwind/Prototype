@@ -18,6 +18,7 @@ extends Panel
 		if amount <= 0:
 			item_data = null
 
+
 func set_amount(value: int) -> void:
 	amount = value
 
@@ -55,3 +56,10 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 		set_drag_preview(preview)
 
 	return self
+
+
+func _get_tooltip(_at_position: Vector2):
+	if item_data and item_data.description:
+		return item_data.description
+	
+	return ""

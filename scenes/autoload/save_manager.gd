@@ -31,3 +31,4 @@ func initialize_default_values():
     game_data.currency_data = CurrencyData.new()
     game_data.skill_data = SkillData.new()
     game_data.level_and_exp_data = LevelAndExpData.new()
+    game_data.inventory_data = InventoryData.new()
