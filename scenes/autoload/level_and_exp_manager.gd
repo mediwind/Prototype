@@ -6,6 +6,8 @@ var level_and_exp_data: LevelAndExpData
 
 
 func _ready():
+    if SaveManager.game_data.level_and_exp_data == null:
+        SaveManager.game_data.level_and_exp_data = LevelAndExpData.new()
     level_and_exp_data = SaveManager.game_data.level_and_exp_data
 
 

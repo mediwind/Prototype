@@ -6,6 +6,8 @@ var skill_data: SkillData
 
 
 func _ready():
+    if SaveManager.game_data.skill_data == null:
+        SaveManager.game_data.skill_data = SkillData.new()
     skill_data = SaveManager.game_data.skill_data
 
 

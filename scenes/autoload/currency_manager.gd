@@ -10,6 +10,8 @@ var battle_currencies = { "gold": 0, "faith": 0, "soul": 0 }
 func _ready():
     # Project Settings에서 Autoload탭의 싱글톤들의 리스트에서 SaveManager를 CurrencyManager보다 상단에 위치시킨다면
     # 아래와 같이 클래스 변수로 SaveManager를 사용할 수도 있다.
+    if SaveManager.game_data.currency_data == null:
+        SaveManager.game_data.currency_data = CurrencyData.new()
     currency_data = SaveManager.game_data.currency_data
 
     currencies = {
