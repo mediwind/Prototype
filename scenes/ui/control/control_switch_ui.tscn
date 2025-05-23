@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bmumqx5usaham"]
+
+[ext_resource type="Script" uid="uid://cbycctpewfmwl" path="res://scenes/ui/control/control_switch_ui.gd" id="1_bl8r4"]
+[ext_resource type="PackedScene" uid="uid://byadw4tmkg3sw" path="res://scenes/game_object/player/player_human.tscn" id="2_3c14h"]
+
+[node name="ControlSwitchUi" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_bl8r4")
+player_human_scene = ExtResource("2_3c14h")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0

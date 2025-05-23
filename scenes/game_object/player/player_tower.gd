@@ -1,4 +1,5 @@
 extends CharacterBody2D
+class_name PlayerTower
 
 @onready var shooter_component = $ShooterComponent
 @onready var shoot_cool_time = $ShootCooltime

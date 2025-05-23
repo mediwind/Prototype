@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://3suo00p3gg" path="res://scenes/town/town.gd" id="1_i0lau"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
-[ext_resource type="PackedScene" uid="uid://df6r3kykdxlm6" path="res://scenes/game_object/player/player.tscn" id="2_qyaw7"]
 [ext_resource type="PackedScene" uid="uid://ddvqb30ex6dp3" path="res://scenes/ui/skill/skill_tree.tscn" id="2_ud7wb"]
 [ext_resource type="PackedScene" uid="uid://d4d4o5mtsii5q" path="res://scenes/game_object/loot/collectable_gold_object.tscn" id="3_darsw"]
 [ext_resource type="PackedScene" uid="uid://bhmc4t4dtf2u" path="res://scenes/ui/town_ui.tscn" id="4_53e74"]
+[ext_resource type="PackedScene" uid="uid://byadw4tmkg3sw" path="res://scenes/game_object/player/player_human.tscn" id="4_v00pm"]
 
 [node name="Town" type="Node"]
 script = ExtResource("1_i0lau")
@@ -13,7 +13,7 @@ skill_tree_scene = ExtResource("2_ud7wb")
 
 [node name="GameCamera" parent="." instance=ExtResource("1_kmwi7")]
 
-[node name="Player" parent="." instance=ExtResource("2_qyaw7")]
+[node name="PlayerHuman" parent="." instance=ExtResource("4_v00pm")]
 position = Vector2(154, 103)
 
 [node name="CollectableGoldObject" parent="." instance=ExtResource("3_darsw")]
