@@ -6,19 +6,32 @@ class_name PlayerTower
 @onready var muzzle = %Muzzle
 @onready var audio_stream_player = $AudioStreamPlayer
 @onready var turret_sprite = $TurretSprite
+@onready var controllable_component = $ControllableComponent
+@onready var auto_attack_component = $AutoAttackComponent
 
 const MAX_SPEED = 100
 
 var can_shoot : bool
 var is_mouse_pressed : bool = false  # 마우스 버튼 상태 추적
+var is_auto_attacking: bool = false
 
 
 func _ready():
 	can_shoot = true
 	shoot_cool_time.timeout.connect(on_shoot_cool_time_timeout)
 
+	controllable_component.control_enabled.connect(on_control_enabled)
+	controllable_component.control_disabled.connect(on_control_disabled)
+
 
 func _process(_delta):
+	if is_auto_attacking:
+		auto_attack_component.auto_attack(self)
+		return
+
+	if not controllable_component.input_enabled:
+		return
+
 	turn()
 	var direction = get_movement_vector()
 	velocity = direction * MAX_SPEED
@@ -38,6 +51,9 @@ func turn():
 
 # Handle player shooting based on input
 func _input(event):
+	if not controllable_component.input_enabled:
+		return
+
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
@@ -67,3 +83,11 @@ func on_shoot_cool_time_timeout():
 	can_shoot = true
 	if is_mouse_pressed:  # 마우스가 눌린 상태라면 자동 발사
 		shoot_bullet()
+
+
+func on_control_enabled():
+	is_auto_attacking = false
+
+
+func on_control_disabled():
+	is_auto_attacking = true
