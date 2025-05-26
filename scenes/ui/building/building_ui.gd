@@ -10,6 +10,7 @@ func _ready():
         var btn = Button.new()
         btn.text = building_scene.resource_path.get_file().get_basename()
         btn.pressed.connect(func(): on_build_button_pressed(building_scene))
+        btn.focus_mode = Control.FOCUS_NONE  # 엔터/스페이스 등 키보드 입력으로 버튼이 실행되는 현상 방지 (포커스 비활성화)
         button_container.add_child(btn)
 
 

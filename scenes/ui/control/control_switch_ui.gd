@@ -11,9 +11,9 @@ func _ready():
 	call_deferred("update_button_text") # 버튼 텍스트 업데이트를 위해 지연 호출
 
 
-# func _input(event):
-# 	if event.is_action_pressed("ui_accept"): # 엔터 누를 시 건설 Preview 생성되는 버그 발생 중 (스페이스는 괜찮음)
-# 		_on_button_pressed()
+func _input(event):
+	if event.is_action_pressed("ui_accept"): # 엔터 누를 시 건설 Preview 생성되는 버그 발생 중 (스페이스는 괜찮음)
+		_on_button_pressed()
 
 
 func _on_button_pressed():
