@@ -1,17 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://bulnv1je8d0i3"]
+[gd_scene load_steps=6 format=3 uid="uid://bulnv1je8d0i3"]
 
+[ext_resource type="Script" uid="uid://c4pu0qc8jh1pc" path="res://scenes/ui/inventory/inventory.gd" id="1_1tqe2"]
 [ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="1_hifxq"]
 [ext_resource type="Resource" uid="uid://b67b0mntyy8q3" path="res://resources/item/health_potion.tres" id="2_1qdgs"]
 [ext_resource type="Resource" uid="uid://b5bnhffpf41pr" path="res://resources/item/gold_coin.tres" id="3_1tqe2"]
 [ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/sword.tres" id="3_aui2s"]
 
 [node name="Inventory" type="Control"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_1tqe2")
 
 [node name="InventoryUI" type="CanvasLayer" parent="."]
 
