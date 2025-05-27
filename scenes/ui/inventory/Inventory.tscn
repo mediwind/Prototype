@@ -32,7 +32,7 @@ columns = 4
 [node name="Slot" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
 layout_mode = 2
 item_data = ExtResource("2_1qdgs")
-amount = 2
+amount = 6
 
 [node name="Slot2" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
 layout_mode = 2
@@ -43,6 +43,11 @@ amount = 5
 layout_mode = 2
 item_data = ExtResource("3_1tqe2")
 amount = 9999
+
+[node name="Slot4" parent="InventoryUI/GridContainer" instance=ExtResource("1_hifxq")]
+layout_mode = 2
+item_data = ExtResource("2_1qdgs")
+amount = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="InventoryUI"]
 z_index = -1
