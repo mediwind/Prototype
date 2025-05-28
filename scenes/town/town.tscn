@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://cmqvvth3hy45i"]
+[gd_scene load_steps=9 format=3 uid="uid://cmqvvth3hy45i"]
 
 [ext_resource type="Script" uid="uid://3suo00p3gg" path="res://scenes/town/town.gd" id="1_i0lau"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
 [ext_resource type="PackedScene" uid="uid://ddvqb30ex6dp3" path="res://scenes/ui/skill/skill_tree.tscn" id="2_ud7wb"]
 [ext_resource type="PackedScene" uid="uid://bulnv1je8d0i3" path="res://scenes/ui/inventory/Inventory.tscn" id="3_6g2qn"]
-[ext_resource type="PackedScene" uid="uid://d4d4o5mtsii5q" path="res://scenes/game_object/loot/collectable_gold_object.tscn" id="3_darsw"]
 [ext_resource type="PackedScene" uid="uid://bhmc4t4dtf2u" path="res://scenes/ui/town_ui.tscn" id="4_53e74"]
 [ext_resource type="PackedScene" uid="uid://byadw4tmkg3sw" path="res://scenes/game_object/player/player_human.tscn" id="4_v00pm"]
+[ext_resource type="PackedScene" uid="uid://dr3pik6bvrlif" path="res://scenes/game_object/loot/collectable_object.tscn" id="6_5vpkg"]
+[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/sword.tres" id="7_5vpkg"]
 
 [node name="Town" type="Node"]
 script = ExtResource("1_i0lau")
@@ -18,7 +19,88 @@ inventory_scene = ExtResource("3_6g2qn")
 [node name="PlayerHuman" parent="." instance=ExtResource("4_v00pm")]
 position = Vector2(154, 103)
 
-[node name="CollectableGoldObject" parent="." instance=ExtResource("3_darsw")]
+[node name="CollectableObject" parent="." instance=ExtResource("6_5vpkg")]
 position = Vector2(344, 71)
+amount = 9
+
+[node name="CollectableObject2" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(372, 138)
+amount = 3
+
+[node name="CollectableObject3" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject4" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject5" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject6" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject7" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject8" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject9" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject10" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject11" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject12" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject13" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject14" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject15" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject16" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject17" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject18" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject19" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject20" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(384, 233)
+amount = 10
+
+[node name="CollectableObject21" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(223, 302)
+item_data = ExtResource("7_5vpkg")
 
 [node name="TownUI" parent="." instance=ExtResource("4_53e74")]
