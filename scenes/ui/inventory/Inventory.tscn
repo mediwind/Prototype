@@ -1,10 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bulnv1je8d0i3"]
+[gd_scene load_steps=3 format=3 uid="uid://bulnv1je8d0i3"]
 
 [ext_resource type="Script" uid="uid://c4pu0qc8jh1pc" path="res://scenes/ui/inventory/inventory.gd" id="1_1tqe2"]
 [ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="1_hifxq"]
-[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/sword.tres" id="3_aui2s"]
 
-[node name="Inventory" type="Control"]
+[node name="Inventory" type="Control" groups=["inventory_ui"]]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 15
@@ -31,7 +30,7 @@ grow_horizontal = 2
 grow_vertical = 2
 columns = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="InventoryUI"]
+[node name="HotbarContainer" type="HBoxContainer" parent="InventoryUI"]
 z_index = -1
 custom_minimum_size = Vector2(20, 20)
 anchors_preset = 7
@@ -44,8 +43,3 @@ offset_top = -40.0
 offset_right = 20.0
 grow_horizontal = 2
 grow_vertical = 0
-
-[node name="Slot" parent="InventoryUI/HBoxContainer" instance=ExtResource("1_hifxq")]
-layout_mode = 2
-item_data = ExtResource("3_aui2s")
-amount = 1

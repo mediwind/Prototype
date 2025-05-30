@@ -28,7 +28,7 @@ func _on_area_entered(other_area):
     # 1. 인벤토리에 공간이 있는지 미리 체크
     # 모든 슬롯이 가득 찬 경우 습득 애니메이션/로직 자체를 실행하지 않음
     var can_pickup = false
-    for slot in InventoryManager.player_items:
+    for slot in InventoryManager.get_inventory_slots():
         if (slot.item_data == null) or\
             (slot.item_data.name == item_data.name and slot.amount < (item_data.max_stack if "max_stack" in item_data else 99)):
             can_pickup = true
