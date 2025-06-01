@@ -2,210 +2,286 @@ extends Panel
 
 signal slot_ui_needs_refresh(slot_type_to_refresh: String, slot_index_to_refresh: int)
 
-@export var item_data: ItemData = null:
+# 아이콘 및 수량 표시를 위한 노드 (씬 트리에서 직접 할당 권장)
+@onready var icon_rect: TextureRect = $Icon
+@onready var amount_label: Label = $Amount
+
+# 슬롯 데이터
+var item_data: ItemData = null:
 	set(value):
 		item_data = value
-
-		if value == null:
-			$Icon.texture = null
-			$Amount.text = ""
-			return
-		
-		$Icon.texture = value.icon
-
-@export var amount: int = 0:
+		_update_icon_display()
+var amount: int = 0:
 	set(value):
 		amount = value
-		$Amount.text = str(value)
-		if amount <= 0:
-			item_data = null
+		if amount <= 0 and item_data != null:
+			item_data = null # item_data setter가 _update_icon_display 호출
+		_update_amount_display()
+
+# 슬롯 타입 및 인덱스 (Inventory.gd에서 설정)
+var slot_type: String
+var slot_index: int
+
+const GROUP_INVENTORY_UI = "inventory_ui"
+const PREVIEW_SIZE = Vector2(32, 32)
+const PREVIEW_AMOUNT_OUTLINE_SIZE = 2
 
 
-func set_amount(value: int) -> void:
-	amount = value
+func _ready():
+	_update_icon_display()
+	_update_amount_display()
+	if not is_in_group("inventory_slot"): # 에디터에서 설정 안했을 경우 대비
+		add_to_group("inventory_slot")
 
 
-func get_amount(value: int) -> void:
-	amount += value
-
-
-# 아이템 합치기/스택 제한 로직 추가
-func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
-	if not (data is Dictionary and data.has("item_data") and data.item_data is ItemData):
-		return false # 유효하지 않은 드래그 데이터
-
-	# Case 1: 현재 슬롯(타겟)이 비어있으면 어떤 아이템이든 드랍 가능
-	if not item_data:
-		return true
-
-	# Case 2: 현재 슬롯(타겟)에 아이템이 이미 있는 경우
-	#   2a: 부분 드래그(Ctrl/Shift) 시
-	if data.has("split") and data.split:
-		if item_data.name != data.item_data.name:
-			# 다른 종류의 아이템 위에는 부분 드랍 불가
-			return false
-		else:
-			# 같은 종류의 아이템 위에는 부분 드랍 허용 (합치기 시도)
-			# max_stack 초과 여부는 _drop_data에서 최종 처리
-			return true
-	#   2b: 전체 드래그 시
-	else:
-		# 같은 종류의 아이템이거나 다른 종류의 아이템 모두 허용 (합치기 또는 스왑 시도)
-		return true
-
-
-func _drop_data(_at_position: Vector2, data: Variant) -> void:
-	# 대상 슬롯 정보
-	var target_type_val = slot_type
-	var target_index_val = slot_index
-	# 소스 슬롯 정보
-	var source_type_val = data.source_slot_type
-	var source_index_val = data.source_slot_index
-
-	# InventoryManager에서 배열 참조
-	var source_slots_arr = InventoryManager.get_inventory_slots() if source_type_val == "inventory" else InventoryManager.get_hotbar_slots()
-	var target_slots_arr = InventoryManager.get_inventory_slots() if target_type_val == "inventory" else InventoryManager.get_hotbar_slots()
-
-	# 인덱스 유효성 검사
-	if source_index_val < 0 or source_index_val >= source_slots_arr.size() or \
-		target_index_val < 0 or target_index_val >= target_slots_arr.size():
-		printerr("Slot.gd: Invalid slot index in _drop_data.")
+# 슬롯의 아이콘 표시를 업데이트합니다. item_data에 따라 아이콘을 설정하거나 숨깁니다.
+func _update_icon_display():
+	if not is_inside_tree(): return
+	if not icon_rect: # @onready가 실패했거나 노드가 없을 경우 대비
+		printerr("Slot.gd: Icon node not found for slot %s[%d]" % [slot_type, slot_index])
 		return
 
-	var source_slot_data_ref = source_slots_arr[source_index_val]
-	var target_slot_data_ref = target_slots_arr[target_index_val]
-
-	var performed_operation = false
-	var move_amount = data.amount # data.amount는 드래그 시작 시 결정된 실제 이동량
-
-	# 자기 자신에게 드랍하는 경우는 아무 작업 안 함 (또는 특정 로직)
-	if target_slot_data_ref == source_slot_data_ref:
-		# performed_operation = true # 드래그 완료로 간주하고 싶다면 true
-		# 여기서는 false로 두어 아무 변화 없도록 함 (아이템이 원래 자리로 돌아감)
-		# 또는 true로 하고 아래 UI 갱신 및 drag_data 초기화만 수행할 수도 있음
-		pass # 명시적으로 아무것도 안 함
-	# 합치기 시도: 소스와 타겟에 아이템이 있고, 이름이 같을 때
-	elif target_slot_data_ref.item_data and source_slot_data_ref.item_data and \
-		target_slot_data_ref.item_data is ItemData and source_slot_data_ref.item_data is ItemData and \
-		target_slot_data_ref.item_data.name == source_slot_data_ref.item_data.name: # 'name' 속성이 ItemData에 있다고 가정
-		
-		# ItemData.gd에 max_stack 변수가 선언되어 있다고 가정하고 직접 접근
-		var max_stack = target_slot_data_ref.item_data.max_stack 
-		
-		var can_add_to_target = max_stack - target_slot_data_ref.amount
-		
-		if can_add_to_target > 0:
-			var actual_amount_to_merge = min(move_amount, can_add_to_target)
-			target_slot_data_ref.amount += actual_amount_to_merge
-			source_slot_data_ref.amount -= actual_amount_to_merge
-			if source_slot_data_ref.amount <= 0:
-				source_slot_data_ref.item_data = null
-				source_slot_data_ref.amount = 0
-			performed_operation = true
-		# else: 합칠 공간 없음, performed_operation = false 유지
-
-	# 그 외 경우 (타겟이 비었거나, 다른 아이템이 있거나, 합치기 실패)
+	if item_data and item_data.icon:
+		icon_rect.texture = item_data.icon
+		icon_rect.visible = true
 	else:
-		# (1) 부분 드래그 (Ctrl/Shift) 시
-		if data.has("split") and data.split:
-			# (1a) 타겟 슬롯이 비어있는 경우: 부분 아이템을 타겟 슬롯에 놓음
-			if not target_slot_data_ref.item_data:
-				target_slot_data_ref.item_data = source_slot_data_ref.item_data # 아이템 종류 복사
-				target_slot_data_ref.amount = move_amount # 이동량만큼 설정
-				source_slot_data_ref.amount -= move_amount # 소스에서 이동량만큼 차감
-				if source_slot_data_ref.amount <= 0:
-					source_slot_data_ref.item_data = null
-					source_slot_data_ref.amount = 0
-				performed_operation = true
-			# (1b) 타겟 슬롯이 비어있지 않고, 다른 종류의 아이템인 경우: **드랍 작업 안 함**
-			elif target_slot_data_ref.item_data.name != source_slot_data_ref.item_data.name:
-				# performed_operation은 false로 유지됨. 아무 작업도 수행하지 않음.
-				# 아이템은 드래그 시작 위치로 돌아감 (Godot 기본 동작).
-				pass 
-			# (1c) 타겟 슬롯이 비어있지 않고, 같은 종류의 아이템이지만 합치기 실패한 경우 (예: 타겟 스택 꽉 참)
-			# 이 경우에도 부분 드래그로 스왑을 하거나 놓는 것은 의미가 없으므로 아무 작업 안 함.
-			else: # target_slot_data_ref.item_data.name == source_slot_data_ref.item_data.name
-				# performed_operation은 false로 유지됨.
-				pass
+		icon_rect.texture = null
+		icon_rect.visible = false
 
-		# (2) 전체 드래그 시 (split이 false)
-		else:
-			# 타겟 슬롯이 비어있거나 다른 아이템이 있으면 전체 스왑
-			var temp_item = target_slot_data_ref.item_data
-			var temp_amount = target_slot_data_ref.amount
-			
-			target_slot_data_ref.item_data = source_slot_data_ref.item_data
-			target_slot_data_ref.amount = source_slot_data_ref.amount # 소스 슬롯의 전체 양
-			
-			source_slot_data_ref.item_data = temp_item
-			source_slot_data_ref.amount = temp_amount
-			performed_operation = true
+# 슬롯의 아이템 수량 표시를 업데이트합니다. amount에 따라 수량을 표시하거나 숨깁니다.
+func _update_amount_display():
+	if not is_inside_tree(): return
+	if not amount_label:
+		printerr("Slot.gd: Amount node not found for slot %s[%d]" % [slot_type, slot_index])
+		return
 
-	# UI 갱신 신호 발생
-	if performed_operation or target_slot_data_ref == source_slot_data_ref : # 작업이 수행되었거나 자기 자신에게 드랍한 경우 UI 갱신
-		emit_signal("slot_ui_needs_refresh", target_type_val, target_index_val)
-		if not (source_type_val == target_type_val and source_index_val == target_index_val):
-			emit_signal("slot_ui_needs_refresh", source_type_val, source_index_val)
-
-	if performed_operation:
-		# 드랍 성공 시 drag_data 초기화
-		var inventory_ui_node = get_tree().get_first_node_in_group("inventory_ui")
-		if inventory_ui_node and inventory_ui_node.has_meta("drag_data"):
-			inventory_ui_node.set_meta("drag_data", null)
+	if item_data and amount > 0:
+		amount_label.text = str(amount)
+		amount_label.visible = true
+	else:
+		amount_label.text = ""
+		amount_label.visible = false
 
 
-var slot_type: String # "inventory" or "hotbar"
-var slot_index: int # 슬롯의 인덱스 (인벤토리나 핫바에서의 위치)
+# 이 슬롯에 주어진 드래그 데이터를 드랍할 수 있는지 여부를 결정합니다.
+# 부분 드래그 시 다른 아이템 위에는 드랍을 허용하지 않습니다.
+func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+	if not _is_valid_drag_data(data):
+		return false
 
+	if not item_data: # 타겟 슬롯이 비어있으면 항상 가능
+		return true
+
+	var is_partial_drag = data.has("split") and data.split
+	var dragged_item_name = data.item_data.name
+
+	if is_partial_drag:
+		# 부분 드래그 시, 다른 종류의 아이템 위에는 드랍 불가
+		return item_data.name == dragged_item_name
+	else:
+		# 전체 드래그 시, 모든 경우 허용 (합치기 또는 스왑)
+		return true
+
+
+# 드래그 데이터가 유효한 형식인지 (아이템 정보를 포함하는 Dictionary인지) 확인합니다.
+func _is_valid_drag_data(data: Variant) -> bool:
+	return data is Dictionary and data.has("item_data") and data.item_data is ItemData
+
+
+# 슬롯에서 아이템을 드래그 시작할 때 호출되며, 드래그에 필요한 데이터와 프리뷰를 설정합니다.
 func _get_drag_data(_at_position: Vector2) -> Variant:
-	if item_data:
-		var drag_amount = amount
-		if Input.is_key_pressed(KEY_SHIFT) and amount > 1:
-			drag_amount = int(amount / 2)
-		elif Input.is_key_pressed(KEY_CTRL):
-			drag_amount = 1
+	if not item_data or amount <= 0:
+		return null
 
-		var preview = Control.new()
-		preview.set_anchors_preset(Control.PRESET_CENTER)
-		preview.custom_minimum_size = Vector2(32, 32)
-		preview.size = Vector2(32, 32)
+	var drag_amount = _calculate_drag_amount()
+	if drag_amount <= 0: return null
 
-		var preview_texture = TextureRect.new()
-		preview_texture.texture = item_data.icon
-		preview_texture.size = Vector2(32, 32)
-		preview_texture.position = Vector2.ZERO
-		preview_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		preview.add_child(preview_texture)
+	var preview_control = _create_drag_preview_control(item_data, drag_amount)
+	set_drag_preview(preview_control)
 
-		var amount_label = Label.new()
-		amount_label.text = str(drag_amount)
-		amount_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		amount_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-		amount_label.position = Vector2(16, 16)
-		amount_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		amount_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		amount_label.add_theme_color_override("font_color", Color.WHITE)
-		amount_label.add_theme_color_override("font_outline_color", Color.BLACK)
-		amount_label.add_theme_constant_override("outline_size", 2)
-		preview.add_child(amount_label)
-
-		var drag_data = {
-			"item_data": item_data,
-			"amount": drag_amount,
-			"source_slot_type": slot_type,
-			"source_slot_index": slot_index,
-			"split": drag_amount != amount
-		}
-		# inventory.gd(Inventory UI의 루트)에 드래그 데이터 저장
-		get_tree().get_first_node_in_group("inventory_ui").set_meta("drag_data", drag_data)
-		set_drag_preview(preview)
-		return drag_data
-
-	return null
+	var drag_payload = {
+		"item_data": item_data,
+		"amount": drag_amount,
+		"source_slot_type": slot_type,
+		"source_slot_index": slot_index,
+		"split": drag_amount < amount
+	}
+	_store_drag_payload_in_inventory_ui(drag_payload)
+	return drag_payload
 
 
-func _get_tooltip(_at_position: Vector2):
-	if item_data and item_data.description:
-		return item_data.description
-	
-	return ""
+# Ctrl 또는 Shift 키 입력에 따라 드래그할 아이템의 수량을 계산합니다.
+func _calculate_drag_amount() -> int:
+	var base_amount = amount
+	if Input.is_key_pressed(KEY_SHIFT) and base_amount > 1:
+		return int(base_amount / 2.0)
+	elif Input.is_key_pressed(KEY_CTRL) and base_amount > 0:
+		return 1
+	return base_amount
+
+
+# 드래그 시 마우스 커서에 표시될 프리뷰 컨트롤(아이콘과 수량)을 생성합니다.
+func _create_drag_preview_control(p_item_data: ItemData, p_drag_amount: int) -> Control:
+	var preview = Control.new()
+	preview.custom_minimum_size = PREVIEW_SIZE
+	preview.size = PREVIEW_SIZE
+
+	var texture_rect = TextureRect.new()
+	texture_rect.texture = p_item_data.icon
+	texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	texture_rect.size = PREVIEW_SIZE
+	preview.add_child(texture_rect)
+
+	if p_drag_amount > 0: # 0개면 표시 안함 (또는 1개일때도 안하게 하려면 >1)
+		var label = Label.new()
+		label.text = str(p_drag_amount)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+		label.add_theme_font_size_override("font_size", 14)
+		label.add_theme_color_override("font_color", Color.WHITE)
+		label.add_theme_color_override("font_outline_color", Color.BLACK)
+		label.add_theme_constant_override("outline_size", PREVIEW_AMOUNT_OUTLINE_SIZE)
+		label.set_anchors_preset(Control.PRESET_FULL_RECT)
+		preview.add_child(label)
+	return preview
+
+
+# 드래그 시작 시 생성된 드래그 페이로드를 Inventory UI 노드의 메타데이터에 저장합니다.
+# 이는 UI 외부로 드랍 시 Inventory.gd에서 접근하기 위함입니다.
+func _store_drag_payload_in_inventory_ui(payload: Dictionary):
+	var inventory_ui_node = get_tree().get_first_node_in_group(GROUP_INVENTORY_UI)
+	if inventory_ui_node:
+		inventory_ui_node.set_meta("drag_data", payload)
+	else:
+		printerr("Slot.gd: Inventory UI node not found to store drag_data.")
+
+
+# 이 슬롯에 아이템이 드랍되었을 때 호출됩니다. 아이템 합치기, 놓기 또는 스왑을 처리합니다.
+func _drop_data(_at_position: Vector2, data: Variant) -> void:
+	var source_type: String = data.source_slot_type
+	var source_idx: int = data.source_slot_index
+	var dragged_item_data: ItemData = data.item_data
+	var dragged_amount: int = data.amount
+	var is_partial_drag: bool = data.split
+
+	var source_slot_ref: Object = _get_slot_data_reference_from_manager(source_type, source_idx) # 타입 명시 Object
+	var target_slot_ref: Object = _get_slot_data_reference_from_manager(slot_type, slot_index) # 타입 명시 Object
+
+	if not source_slot_ref or not target_slot_ref:
+		_clear_drag_payload_from_inventory_ui()
+		return
+
+	var operation_performed = false
+
+	if target_slot_ref == source_slot_ref:
+		pass
+	elif _try_merge_items(source_slot_ref, target_slot_ref, dragged_item_data, dragged_amount): # source_slot_ref, target_slot_ref는 Object
+		operation_performed = true
+	elif _try_place_or_swap_items(source_slot_ref, target_slot_ref, dragged_item_data, dragged_amount, is_partial_drag): # source_slot_ref, target_slot_ref는 Object
+		operation_performed = true
+
+	_finalize_drop_operation(operation_performed, source_type, source_idx)
+
+
+# InventoryManager로부터 특정 타입과 인덱스에 해당하는 슬롯의 데이터 참조(Object)를 가져옵니다.
+func _get_slot_data_reference_from_manager(p_slot_type: String, p_slot_idx: int) -> Variant:
+	var slots_array = InventoryManager.get_inventory_slots() if p_slot_type == "inventory" else InventoryManager.get_hotbar_slots()
+	if p_slot_idx < 0 or p_slot_idx >= slots_array.size():
+		printerr("Slot.gd: Invalid slot index %d for type '%s'." % [p_slot_idx, p_slot_type])
+		return null
+	return slots_array[p_slot_idx] # 이 반환값은 Object (InventoryManager의 슬롯 객체)
+
+
+# 드래그된 아이템을 타겟 슬롯의 아이템과 합치기를 시도합니다.
+# 같은 종류의 아이템이고, 타겟 슬롯에 공간이 있어야 성공합니다.
+func _try_merge_items(source_slot: Object, target_slot: Object, dragged_item: ItemData, p_dragged_amount: int) -> bool:
+	# Object의 item_data 속성이 null이 아니고, 그 타입이 ItemData인지 확인
+	# 그리고 source_slot의 item_data도 null이 아닌지 확인
+	if not (target_slot.item_data != null and target_slot.item_data is ItemData and \
+			source_slot.item_data != null and source_slot.item_data is ItemData and \
+			target_slot.item_data.name == dragged_item.name):
+		return false
+
+	# ItemData 리소스에 max_stack 속성이 있다고 가정
+	var max_stack = target_slot.item_data.max_stack 
+	var space_in_target = max_stack - target_slot.amount
+	if space_in_target <= 0: return false
+
+	var amount_to_move = min(p_dragged_amount, space_in_target)
+
+	target_slot.amount += amount_to_move
+	source_slot.amount -= amount_to_move
+
+	if source_slot.amount <= 0:
+		source_slot.item_data = null
+		source_slot.amount = 0
+	return true
+
+
+# 드래그된 아이템을 타겟 슬롯에 놓거나, 타겟 슬롯의 아이템과 스왑을 시도합니다.
+# 부분 드래그 시에는 빈 슬롯에만 놓을 수 있고, 전체 드래그 시에는 스왑이 가능합니다.
+func _try_place_or_swap_items(source_slot: Object, target_slot: Object, dragged_item: ItemData, p_dragged_amount: int, is_partial: bool) -> bool:
+	if is_partial:
+		# 타겟 슬롯이 비어있거나 (item_data가 null), 아이템이 없는 경우 (amount가 0)
+		if not target_slot.item_data: 
+			target_slot.item_data = dragged_item 
+			target_slot.amount = p_dragged_amount
+			source_slot.amount -= p_dragged_amount
+			if source_slot.amount <= 0:
+				source_slot.item_data = null; source_slot.amount = 0
+			return true
+		return false 
+	else: # 전체 드래그
+		var temp_item = target_slot.item_data
+		var temp_amount = target_slot.amount
+		
+		target_slot.item_data = source_slot.item_data
+		target_slot.amount = source_slot.amount # 전체 드래그이므로 소스 슬롯의 현재 양을 그대로 가져옴
+		
+		source_slot.item_data = temp_item
+		source_slot.amount = temp_amount
+		return true
+
+
+# 드랍 작업(합치기, 놓기, 스왑)의 성공 여부에 따라 UI 갱신 신호를 보내고,
+# Inventory UI에 저장된 드래그 페이로드를 정리합니다.
+func _finalize_drop_operation(was_successful: bool, src_type: String, src_idx: int):
+    # 자기 자신에게 드랍했거나, 실제 작업이 성공한 경우 UI 갱신 필요
+	var needs_ui_refresh_for_target = (slot_type == src_type and slot_index == src_idx) or was_successful
+	var needs_ui_refresh_for_source = was_successful and not (src_type == slot_type and src_idx == slot_index)
+
+	if needs_ui_refresh_for_target:
+		emit_signal("slot_ui_needs_refresh", slot_type, slot_index)
+	if needs_ui_refresh_for_source:
+		emit_signal("slot_ui_needs_refresh", src_type, src_idx)
+
+	# 실제 작업이 성공했거나, 자기 자신에게 드랍하여 드래그를 끝내는 경우 drag_data 초기화
+	if was_successful or (slot_type == src_type and slot_index == src_idx):
+		_clear_drag_payload_from_inventory_ui()
+
+
+# Inventory UI 노드에 저장된 드래그 페이로드 메타데이터를 제거(null로 설정)합니다.
+func _clear_drag_payload_from_inventory_ui():
+	var inventory_ui_node = get_tree().get_first_node_in_group(GROUP_INVENTORY_UI)
+	if inventory_ui_node and inventory_ui_node.has_meta("drag_data"):
+		inventory_ui_node.set_meta("drag_data", null)
+
+
+# 슬롯에 마우스를 올렸을 때 표시될 툴팁 문자열을 반환합니다. 아이템 설명을 사용합니다.
+func _get_tooltip(_at_position: Vector2) -> String:
+	if item_data: # item_data가 null이 아닌지 먼저 확인
+		# ItemData에 get_description() 메서드가 있다면 우선 사용 (선택적)
+		if item_data.has_method("get_description"):
+			var desc_from_method = item_data.get_description()
+			# 메서드가 실제 문자열을 반환하고 비어있지 않은지 확인
+			if desc_from_method is String and not desc_from_method.is_empty():
+				return desc_from_method
+		
+		# 그렇지 않다면 description 속성을 직접 사용
+		# ItemData.gd에 @export var description: String 으로 선언되어 있으므로 속성은 항상 존재함
+		# 내용이 있는지 (빈 문자열이 아닌지) 확인
+		if not item_data.description.is_empty():
+			return item_data.description
+			
+	return "" # item_data가 없거나, description이 비어있으면 빈 툴팁 반환

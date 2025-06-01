@@ -1,166 +1,235 @@
 extends Control
 
 @export var slot_scene: PackedScene
-@export var collectable_object_scene: PackedScene # CollectableObject 씬 에셋 연결
+@export var collectable_object_scene: PackedScene
 
-@onready var grid_container = $InventoryUI/GridContainer
-@onready var hotbar_container = $InventoryUI/HotbarContainer
+@onready var grid_container: GridContainer = $InventoryUI/GridContainer
+@onready var hotbar_container: HBoxContainer = $InventoryUI/HotbarContainer
+
+const GROUP_INVENTORY_UI = "inventory_ui"
+const GROUP_INVENTORY_SLOT = "inventory_slot"
+const GROUP_PLAYER = "player"
+const DEFAULT_DROP_RADIUS = 64.0
 
 
 func _ready():
-	# 인벤토리 슬롯 생성
-	var inv_slots_data = InventoryManager.get_inventory_slots()
-	for i in range(inv_slots_data.size()):
-		var slot_data = inv_slots_data[i]
-		var slot_node = slot_scene.instantiate()
-		slot_node.item_data = slot_data.item_data # 이 할당이 slot.gd의 setter를 호출하여 UI 초기화
-		slot_node.amount = slot_data.amount     # 이 할당이 slot.gd의 setter를 호출하여 UI 초기화
-		slot_node.slot_type = "inventory"
-		slot_node.slot_index = i
-		slot_node.slot_ui_needs_refresh.connect(_on_slot_ui_refresh_requested) # 신호 연결
-		grid_container.add_child(slot_node)
-
-	# 핫바 슬롯 생성
-	var hotbar_slots_data = InventoryManager.get_hotbar_slots()
-	for i in range(hotbar_slots_data.size()):
-		var slot_data = hotbar_slots_data[i]
-		var slot_node = slot_scene.instantiate()
-		slot_node.item_data = slot_data.item_data # UI 초기화
-		slot_node.amount = slot_data.amount     # UI 초기화
-		slot_node.slot_type = "hotbar"
-		slot_node.slot_index = i
-		slot_node.slot_ui_needs_refresh.connect(_on_slot_ui_refresh_requested) # 신호 연결
-		hotbar_container.add_child(slot_node)
-	
-	# 인벤토리 UI를 그룹에 추가 (slot.gd에서 get_tree().get_first_node_in_group("inventory_ui") 사용 시 필요)
-	add_to_group("inventory_ui") # 드래그 데이터 전달용 그룹
+	_initialize_slots_ui()
+	_add_self_to_inventory_ui_group()
 
 
-func _on_slot_ui_refresh_requested(p_slot_type: String, p_slot_index: int):
-	var target_ui_container = null
-	var slots_data_array = null
+# 인벤토리 UI 초기화 시 호출되어, 인벤토리 및 핫바 슬롯 UI를 생성하고 설정합니다.
+func _initialize_slots_ui():
+	if not slot_scene:
+		printerr("Inventory.gd: Slot scene is not assigned.")
+		return
+	_create_slots_for_type("inventory", InventoryManager.get_inventory_slots(), grid_container)
+	_create_slots_for_type("hotbar", InventoryManager.get_hotbar_slots(), hotbar_container)
 
-	if p_slot_type == "inventory":
-		target_ui_container = grid_container
-		slots_data_array = InventoryManager.get_inventory_slots()
-	elif p_slot_type == "hotbar":
-		target_ui_container = hotbar_container
-		slots_data_array = InventoryManager.get_hotbar_slots()
+
+# 지정된 타입(인벤토리/핫바)의 슬롯들을 데이터에 맞게 생성하여 컨테이너에 추가합니다.
+func _create_slots_for_type(p_slot_type: String, p_slots_data_array: Array, p_container: Container):
+	if not p_container:
+		printerr("Inventory.gd: Container for '%s' is null." % p_slot_type)
+		return
+
+	for i in range(p_slots_data_array.size()):
+		var slot_data_object = p_slots_data_array[i] 
+		var new_slot_node = slot_scene.instantiate()
+
+		if not _configure_and_add_slot(new_slot_node, slot_data_object, p_slot_type, i, p_container):
+			new_slot_node.queue_free()
+
+
+# 개별 슬롯 노드를 설정하고 컨테이너에 자식으로 추가합니다. 슬롯 데이터와 UI를 연결합니다.
+func _configure_and_add_slot(slot_node: Panel, p_slot_data_obj: Object, p_type: String, p_idx: int, p_cont: Container) -> bool:
+	if not (slot_node is Panel and slot_node.has_method("_update_icon_display")):
+		printerr("Inventory.gd: Instantiated slot for '%s[%d]' is not a valid Slot Panel." % [p_type, p_idx])
+		return false
+
+	if p_slot_data_obj: 
+		if "item_data" in p_slot_data_obj and "amount" in p_slot_data_obj:
+			slot_node.item_data = p_slot_data_obj.item_data
+			slot_node.amount = p_slot_data_obj.amount
+		else:
+			printerr("Inventory.gd: Slot data object for '%s[%d]' is missing 'item_data' or 'amount' properties." % [p_type, p_idx])
+			slot_node.item_data = null 
+			slot_node.amount = 0
 	else:
-		printerr("Inventory.gd: Unknown slot type for UI refresh - ", p_slot_type)
+		printerr("Inventory.gd: Received null slot data object for '%s[%d]'." % [p_type, p_idx])
+		slot_node.item_data = null 
+		slot_node.amount = 0
+
+	slot_node.slot_type = p_type
+	slot_node.slot_index = p_idx
+
+	_connect_slot_refresh_signal(slot_node, p_type, p_idx)
+	p_cont.add_child(slot_node)
+	return true
+
+
+# 슬롯 노드의 'slot_ui_needs_refresh' 시그널을 이 인벤토리의 핸들러 메서드에 연결합니다.
+func _connect_slot_refresh_signal(slot_node: Panel, type_for_err: String, idx_for_err: int):
+	var signal_name = "slot_ui_needs_refresh"
+	var callable_method = Callable(self, "_on_slot_ui_refresh_requested")
+	if not slot_node.is_connected(signal_name, callable_method):
+		var err = slot_node.connect(signal_name, callable_method)
+		if err != OK:
+			printerr("Inventory.gd: Failed to connect '%s' for %s[%d]. Error: %s" % [signal_name, type_for_err, idx_for_err, err])
+
+
+# 이 인벤토리 UI 노드를 'inventory_ui' 그룹에 추가하여 다른 노드에서 쉽게 참조할 수 있도록 합니다.
+func _add_self_to_inventory_ui_group():
+	if not is_in_group(GROUP_INVENTORY_UI):
+		add_to_group(GROUP_INVENTORY_UI)
+
+
+# 'slot_ui_needs_refresh' 시그널을 받았을 때 호출되어, 해당 슬롯의 UI 표시를 업데이트합니다.
+func _on_slot_ui_refresh_requested(p_slot_type: String, p_slot_index: int):
+	var ui_container = _get_ui_container_by_type(p_slot_type)
+	var data_array = _get_data_array_by_type(p_slot_type)
+
+	if not ui_container or not data_array: return
+
+	if not _is_valid_index_for_refresh(p_slot_index, ui_container, data_array): return
+
+	var slot_node_to_update = ui_container.get_child(p_slot_index)
+	if not (slot_node_to_update is Panel): 
+		printerr("Inventory.gd: Node at %s[%d] is not a Panel for UI refresh." % [p_slot_type, p_slot_index])
 		return
 
-	if not target_ui_container:
-		printerr("Inventory.gd: Target UI container not found for type - ", p_slot_type)
+	var current_data = data_array[p_slot_index]
+	slot_node_to_update.item_data = current_data.item_data
+	slot_node_to_update.amount = current_data.amount
+
+
+# 슬롯 타입 문자열에 따라 해당하는 UI 컨테이너 노드를 반환합니다.
+func _get_ui_container_by_type(type_str: String) -> Container:
+	if type_str == "inventory": return grid_container
+	if type_str == "hotbar": return hotbar_container
+	printerr("Inventory.gd: Unknown slot type '%s' for UI container." % type_str)
+	return null
+
+
+# 슬롯 타입 문자열에 따라 InventoryManager로부터 해당하는 슬롯 데이터 배열을 가져옵니다.
+func _get_data_array_by_type(type_str: String) -> Array:
+	if type_str == "inventory": return InventoryManager.get_inventory_slots()
+	if type_str == "hotbar": return InventoryManager.get_hotbar_slots()
+	printerr("Inventory.gd: Unknown slot type '%s' for data array." % type_str)
+	return []
+
+
+# UI 새로고침을 위한 인덱스가 유효한 범위 내에 있는지 확인합니다.
+func _is_valid_index_for_refresh(idx: int, ui_cont: Container, data_arr: Array) -> bool:
+	if idx < 0 or idx >= ui_cont.get_child_count():
+		printerr("Inventory.gd: Invalid UI index %d (max %d)." % [idx, ui_cont.get_child_count() -1])
+		return false
+	if idx < 0 or idx >= data_arr.size():
+		printerr("Inventory.gd: Invalid data index %d (max %d)." % [idx, data_arr.size() -1])
+		return false
+	return true
+
+
+func _input(event: InputEvent):
+	if _is_escape_key_pressed(event):
+		_handle_escape_action()
+	elif _is_left_mouse_button_released(event):
+		_handle_item_drop_action()
+
+
+func _is_escape_key_pressed(event: InputEvent) -> bool:
+	return event is InputEventKey and event.keycode == KEY_ESCAPE and event.is_pressed() and not event.is_echo()
+
+
+func _is_left_mouse_button_released(event: InputEvent) -> bool:
+	return event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.is_pressed()
+
+
+func _handle_escape_action():
+	if get_tree(): get_tree().paused = false
+	queue_free()
+
+
+func _handle_item_drop_action():
+	if not has_meta("drag_data"): return
+
+	var drag_payload = get_meta("drag_data")
+	# 드래그 데이터는 slot.gd의 _finalize_drop_operation 또는 여기서 처리 후 null로 설정됨.
+	# 여기서 set_meta("drag_data", null)을 호출하면 slot.gd의 로직과 충돌 가능성 있음.
+	# slot.gd에서 드래그 완료 시 확실히 null로 만들도록 하고, 여기서는 가져오기만 함.
+	# 만약 slot.gd에서 처리가 안된 경우(예: 맵 드랍)를 대비해 여기서도 null로 할 수 있지만,
+	# 현재 slot.gd의 _finalize_drop_operation에서 처리하므로 여기서는 생략.
+
+	if drag_payload == null: return # 이미 다른 곳에서 처리됨
+	if not (drag_payload is Dictionary and drag_payload.has("item_data")):
+		printerr("Inventory.gd: Invalid drag payload.")
+		set_meta("drag_data", null) # 잘못된 데이터면 확실히 정리
+		return
+
+	var hovered_control = get_viewport().gui_get_hovered_control()
+	
+	if not _is_drop_on_valid_inventory_ui(hovered_control):
+		_process_map_drop(drag_payload)
+		set_meta("drag_data", null) # 맵 드랍 후에는 여기서 drag_data 정리
+	# else: 유효한 UI 영역 드랍은 slot.gd가 처리. drag_data도 slot.gd가 정리.
+
+
+func _is_drop_on_valid_inventory_ui(control: Control) -> bool:
+	if not control: return false
+	if control.is_in_group(GROUP_INVENTORY_SLOT): return true
+	var parent = control.get_parent()
+	if parent and parent.is_in_group(GROUP_INVENTORY_SLOT): return true
+	return control == grid_container or control == hotbar_container
+
+
+func _process_map_drop(payload: Dictionary):
+	var item_removed = InventoryManager.remove_item_from_slot(
+		payload.item_data, payload.amount, 
+		payload.source_slot_type, payload.source_slot_index
+	)
+	if item_removed:
+		_spawn_collectable_on_map(payload)
+		_request_ui_refresh_for_source_slot(payload)
+	else:
+		printerr("Inventory.gd: Failed to remove item for map drop. Payload: ", payload)
+
+
+func _spawn_collectable_on_map(item_data_to_spawn: Dictionary):
+	var player = get_tree().get_first_node_in_group(GROUP_PLAYER)
+	if not player:
+		printerr("Inventory.gd: Player not found for map drop position.")
 		return
 	
-	if p_slot_index < 0 or p_slot_index >= target_ui_container.get_child_count():
-		printerr("Inventory.gd: Invalid slot UI index for refresh. Type: %s, Index: %d, ChildCount: %d" % [p_slot_type, p_slot_index, target_ui_container.get_child_count()])
-		return
-		
-	var slot_ui_node = target_ui_container.get_child(p_slot_index)
+	var drop_pos = _calculate_drop_position(player.global_position)
 
-	if not (slot_ui_node is Panel): # Slot.gd가 Panel을 상속한다고 가정
-		printerr("Inventory.gd: Slot UI node is not a Panel. Type: %s, Index: %d" % [p_slot_type, p_slot_index])
-		return
-
-	if p_slot_index < 0 or p_slot_index >= slots_data_array.size():
-		printerr("Inventory.gd: Invalid slot data index for refresh. Type: %s, Index: %d, ArraySize: %d" % [p_slot_type, p_slot_index, slots_data_array.size()])
-		return
-
-	var current_slot_data = slots_data_array[p_slot_index]
-	
-	# slot.gd의 item_data 및 amount setter를 호출하여 UI를 갱신합니다.
-	slot_ui_node.item_data = current_slot_data.item_data
-	slot_ui_node.amount = current_slot_data.amount
-
-
-func _input(event):
-	if event is InputEventKey and event.keycode == KEY_ESCAPE:
-		get_tree().paused = false
-		queue_free()
-
-	if event is InputEventMouseButton and not event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		# 먼저 "drag_data" 메타가 있는지 확인
-		if not has_meta("drag_data"):
-			# print("Inventory: No drag_data meta found on mouse up.") # 디버깅용
-			return # drag_data가 없으면 아무것도 안 함 (빈 슬롯 드래그 등)
-
-		var drag_data_from_meta = get_meta("drag_data")
-
-		# drag_data_from_meta가 null인 경우는 slot.gd에서 이미 처리했거나,
-		# 빈 슬롯 드래그 후 _get_drag_data에서 drag_data를 설정하지 않은 경우일 수 있음.
-		# 하지만 위에서 has_meta로 걸렀으므로, 이 시점에서 drag_data_from_meta는 null이 아니어야 함.
-		# (만약 slot.gd에서 명시적으로 set_meta("drag_data", null)을 했다면 null일 수 있음)
-		if drag_data_from_meta == null: # 이중 확인 또는 slot.gd 로직에 따라 필요할 수 있음
-			# print("Inventory: drag_data_from_meta was null even after has_meta check (slot.gd might have nulled it).") # 디버깅용
-			return
-
-		set_meta("drag_data", null) 
-
-		var current_drag_data = drag_data_from_meta
-
-		if current_drag_data.has("item_data") and current_drag_data.item_data:
-			var hovered_control = get_viewport().gui_get_hovered_control()
-			var is_drop_on_valid_slot_area = false # 변수명 유지 또는 is_drop_on_slot_node 등으로 변경 가능
-
-			if hovered_control:
-				# 현재 마우스 아래 컨트롤이 "inventory_slot" 그룹에 속해 있는지 확인
-				if hovered_control.is_in_group("inventory_slot"):
-					is_drop_on_valid_slot_area = true
-				# 또는, 마우스 아래 컨트롤의 부모가 "inventory_slot" 그룹에 속해 있는지 확인
-				elif hovered_control.get_parent() and hovered_control.get_parent().is_in_group("inventory_slot"):
-					is_drop_on_valid_slot_area = true
-				# 또는, 마우스 아래 컨트롤이 GridContainer나 HotbarContainer 자체인 경우
-				elif hovered_control == grid_container or hovered_control == hotbar_container:
-					is_drop_on_valid_slot_area = true
-				
-				# 디버깅 로그 추가
-				# print("Hovered: ", hovered_control.name if hovered_control else "None", 
-				#       ", Parent: ", parent.name if parent else "None", 
-				#       ", Is drop on valid slot area: ", is_drop_on_valid_slot_area)
-
-			if not is_drop_on_valid_slot_area:
-				print("Inventory: Dropping to map because NOT is_drop_on_valid_slot_area. Hovered: %s. Data: %s" % [hovered_control.name if hovered_control else "None", current_drag_data])
-				
-				# 아이템 차감 로직 변경
-				var item_removed_successfully = InventoryManager.remove_item_from_slot(
-					current_drag_data.item_data, 
-					current_drag_data.amount, 
-					current_drag_data.source_slot_type, 
-					current_drag_data.source_slot_index
-				)
-
-				if item_removed_successfully:
-					_drop_item_to_map(current_drag_data) # 실제 맵에 드랍 (아이템 차감 성공 시)
-					# 원본 슬롯 UI 갱신
-					if current_drag_data.has("source_slot_type") and current_drag_data.has("source_slot_index"):
-						_on_slot_ui_refresh_requested(current_drag_data.source_slot_type, current_drag_data.source_slot_index)
-				else:
-					printerr("Inventory: Failed to remove item from source slot. Map drop aborted.")
-			else:
-				print("Inventory: Drop was on a valid slot area. slot.gd should handle it. Hovered: %s. Data: %s" % [hovered_control.name if hovered_control else "None", current_drag_data])
-
-
-func _drop_item_to_map(drag_data): # 이제 이 함수는 순수하게 맵에 오브젝트를 생성하는 역할만 함
-	var player = get_tree().get_first_node_in_group("player")
-	if player == null:
-		printerr("Player not found for dropping item.")
-		return
-	var radius = 64.0 
-	var angle = randf() * TAU
-	var drop_pos = player.global_position + Vector2(cos(angle), sin(angle)) * radius
-
-	if collectable_object_scene == null:
-		printerr("CollectableObject scene not set in Inventory.gd")
+	if not collectable_object_scene:
+		printerr("Inventory.gd: CollectableObject scene not set.")
 		return
 		
 	var obj = collectable_object_scene.instantiate()
-	if not obj.has_method("setup_drop"):
-		printerr("CollectableObject instance does not have setup_drop method.")
-		obj.queue_free() 
+	if not (obj is Node2D and obj.has_method("setup_drop")):
+		printerr("Inventory.gd: CollectableObject is invalid or missing 'setup_drop'.")
+		obj.queue_free()
 		return
 
-	obj.setup_drop(drag_data.item_data, drag_data.amount)
+	obj.setup_drop(item_data_to_spawn.item_data, item_data_to_spawn.amount)
 	obj.global_position = drop_pos
-	get_tree().current_scene.add_child(obj)
+	
+	var current_scene_node = get_tree().current_scene
+	if current_scene_node:
+		current_scene_node.add_child(obj)
+	else:
+		printerr("Inventory.gd: Current scene not found to add collectable.")
+
+
+func _calculate_drop_position(base_pos: Vector2) -> Vector2:
+	var angle = randf_range(0, TAU)
+	var offset = Vector2(cos(angle), sin(angle)) * DEFAULT_DROP_RADIUS
+	return base_pos + offset
+
+
+func _request_ui_refresh_for_source_slot(payload_with_source: Dictionary):
+	if payload_with_source.has("source_slot_type") and payload_with_source.has("source_slot_index"):
+		_on_slot_ui_refresh_requested(
+			payload_with_source.source_slot_type, 
+			payload_with_source.source_slot_index
+		)
