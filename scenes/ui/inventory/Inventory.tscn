@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bulnv1je8d0i3"]
+[gd_scene load_steps=4 format=3 uid="uid://bulnv1je8d0i3"]
 
 [ext_resource type="Script" uid="uid://c4pu0qc8jh1pc" path="res://scenes/ui/inventory/inventory.gd" id="1_1tqe2"]
 [ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="1_hifxq"]
+[ext_resource type="PackedScene" uid="uid://dr3pik6bvrlif" path="res://scenes/game_object/loot/collectable_object.tscn" id="3_1qdgs"]
 
 [node name="Inventory" type="Control" groups=["inventory_ui"]]
 process_mode = 3
@@ -13,6 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1tqe2")
 slot_scene = ExtResource("1_hifxq")
+collectable_object_scene = ExtResource("3_1qdgs")
 
 [node name="InventoryUI" type="CanvasLayer" parent="."]
 

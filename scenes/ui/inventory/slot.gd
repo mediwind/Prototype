@@ -131,6 +131,10 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	# 소스 슬롯 UI 갱신 요청 (소스와 타겟이 다른 경우에만)
 	if not (source_type_val == target_type_val and source_index_val == target_index_val):
 		emit_signal("slot_ui_needs_refresh", source_type_val, source_index_val)
+	
+	if performed_operation:
+		# 드랍 성공 시 drag_data 초기화
+		get_tree().get_first_node_in_group("inventory_ui").set_meta("drag_data", null)
 
 
 var slot_type: String # "inventory" or "hotbar"
@@ -168,14 +172,17 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 		amount_label.add_theme_constant_override("outline_size", 2)
 		preview.add_child(amount_label)
 
-		set_drag_preview(preview)
-		return {
+		var drag_data = {
 			"item_data": item_data,
 			"amount": drag_amount,
 			"source_slot_type": slot_type,
 			"source_slot_index": slot_index,
 			"split": drag_amount != amount
 		}
+		# inventory.gd(Inventory UI의 루트)에 드래그 데이터 저장
+		get_tree().get_first_node_in_group("inventory_ui").set_meta("drag_data", drag_data)
+		set_drag_preview(preview)
+		return drag_data
 
 	return null
 
