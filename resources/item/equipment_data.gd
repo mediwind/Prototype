@@ -2,6 +2,7 @@ extends Resource
 class_name EquipmentData
 
 enum EquipmentSlotType {
+    NONE,
     HELMET,
     ARMOR,
     GLOVES,

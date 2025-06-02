@@ -2,6 +2,7 @@ extends Node
 
 var player_inventory_slots: Array = []
 var player_hotbar_slots: Array = []
+var player_equipment_slots: Array = []
 
 
 func _ready():
@@ -10,6 +11,7 @@ func _ready():
     SaveManager.game_data.inventory_data.ensure_slots()
     player_inventory_slots = SaveManager.game_data.inventory_data.inventory_slots
     player_hotbar_slots = SaveManager.game_data.inventory_data.hotbar_slots
+    player_equipment_slots = SaveManager.game_data.inventory_data.equipment_slots
 
 
 func add_item(item_data: ItemData, amount: int) -> int:
@@ -52,12 +54,18 @@ func get_hotbar_slots() -> Array:
     return player_hotbar_slots
 
 
+func get_equipment_slots() -> Array:
+    return player_equipment_slots
+
+
 func remove_item_from_slot(item_data_to_remove: ItemData, amount_to_remove: int, source_slot_type: String, source_slot_index: int) -> bool:
     var target_slots_array = null
     if source_slot_type == "inventory":
         target_slots_array = player_inventory_slots
     elif source_slot_type == "hotbar":
         target_slots_array = player_hotbar_slots
+    elif source_slot_type == "equipment": # "equipment" 타입 처리 추가
+        target_slots_array = player_equipment_slots
     else:
         printerr("InventoryManager: Unknown slot type for remove_item_from_slot - ", source_slot_type)
         return false

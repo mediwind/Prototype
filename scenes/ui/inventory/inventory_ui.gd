@@ -3,8 +3,9 @@ extends Control
 @export var slot_scene: PackedScene
 @export var collectable_object_scene: PackedScene
 
-@onready var grid_container: GridContainer = $InventoryUI/GridContainer
-@onready var hotbar_container: HBoxContainer = $InventoryUI/HotbarContainer
+@onready var grid_container: GridContainer = $CanvasLayer/GridContainer
+@onready var hotbar_container: HBoxContainer = $CanvasLayer/HotbarContainer
+@onready var equipment_ui: Control = $CanvasLayer/EquipmentUI
 
 const GROUP_INVENTORY_UI = "inventory_ui"
 const GROUP_INVENTORY_SLOT = "inventory_slot"
@@ -19,11 +20,48 @@ func _ready():
 
 # 인벤토리 UI 초기화 시 호출되어, 인벤토리 및 핫바 슬롯 UI를 생성하고 설정합니다.
 func _initialize_slots_ui():
-	if not slot_scene:
-		printerr("Inventory.gd: Slot scene is not assigned.")
+	# 인벤토리 및 핫바 슬롯 동적 생성 및 설정
+	if slot_scene:
+		if grid_container:
+			_create_slots_for_type("inventory", InventoryManager.get_inventory_slots(), grid_container)
+		if hotbar_container:
+			_create_slots_for_type("hotbar", InventoryManager.get_hotbar_slots(), hotbar_container)
+	else:
+		printerr("Inventory.gd: Slot scene is not assigned. Inventory/Hotbar slots will not be created dynamically.")
+
+	# 장비 UI 슬롯 초기화 (시그널 연결 등)
+	_initialize_equipment_slots_ui()
+
+
+# 장비 UI의 각 슬롯에 대해 시그널을 연결하고 기본값을 설정합니다.
+func _initialize_equipment_slots_ui():
+	if not equipment_ui:
+		printerr("Inventory.gd: EquipmentUI node is not assigned in InventoryUI.")
 		return
-	_create_slots_for_type("inventory", InventoryManager.get_inventory_slots(), grid_container)
-	_create_slots_for_type("hotbar", InventoryManager.get_hotbar_slots(), hotbar_container)
+
+	# equipment_ui.gd 에서 이미 slot_nodes 배열 순서대로 slot_index와 slot_type을 설정하고 있음.
+	# 해당 순서와 이름을 기반으로 각 슬롯 노드를 가져와 시그널을 연결합니다.
+	var equipment_slot_node_names = ["Head", "RightHand", "LeftHand", "Body", "Gloves", "Boots", "Accessory", "Accessory2", "Accessory3"]
+
+	# equipment_ui.gd의 _ready -> sync_equipment_slots_from_data가 먼저 호출되어
+	# 각 장비 슬롯의 item_data, amount, slot_index, slot_type이 설정되었다고 가정합니다.
+	# 여기서는 시그널만 연결합니다.
+
+	for i in range(equipment_slot_node_names.size()):
+		var node_name = equipment_slot_node_names[i]
+		var slot_node = equipment_ui.get_node_or_null(node_name)
+
+		if not slot_node:
+			printerr("Inventory.gd: Equipment slot node '%s' not found in EquipmentUI." % node_name)
+			continue
+		
+		if not (slot_node is Panel and slot_node.has_method("_update_icon_display")):
+			printerr("Inventory.gd: Node '%s' in EquipmentUI is not a valid Slot Panel." % node_name)
+			continue
+		
+		# slot_node.slot_index는 equipment_ui.gd에서 이미 i로 설정되었을 것입니다.
+		# slot_node.slot_type은 equipment_ui.gd에서 이미 "equipment"로 설정되었을 것입니다.
+		_connect_slot_refresh_signal(slot_node, "equipment", i) # i는 여기서 루프 인덱스이자, 해당 슬롯의 기대 인덱스
 
 
 # 지정된 타입(인벤토리/핫바)의 슬롯들을 데이터에 맞게 생성하여 컨테이너에 추가합니다.
@@ -88,9 +126,34 @@ func _on_slot_ui_refresh_requested(p_slot_type: String, p_slot_index: int):
 	var ui_container = _get_ui_container_by_type(p_slot_type)
 	var data_array = _get_data_array_by_type(p_slot_type)
 
-	if not ui_container or not data_array: return
+	if not ui_container or not data_array:
+		return
 
-	if not _is_valid_index_for_refresh(p_slot_index, ui_container, data_array): return
+	if p_slot_type == "equipment":
+		# EquipmentUI의 자식 슬롯 노드 직접 접근
+		var slot_nodes = [
+			ui_container.get_node("Head"),
+			ui_container.get_node("RightHand"),
+			ui_container.get_node("LeftHand"),
+			ui_container.get_node("Body"),
+			ui_container.get_node("Gloves"),
+			ui_container.get_node("Boots"),
+			ui_container.get_node("Accessory"),
+			ui_container.get_node("Accessory2"),
+			ui_container.get_node("Accessory3")
+		]
+		if p_slot_index < 0 or p_slot_index >= slot_nodes.size():
+			printerr("Inventory.gd: Invalid equipment slot index %d." % p_slot_index)
+			return
+		var slot_node_to_update = slot_nodes[p_slot_index]
+		var current_data = data_array[p_slot_index]
+		slot_node_to_update.item_data = current_data.item_data
+		slot_node_to_update.amount = current_data.amount
+		return
+
+	# 기존 인벤토리/핫바 처리
+	if not _is_valid_index_for_refresh(p_slot_index, ui_container, data_array):
+		return
 
 	var slot_node_to_update = ui_container.get_child(p_slot_index)
 	if not (slot_node_to_update is Panel): 
@@ -104,16 +167,24 @@ func _on_slot_ui_refresh_requested(p_slot_type: String, p_slot_index: int):
 
 # 슬롯 타입 문자열에 따라 해당하는 UI 컨테이너 노드를 반환합니다.
 func _get_ui_container_by_type(type_str: String) -> Container:
-	if type_str == "inventory": return grid_container
-	if type_str == "hotbar": return hotbar_container
+	if type_str == "inventory":
+		return grid_container
+	if type_str == "hotbar":
+		return hotbar_container
+	if type_str == "equipment":
+		return equipment_ui # EquipmentUI 노드 반환
 	printerr("Inventory.gd: Unknown slot type '%s' for UI container." % type_str)
 	return null
 
 
 # 슬롯 타입 문자열에 따라 InventoryManager로부터 해당하는 슬롯 데이터 배열을 가져옵니다.
 func _get_data_array_by_type(type_str: String) -> Array:
-	if type_str == "inventory": return InventoryManager.get_inventory_slots()
-	if type_str == "hotbar": return InventoryManager.get_hotbar_slots()
+	if type_str == "inventory":
+		return InventoryManager.get_inventory_slots()
+	if type_str == "hotbar":
+		return InventoryManager.get_hotbar_slots()
+	if type_str == "equipment":
+		return InventoryManager.get_equipment_slots()
 	printerr("Inventory.gd: Unknown slot type '%s' for data array." % type_str)
 	return []
 

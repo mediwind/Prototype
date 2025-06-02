@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://bulnv1je8d0i3"]
+[gd_scene load_steps=5 format=3 uid="uid://bulnv1je8d0i3"]
 
-[ext_resource type="Script" uid="uid://c4pu0qc8jh1pc" path="res://scenes/ui/inventory/inventory.gd" id="1_1tqe2"]
+[ext_resource type="Script" uid="uid://c4pu0qc8jh1pc" path="res://scenes/ui/inventory/inventory_ui.gd" id="1_1tqe2"]
 [ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="1_hifxq"]
 [ext_resource type="PackedScene" uid="uid://dr3pik6bvrlif" path="res://scenes/game_object/loot/collectable_object.tscn" id="3_1qdgs"]
+[ext_resource type="PackedScene" uid="uid://dafranjajk7tv" path="res://scenes/ui/inventory/equipment_ui.tscn" id="4_aui2s"]
 
-[node name="Inventory" type="Control" groups=["inventory_ui"]]
+[node name="InventoryUI" type="Control" groups=["inventory_ui"]]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 15
@@ -16,9 +17,9 @@ script = ExtResource("1_1tqe2")
 slot_scene = ExtResource("1_hifxq")
 collectable_object_scene = ExtResource("3_1qdgs")
 
-[node name="InventoryUI" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="GridContainer" type="GridContainer" parent="InventoryUI"]
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -32,7 +33,7 @@ grow_horizontal = 2
 grow_vertical = 2
 columns = 4
 
-[node name="HotbarContainer" type="HBoxContainer" parent="InventoryUI"]
+[node name="HotbarContainer" type="HBoxContainer" parent="CanvasLayer"]
 z_index = -1
 custom_minimum_size = Vector2(20, 20)
 anchors_preset = 7
@@ -45,3 +46,14 @@ offset_top = -40.0
 offset_right = 20.0
 grow_horizontal = 2
 grow_vertical = 0
+
+[node name="EquipmentUI" parent="CanvasLayer" instance=ExtResource("4_aui2s")]
+z_index = -1
+anchors_preset = 0
+anchor_top = 0.0
+anchor_bottom = 0.0
+offset_left = 368.0
+offset_top = 264.0
+offset_right = 368.0
+offset_bottom = 264.0
+grow_vertical = 1

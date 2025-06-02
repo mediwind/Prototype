@@ -6,12 +6,13 @@ signal slot_ui_needs_refresh(slot_type_to_refresh: String, slot_index_to_refresh
 @onready var icon_rect: TextureRect = $Icon
 @onready var amount_label: Label = $Amount
 
+@export var equipment_slot_type: EquipmentData.EquipmentSlotType
 # 슬롯 데이터
-var item_data: ItemData = null:
+@export var item_data: ItemData = null: # @export 키워드 추가
 	set(value):
 		item_data = value
 		_update_icon_display()
-var amount: int = 0:
+@export var amount: int = 0: # @export 키워드 추가
 	set(value):
 		amount = value
 		if amount <= 0 and item_data != null:
@@ -48,6 +49,7 @@ func _update_icon_display():
 		icon_rect.texture = null
 		icon_rect.visible = false
 
+
 # 슬롯의 아이템 수량 표시를 업데이트합니다. amount에 따라 수량을 표시하거나 숨깁니다.
 func _update_amount_display():
 	if not is_inside_tree(): return
@@ -69,6 +71,14 @@ func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
 	if not _is_valid_drag_data(data):
 		return false
 
+	# 1. 장비 슬롯(부위 지정)일 경우: 해당 부위 장비만 허용
+	if equipment_slot_type != EquipmentData.EquipmentSlotType.NONE:
+		# 아이템이 장비가 아니거나, 장비 부위가 다르면 드랍 불가
+		if not data.item_data or not data.item_data.equipment_data:
+			return false
+		return data.item_data.equipment_data.slot_type == equipment_slot_type
+
+	# 2. 인벤토리/핫바 슬롯(부위 미지정)일 경우: 기존 로직 유지
 	if not item_data: # 타겟 슬롯이 비어있으면 항상 가능
 		return true
 
@@ -186,7 +196,17 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 
 # InventoryManager로부터 특정 타입과 인덱스에 해당하는 슬롯의 데이터 참조(Object)를 가져옵니다.
 func _get_slot_data_reference_from_manager(p_slot_type: String, p_slot_idx: int) -> Variant:
-	var slots_array = InventoryManager.get_inventory_slots() if p_slot_type == "inventory" else InventoryManager.get_hotbar_slots()
+	var slots_array: Array
+	if p_slot_type == "inventory":
+		slots_array = InventoryManager.get_inventory_slots()
+	elif p_slot_type == "hotbar":
+		slots_array = InventoryManager.get_hotbar_slots()
+	elif p_slot_type == "equipment":
+		slots_array = InventoryManager.get_equipment_slots()
+	else:
+		printerr("Slot.gd: Unknown slot type '%s'." % p_slot_type)
+		return null
+
 	if p_slot_idx < 0 or p_slot_idx >= slots_array.size():
 		printerr("Slot.gd: Invalid slot index %d for type '%s'." % [p_slot_idx, p_slot_type])
 		return null
