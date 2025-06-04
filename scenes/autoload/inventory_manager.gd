@@ -82,6 +82,10 @@ func remove_item_from_slot(item_data_to_remove: ItemData, amount_to_remove: int,
             if slot_data.amount <= 0:
                 slot_data.item_data = null
                 slot_data.amount = 0 # 확실하게 0으로 설정
+
+                # 스탯 재계산 (장비 슬롯에서 아이템 제거 시)
+                if source_slot_type == "equipment":
+                    StatManager.recalculate_player_stats()
             return true # 성공적으로 제거
         else:
             # 요청된 양보다 슬롯에 적게 들어있는 경우 (이런 경우는 드래그 로직상 발생하면 안 됨)
@@ -89,6 +93,10 @@ func remove_item_from_slot(item_data_to_remove: ItemData, amount_to_remove: int,
             # 일단 있는 만큼 모두 제거
             slot_data.item_data = null
             slot_data.amount = 0
+
+            # 스탯 재계산 (장비 슬롯에서 아이템 제거 시)
+            if source_slot_type == "equipment":
+                StatManager.recalculate_player_stats()
             return true # 일부라도 제거는 했음 (혹은 실패로 처리할 수도 있음)
     else:
         # 슬롯에 아이템이 없거나 다른 아이템인 경우

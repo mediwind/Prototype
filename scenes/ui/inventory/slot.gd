@@ -279,6 +279,8 @@ func _finalize_drop_operation(was_successful: bool, src_type: String, src_idx: i
 	# 실제 작업이 성공했거나, 자기 자신에게 드랍하여 드래그를 끝내는 경우 drag_data 초기화
 	if was_successful or (slot_type == src_type and slot_index == src_idx):
 		_clear_drag_payload_from_inventory_ui()
+	
+	StatManager.recalculate_player_stats()
 
 
 # Inventory UI 노드에 저장된 드래그 페이로드 메타데이터를 제거(null로 설정)합니다.
