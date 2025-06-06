@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://bulnv1je8d0i3"]
 
-[ext_resource type="Script" uid="uid://c4pu0qc8jh1pc" path="res://scenes/ui/inventory/inventory_ui.gd" id="1_1tqe2"]
-[ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="1_hifxq"]
-[ext_resource type="PackedScene" uid="uid://dr3pik6bvrlif" path="res://scenes/game_object/loot/collectable_object.tscn" id="3_1qdgs"]
-[ext_resource type="PackedScene" uid="uid://dafranjajk7tv" path="res://scenes/ui/inventory/equipment_ui.tscn" id="4_aui2s"]
+[ext_resource type="Script" uid="uid://c4pu0qc8jh1pc" path="res://scenes/ui/inventory/inventory_ui.gd" id="1_2or24"]
+[ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="2_3udt2"]
+[ext_resource type="PackedScene" uid="uid://dr3pik6bvrlif" path="res://scenes/game_object/loot/collectable_object.tscn" id="3_j0bl0"]
+[ext_resource type="PackedScene" uid="uid://dafranjajk7tv" path="res://scenes/ui/inventory/equipment_ui.tscn" id="4_uuiao"]
 
 [node name="InventoryUI" type="Control" groups=["inventory_ui"]]
 process_mode = 3
@@ -13,9 +13,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_1tqe2")
-slot_scene = ExtResource("1_hifxq")
-collectable_object_scene = ExtResource("3_1qdgs")
+script = ExtResource("1_2or24")
+slot_scene = ExtResource("2_3udt2")
+collectable_object_scene = ExtResource("3_j0bl0")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -47,7 +47,7 @@ offset_right = 20.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="EquipmentUI" parent="CanvasLayer" instance=ExtResource("4_aui2s")]
+[node name="EquipmentUI" parent="CanvasLayer" instance=ExtResource("4_uuiao")]
 z_index = -1
 anchors_preset = 0
 anchor_top = 0.0
