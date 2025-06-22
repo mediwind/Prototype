@@ -1,6 +1,12 @@
-[gd_scene format=3 uid="uid://dbihe5ydr615c"]
+[gd_scene load_steps=5 format=3 uid="uid://dbihe5ydr615c"]
+
+[ext_resource type="Script" uid="uid://bbpy7wd68wd7o" path="res://scenes/ui/crafting/crafting_ui.gd" id="1_ofhe1"]
+[ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="1_oxfa4"]
+[ext_resource type="Resource" uid="uid://b67b0mntyy8q3" path="res://resources/item/health_potion.tres" id="2_ofhe1"]
+[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/sword.tres" id="3_ceir7"]
 
 [node name="CraftingUI" type="PanelContainer"]
+process_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -10,6 +16,7 @@ offset_right = -10.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_ofhe1")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -54,6 +61,11 @@ text = "Ingredients"
 layout_mode = 2
 columns = 5
 
+[node name="Slot" parent="VBoxContainer/HBoxContainer2/VBoxContainer2/GridContainer" instance=ExtResource("1_oxfa4")]
+layout_mode = 2
+item_data = ExtResource("2_ofhe1")
+amount = 3
+
 [node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer2/VBoxContainer2"]
 layout_mode = 2
 text = "Results"
@@ -61,6 +73,11 @@ text = "Results"
 [node name="GridContainer2" type="GridContainer" parent="VBoxContainer/HBoxContainer2/VBoxContainer2"]
 layout_mode = 2
 columns = 5
+
+[node name="Slot" parent="VBoxContainer/HBoxContainer2/VBoxContainer2/GridContainer2" instance=ExtResource("1_oxfa4")]
+layout_mode = 2
+item_data = ExtResource("3_ceir7")
+amount = 1
 
 [node name="ControlForSpace" type="Control" parent="VBoxContainer/HBoxContainer2/VBoxContainer2"]
 layout_mode = 2

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Recipe" load_steps=3 format=3 uid="uid://s2udfrnylxop"]
+
+[ext_resource type="Script" uid="uid://bv5pdr64dv25g" path="res://resources/recipe/recipe_ingredient.gd" id="1_phnmy"]
+[ext_resource type="Script" uid="uid://rivc2ns3nrwb" path="res://resources/recipe/recipe.gd" id="2_nskgh"]
+
+[resource]
+script = ExtResource("2_nskgh")
+name = ""
+ingredients = Array[ExtResource("1_phnmy")]([])
+output_items = Array[ExtResource("1_phnmy")]([])
+metadata/_custom_type_script = "uid://rivc2ns3nrwb"
