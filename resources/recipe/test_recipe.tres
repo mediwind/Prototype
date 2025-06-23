@@ -1,11 +1,14 @@
-[gd_resource type="Resource" script_class="Recipe" load_steps=3 format=3 uid="uid://s2udfrnylxop"]
+[gd_resource type="Resource" script_class="Recipe" load_steps=5 format=3 uid="uid://s2udfrnylxop"]
 
 [ext_resource type="Script" uid="uid://bv5pdr64dv25g" path="res://resources/recipe/recipe_ingredient.gd" id="1_phnmy"]
+[ext_resource type="Resource" uid="uid://bv53edjbf013c" path="res://resources/recipe/test_recipe_ingredient_2.tres" id="2_bftq4"]
 [ext_resource type="Script" uid="uid://rivc2ns3nrwb" path="res://resources/recipe/recipe.gd" id="2_nskgh"]
+[ext_resource type="Resource" uid="uid://b8r4phe7hikep" path="res://resources/recipe/test_recipe_ingredient.tres" id="3_xitma"]
 
 [resource]
 script = ExtResource("2_nskgh")
-name = ""
-ingredients = Array[ExtResource("1_phnmy")]([])
-output_items = Array[ExtResource("1_phnmy")]([])
+name = "sword_from_potion"
+ingredients = Array[ExtResource("1_phnmy")]([ExtResource("2_bftq4")])
+output_items = Array[ExtResource("1_phnmy")]([ExtResource("3_xitma")])
+table_types = Array[String](["alchemy"])
 metadata/_custom_type_script = "uid://rivc2ns3nrwb"
