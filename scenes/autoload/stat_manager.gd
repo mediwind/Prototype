@@ -1,5 +1,7 @@
 extends Node
 
+signal stats_updated
+
 var player_stat: StatData
 
 
@@ -35,3 +37,4 @@ func recalculate_player_stats():
     
     player_stat.stats = new_stats
     print("Recalculated Stats: ", player_stat.stats)
+    stats_updated.emit()

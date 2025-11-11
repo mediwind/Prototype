@@ -5,6 +5,25 @@ var player_hotbar_slots: Array = []
 var player_equipment_slots: Array = []
 
 
+func _is_same_item(a: ItemData, b: ItemData) -> bool:
+    # 우선 동일한 리소스 참조인지 확인
+    if a == b:
+        return true
+    # 리소스가 파일(.tres 등)로 로드된 경우 resource_path로 비교
+    if a and b:
+        var pa = a.resource_path
+        var pb = b.resource_path
+        if pa != "" and pb != "" and pa == pb:
+            return true
+        # 최후의 수단으로 이름 비교(경고 로그)
+        if a.name == b.name:
+            # 동일 이름의 서로 다른 리소스가 존재할 수 있으니 주의
+            # 이름으로만 판단하는 것은 위험하다는 로그를 남김
+            print("InventoryManager: Warning - comparing items by name fallback for '%s'. Consider using unique resource instances or adding an id field." % a.name)
+            return true
+    return false
+
+
 func _ready():
     if SaveManager.game_data.inventory_data == null:
         SaveManager.game_data.inventory_data = InventoryData.new()
@@ -21,7 +40,7 @@ func add_item(item_data: ItemData, amount: int) -> int:
 
     # 1. 인벤토리 슬롯에 합치기
     for slot in player_inventory_slots:
-        if slot.item_data and slot.item_data.name == item_data.name:
+        if slot.item_data and _is_same_item(slot.item_data, item_data):
             var can_add = max_stack - slot.amount
             if can_add > 0:
                 var to_add = min(remaining, can_add)
@@ -76,7 +95,7 @@ func remove_item_from_slot(item_data_to_remove: ItemData, amount_to_remove: int,
 
     var slot_data = target_slots_array[source_slot_index]
 
-    if slot_data.item_data and slot_data.item_data.name == item_data_to_remove.name:
+    if slot_data.item_data and _is_same_item(slot_data.item_data, item_data_to_remove):
         if slot_data.amount >= amount_to_remove:
             slot_data.amount -= amount_to_remove
             if slot_data.amount <= 0:
