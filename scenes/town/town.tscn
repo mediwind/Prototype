@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://3suo00p3gg" path="res://scenes/town/town.gd" id="1_i0lau"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
-[ext_resource type="PackedScene" uid="uid://ddvqb30ex6dp3" path="res://scenes/ui/skill/skill_tree.tscn" id="2_ud7wb"]
+[ext_resource type="PackedScene" uid="uid://ddvqb30ex6dp3" path="res://scenes/ui/skill/skill_tree_ui.tscn" id="2_ud7wb"]
 [ext_resource type="PackedScene" uid="uid://bulnv1je8d0i3" path="res://scenes/ui/inventory/InventoryUI.tscn" id="3_6g2qn"]
 [ext_resource type="PackedScene" uid="uid://bhmc4t4dtf2u" path="res://scenes/ui/town_ui.tscn" id="4_53e74"]
 [ext_resource type="PackedScene" uid="uid://byadw4tmkg3sw" path="res://scenes/game_object/player/player_human.tscn" id="4_v00pm"]
