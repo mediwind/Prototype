@@ -7,7 +7,6 @@
 [node name="SkillButton" type="TextureButton" groups=["skill_button"]]
 offset_right = 40.0
 offset_bottom = 40.0
-disabled = true
 toggle_mode = true
 texture_normal = ExtResource("1_k84fr")
 ignore_texture_size = true

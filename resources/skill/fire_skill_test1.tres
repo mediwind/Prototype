@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkillTemplate" load_steps=2 format=3 uid="uid://q7l7p07xi687"]
+
+[ext_resource type="Script" uid="uid://cqk4ufmwwyse2" path="res://resources/skill/skill_template.gd" id="1_aw03n"]
+
+[resource]
+script = ExtResource("1_aw03n")
+id = "fire_test_1"
+max_level = 1
+skill_point_cost = 1
+title = "not assigned yet"
+description = "not assigned yet"
+skill_type = "passive"
+cooldown = 0.0
+base_value = 0.0
+damage_type = "physical"
+cost = 0
+metadata/_custom_type_script = "uid://cqk4ufmwwyse2"

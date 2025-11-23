@@ -4,7 +4,7 @@ extends Node
 @onready var inventory_ui_button = $TownUI/HBoxContainer/InventoryUIButton
 @onready var town_ui = $TownUI
 
-@export var skill_tree_scene: PackedScene
+@export var tabbed_skill_tree_scene: PackedScene
 @export var inventory_scene: PackedScene
 
 
@@ -15,8 +15,8 @@ func _ready():
 
 
 func on_skill_ui_button_pressed():
-	var skill_tree = skill_tree_scene.instantiate()
-	town_ui.add_child(skill_tree)
+	var tabbed_skill_tree = tabbed_skill_tree_scene.instantiate()
+	town_ui.add_child(tabbed_skill_tree)
 	get_tree().paused = true
 
 

@@ -30,7 +30,7 @@ func use_skill_point(skill_name: String) -> bool:
 
 
 func get_skill_level(skill_name: String) -> int:
-    var skill_data = SaveManager.game_data.skill_data
+    skill_data = SaveManager.game_data.skill_data
     if skill_data.acquired_skills.has(skill_name):
         return skill_data.acquired_skills[skill_name]["quantity"]
     return 0

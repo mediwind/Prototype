@@ -4,8 +4,13 @@
 
 [resource]
 script = ExtResource("1_au1ej")
-id = "not assigned yet"
+id = "t1"
 max_level = 1
 skill_point_cost = 1
 title = "not assigned yet"
 description = "not assigned yet"
+skill_type = "passive"
+cooldown = 0.0
+base_value = 0.0
+damage_type = "physical"
+cost = 0

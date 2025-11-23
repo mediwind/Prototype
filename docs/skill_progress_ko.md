@@ -1,52 +1,49 @@
 # 스킬 시스템 진행 요약 (한국어)
 
-마지막 업데이트: 2025-11-22
+마지막 업데이트: 2025-11-23
 
 목적
-- 에디터 친화적이고 데이터 중심적인 스킬 트리 시스템을 빠르게 프로토타입하고, 점진적으로 완성한다.
-- @export 가능한 Resource로 콘텐츠를 제작할 수 있도록 설계하여 디자이너가 에디터에서 직접 스킬을 편집하게 한다.
-- 대규모 리팩토링 없이 기존 플레이어(FSM 등)에 스킬을 연결할 수 있도록 최소한의 런타임 어댑터를 고려한다.
+- 에디터 친화적이고 실무에 바로 적용 가능한 스킬 트리 UI를 빠르게 프로토타이핑하고 점진적으로 완성.
+- 디자이너가 에디터에서 직접 스킬을 편집할 수 있도록 Resource 기반의 스킬 템플릿을 우선 유지.
+- 기존 코드(플레이어, SaveManager 등)에 최소한의 변경만으로 통합할 수 있게 설계.
 
-요약된 결정사항
-- GraphEdit/GraphNode 방식은 실험용으로 시도했으나 현재는 이해/리팩토링 부담으로 보류합니다. 기존의 씬 기반 `skill_button.tscn` 방식으로 우선 진행합니다.
-- Resource 기반 설계는 계속 유지합니다: `SkillNodeResource`, `SkillTreeResource` 등 프로토타입이 추가되어 있습니다.
+주요 결정사항 (변경)
+- GraphEdit/GraphNode 방식은 복잡성 때문에 보류하고, 씬 기반 SkillButton 방식으로 진행하기로 결정했음.  
+- SkillTreeResource / SkillNodeResource 설계도 현재 단계에서는 모두 제거(포기)하고, 스킬의 논리(요구조건)는 SkillTemplate 리소스에 간단한 메타데이터로 넣는 쪽으로 단순화함.
 
-작업 내역 (중요 파일)
-- 추가된 리소스/스크립트(프로토타입):
-  - `res://resources/skill/skill_node.gd` (class_name `SkillNodeResource`) — 노드 메타데이터(템플릿 참조, 위치, 선행조건 등)
-  - `res://resources/skill/skill_tree.gd` (class_name `SkillTreeResource`) — 트리 메타데이터와 노드 목록
-- UI 관련 변경:
-  - `res://scenes/ui/skill/skill_button.tscn` — 기존 버튼 기반 스킬 노드 (현재 기본 작업 단위)
-  - `res://scenes/ui/skill/skill_button.gd` — 버튼 로직 (사용자 요청으로 GraphEdit 실험 전 상태로 복구됨)
-  - `res://scenes/ui/skill/skill_tree_ui.tscn` / `skill_tree_ui.gd` — 스킬 UI 씬과 빌드 로직 (GraphEdit 관련 코드 일부는 제거/비활성화되었음)
-- 실험용으로 생성되었으나 현재 보류된 파일(원하면 제거 가능):
-  - `res://scenes/ui/skill/graph_skill_node.tscn`
-  - `res://scenes/ui/skill/graph_skill_node.gd`
+현재 구현/작업 내역
+- UI
+  - TabbedSkillTreeUI: 여러 스킬트리 씬을 탭으로 인스턴스화해 보여주는 기능 구현.
+  - skill_tree_ui.tscn → skill_trees/basic_skill_tree_ui.tscn으로 복제 및 구조 정리.
+  - fire_skill_tree_ui.tscn 추가(테스트용).
+- 스킬 버튼/데이터
+  - skill_button.tscn / skill_button.gd: 기존 씬 기반 버튼 로직 유지. SkillTemplate(.tres)를 에디터에서 할당하여 각 버튼이 동작함.
+  - SkillTemplate 리소스에 prerequisite(간단한 문자열 배열), prerequisite_mode(all/any), required_prerequisites 필드 추가(선결 조건 논리 단순화).
+- 런타임
+  - SkillManager(autoload)를 통해 스킬 포인트 사용과 현재 학습 스킬 레벨 제공. SkillTreeUI는 이 데이터를 구독해서 UI 갱신함.
+  - TabbedSkillTreeUI를 Town 씬에서 instantiate 하도록 변경. 일시정지 상태에서 UI 입력을 받게끔 Process/Pause 설정 확인.
 
-발생했던 이슈 및 해결
-- GDScript/Godot 4.x API 차이: `rect_position` → `position` 변경 필요.
-- class_name 충돌(스킬 노드 Resource와 씬 스크립트 간) — Resource를 `SkillNodeResource`로 명명하여 충돌 회피.
-- GraphEdit 실험에서 미리보기 문제(작은 뷰 등) — 씬 프리셋/앵커 수정으로 일부 해결했으나 UI 복잡도가 높아 보류 결정.
+현재 상태 요약
+- 빠른 동작 루프(에디터에서 씬 배치 → 게임에서 탭 UI 열기 → 스킬 획득)가 안정적으로 동작함.
+- GraphEdit 기반 편집기와 별도의 Resource 기반 노드/트리 구조(복잡한 메타데이터)는 삭제/보류되어 코드가 단순해짐.
+- 다만, 지금 구조는 "한 스킬에 단일 선결 스킬(또는 단순 배열 기반 any/all 판정)" 정도만 지원함.
 
-현재 상태
-- GraphEdit 실험 보류 완료: 핵심 작업은 원래의 `skill_button` 기반 UI로 되돌렸습니다.
-- 리소스 프로토타입(스키마)은 워크스페이스에 남아 있어, 필요 시 다시 활성화할 수 있습니다.
+향후 리팩토링(고려 중)
+- 복수 부모(다중 선결 스킬)를 시각적으로/논리적으로 깔끔하게 지원하는 리팩토링을 나중에 진행할 예정:
+  - 목표: 한 스킬이 여러 부모를 가질 수 있고, "all" / "any (k of n)" 조건을 UI와 데이터 양쪽에서 명확히 표현.
+  - 옵션 A (데이터 중심): SkillNodeResource 재도입 — 노드별 prerequisite 리스트와 UI 배치 정보(또는 버튼 id 매핑)를 분리해서 사용.
+  - 옵션 B (뷰 중심, 간단): 현재 SkillTemplate에 prerequisites 배열을 유지하되, SkillButton에서 여러 부모에 대한 라인을 동적으로 생성하고 평가 로직을 확장.
+  - UI 편의: 탭 내부에서 부모-자식 라인(선)을 자동으로 그려주고, 필요 시 "남은 필요 개수" 표시 및 툴팁으로 상세 설명 표시.
+  - 단계적 접근: 먼저 룰(논리)만 서버/런타임에서 지원한 뒤, 필요하면 GraphEdit과 같은 편집 도구를 별도 플러그인으로 개발.
 
-권장 다음 단계
-1. 커밋: 현재 상태를 스냅샷으로 커밋해두었습니다 (아래 참조).
-2. 리소스 작업 정리: 데이터 모델(`SkillTemplate` 확장 포함)을 한 번에 정리하고, 대표 `.tres` 샘플(액티브/패시브 1개씩)을 만들어 테스트 씬으로 연결하세요.
-3. 런타임: `SkillManager`(autoload)를 설계하여 배운 스킬 목록, 쿨다운, 시그널을 관리하는 작은 API를 만듭니다.
-4. 점진적 통합: 기존 플레이어와의 연결은 `PlayerActions.request_skill(skill_id)` 같은 얕은 API로 우선 연결해 테스트하세요.
+권장 다음 단계 (짧고 실용적으로)
+1. 현재 상태 커밋(스냅샷). — 이미 진행한 변경은 커밋해 두는 걸 권장.  
+2. SkillTemplate 샘플(.tres) 2개(액티브/패시브)를 만들어 각 트리 씬에 배치해 기능 확인.  
+3. (선택) 복수 부모 지원을 하려면 우선 런타임 로직(판정 함수)을 확장하고, UI에서 부모 라인 그리기만 먼저 적용해 시각화 테스트 진행.
 
-커밋 정보
-- 파일: `docs/skill_progress_ko.md` 추가
-- 커밋 메시지: "docs(skill): 한글 진행 문서 추가 및 현상 스냅샷 (GraphEdit 보류)"
-
-참고: 실험 파일(`graph_skill_node.*`, `resources/skill/skill_node.gd`, `resources/skill/skill_tree.gd`)을 삭제하려면 알려주세요. 보관(예: `experimental/` 폴더로 이동) 또는 완전 삭제 중 어떤 걸 원하시는지 선택하시면 작업해 드립니다.
-
-작성자 메모
-- 우선순위는 "빠르게 작동하는 최소 루프"입니다. 디자인과 정리는 이후 단계에서 차근차근 진행합시다.
-- 다음에 제가 바로 해드릴 수 있는 작업: (A) 실험 파일 정리, (B) `SkillManager` 기본 스텁 추가, (C) 샘플 `.tres` 2개 생성 및 테스트 씬 연결. 원하시는 항목을 골라주세요.
+메모(작성자 친근 알림)
+- 지금은 "빠르게 동작하는 최소 루프"를 우선으로 유지한 상태라 좋아.  
+- 복수 부모 기능은 필요하면 단계적으로 도입하자 — 내가 도와줄 준비 되어 있어 :)
 
 **구현 흐름 확인**
 

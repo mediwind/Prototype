@@ -3,8 +3,6 @@ extends Control
 @onready var skill_points_label: Label = %SkillPointsLabel
 @onready var skill_reset_label: Label = %SkillResetLabel
 @onready var skill_reset_button: Button = %SkillResetButton
-# Optional: SkillTree Resource를 연결하면 리소스 기반으로 UI를 생성합니다.
-# (GraphEdit/GraphNode 실험을 보류했으므로 관련 자동 생성 코드는 제거됨)
 
 var skill_points: int:
     set(value):
