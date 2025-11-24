@@ -21,7 +21,7 @@ func disable_collision():
 	collision_shape_2d.disabled = true
 
 
-func _on_area_entered(other_area):
+func _on_area_entered(_other_area):
 	if _is_collecting:
 		return
 
@@ -80,8 +80,8 @@ func collect():
 
 
 # 드랍(버리기) 시 사용
-func setup_drop(item_data: ItemData, amount: int):
-	self.item_data = item_data
-	self.amount = amount
+func setup_drop(drop_item_data: ItemData, drop_amount: int):
+	self.item_data = drop_item_data
+	self.amount = drop_amount
 	if sprite:
-		sprite.texture = item_data.icon if item_data else null
+		sprite.texture = drop_item_data.icon if drop_item_data else null
