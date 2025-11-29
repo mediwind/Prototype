@@ -16,10 +16,10 @@ var level : int = 0:
 
 func _ready():
 	self.pressed.connect(_on_pressed)
+	add_to_group("skill_button_nodes")
 
 	if get_parent() is SkillButton:
-		line_2d.add_point(global_position + size / 2)
-		line_2d.add_point(get_parent().global_position + size / 2)
+		call_deferred("build_connection_line")
 
 	level = SkillManager.get_skill_level(skill_template.id)
 	label.text = str(level) + "/" + str(skill_template.max_level)
@@ -61,3 +61,23 @@ func retrieve_skill_point():
 		for skill in skills:
 			if skill is SkillButton:
 				skill.disabled = true
+
+
+func _notification(what):
+	if what == NOTIFICATION_VISIBILITY_CHANGED and is_visible_in_tree():
+		if get_parent() is SkillButton:
+			call_deferred("build_connection_line")
+
+
+func build_connection_line():
+	if not (line_2d and get_parent() is SkillButton):
+		return
+
+	line_2d.top_level = true
+	var parent_btn := get_parent() as SkillButton
+	var start := get_global_position() + size * 0.5
+	var finish := parent_btn.get_global_position() + parent_btn.size * 0.5
+
+	line_2d.clear_points()
+	line_2d.add_point(start)
+	line_2d.add_point(finish)

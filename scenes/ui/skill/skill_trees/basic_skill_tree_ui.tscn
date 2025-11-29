@@ -33,54 +33,52 @@ grow_vertical = 2
 
 [node name="SkillButton" parent="." instance=ExtResource("2_ph2uk")]
 layout_mode = 0
-offset_left = 354.0
-offset_top = 279.0
-offset_right = 394.0
-offset_bottom = 319.0
+offset_left = 374.0
+offset_top = 270.0
+offset_right = 414.0
+offset_bottom = 310.0
 skill_template = ExtResource("3_hea75")
 
 [node name="SkillButton2" parent="SkillButton" instance=ExtResource("2_ph2uk")]
 layout_mode = 0
-offset_left = 92.0
-offset_top = -81.0
-offset_right = 132.0
-offset_bottom = -41.0
+offset_left = 88.0
+offset_top = -64.0
+offset_right = 128.0
+offset_bottom = -24.0
 disabled = true
 skill_template = ExtResource("4_ii44o")
 
 [node name="SkillButton4" parent="SkillButton/SkillButton2" instance=ExtResource("2_ph2uk")]
 layout_mode = 0
-offset_left = -56.0
-offset_top = -82.0
-offset_right = -16.0
-offset_bottom = -42.0
+offset_left = -64.0
+offset_top = -64.0
+offset_right = -24.0
+offset_bottom = -24.0
 disabled = true
 skill_template = ExtResource("5_7cw3w")
 
 [node name="SkillButton5" parent="SkillButton/SkillButton2" instance=ExtResource("2_ph2uk")]
 layout_mode = 0
-offset_left = 65.0
-offset_top = -82.0
-offset_right = 105.0
-offset_bottom = -42.0
+offset_left = 40.0
+offset_top = -64.0
+offset_right = 80.0
+offset_bottom = -24.0
 disabled = true
 skill_template = ExtResource("6_4vx66")
 
 [node name="SkillButton3" parent="SkillButton" instance=ExtResource("2_ph2uk")]
 layout_mode = 0
-offset_left = -96.0
-offset_top = -79.0
-offset_right = -56.0
-offset_bottom = -39.0
+offset_left = -104.0
+offset_top = -64.0
+offset_right = -64.0
+offset_bottom = -24.0
 disabled = true
 skill_template = ExtResource("7_f0ae8")
 
 [node name="SkillButton" parent="SkillButton/SkillButton3" instance=ExtResource("2_ph2uk")]
 layout_mode = 0
-offset_left = -74.0
-offset_top = 2.0
-offset_right = -34.0
-offset_bottom = 42.0
+offset_left = -64.0
+offset_right = -24.0
 disabled = true
 skill_template = ExtResource("8_h3o4r")
 

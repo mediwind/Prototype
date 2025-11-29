@@ -29,18 +29,18 @@ grow_vertical = 2
 
 [node name="SkillButton" parent="." instance=ExtResource("2_qwddf")]
 layout_mode = 0
-offset_left = 377.0
-offset_top = 196.0
-offset_right = 417.0
-offset_bottom = 236.0
+offset_left = 374.0
+offset_top = 206.0
+offset_right = 414.0
+offset_bottom = 246.0
 skill_template = ExtResource("3_vrehr")
 
 [node name="SkillButton" parent="SkillButton" instance=ExtResource("2_qwddf")]
 layout_mode = 0
-offset_left = 72.0
-offset_top = -61.0
-offset_right = 112.0
-offset_bottom = -21.0
+offset_left = 64.0
+offset_top = -64.0
+offset_right = 104.0
+offset_bottom = -24.0
 disabled = true
 skill_template = ExtResource("4_7xk1d")
 
