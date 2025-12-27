@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_lsrnn")
-id = "t4"
+id = "test4"
 max_level = 1
 skill_point_cost = 1
 title = "not assigned yet"

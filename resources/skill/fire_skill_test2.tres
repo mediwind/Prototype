@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_0mdtg")
-id = "fire_test_2"
+id = "fire_skill_test2"
 max_level = 1
 skill_point_cost = 1
 title = "not assigned yet"

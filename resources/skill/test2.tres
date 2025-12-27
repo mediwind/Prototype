@@ -4,8 +4,13 @@
 
 [resource]
 script = ExtResource("1_1an20")
-id = "t2"
+id = "test2"
 max_level = 3
 skill_point_cost = 1
 title = "test2"
 description = "test2"
+skill_type = "passive"
+cooldown = 0.0
+base_value = 0.0
+damage_type = "physical"
+cost = 0

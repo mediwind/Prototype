@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SkillTemplate" load_steps=3 format=3 uid="uid://bfswgypv4dwbg"]
+
+[ext_resource type="Texture2D" uid="uid://bmevcrxngu75l" path="res://assets/item/tile_0107.png" id="1_6bb8d"]
+[ext_resource type="Script" uid="uid://cqk4ufmwwyse2" path="res://resources/skill/skill_template.gd" id="2_skill"]
+
+[resource]
+script = ExtResource("2_skill")
+id = "fireball"
+max_level = 5
+skill_point_cost = 1
+title = "Fireball"
+description = "Hurls a ball of fire at the enemy."
+skill_type = "active"
+cooldown = 2.0
+base_value = 10.0
+damage_type = "fire"
+icon = ExtResource("1_6bb8d")
+cost = 5
+metadata/_custom_type_script = "uid://cqk4ufmwwyse2"

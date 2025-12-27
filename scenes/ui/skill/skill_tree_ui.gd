@@ -28,6 +28,7 @@ func _on_skill_point_used():
 
 
 func _on_skill_reset_button_pressed():
+	SkillManager.reset_skills()
 	get_tree().call_group("skill_button", "retrieve_skill_point")
 	get_tree().call_group("skill_tree_ui", "refresh_ui")
 

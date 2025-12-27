@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bhmc4t4dtf2u"]
+[gd_scene load_steps=4 format=3 uid="uid://bhmc4t4dtf2u"]
 
 [ext_resource type="Script" uid="uid://bhnv714eiuqqd" path="res://scenes/ui/town_ui.gd" id="1_3mlkv"]
 [ext_resource type="PackedScene" uid="uid://2yog34xmngmr" path="res://scenes/ui/currency/currency_display.tscn" id="2_xen83"]
+[ext_resource type="PackedScene" uid="uid://ctionbar001" path="res://scenes/ui/action_bar/action_bar.tscn" id="3_86xwp"]
 
 [node name="TownUI" type="CanvasLayer"]
 script = ExtResource("1_3mlkv")
@@ -25,3 +26,5 @@ text = "Skill"
 [node name="InventoryUIButton" type="Button" parent="HBoxContainer"]
 layout_mode = 2
 text = "Inventory"
+
+[node name="ActionBar" parent="." instance=ExtResource("3_86xwp")]

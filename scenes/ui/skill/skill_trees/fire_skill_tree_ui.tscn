@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://cvxxq6yuibj2s"]
+[gd_scene load_steps=6 format=3 uid="uid://cvxxq6yuibj2s"]
 
 [ext_resource type="Script" uid="uid://b5pwc2b0mn0gh" path="res://scenes/ui/skill/skill_tree_ui.gd" id="1_7h246"]
 [ext_resource type="PackedScene" uid="uid://ugmw2gl1gade" path="res://scenes/ui/skill/skill_button.tscn" id="2_qwddf"]
-[ext_resource type="Resource" uid="uid://q7l7p07xi687" path="res://resources/skill/fire_skill_test1.tres" id="3_vrehr"]
+[ext_resource type="Texture2D" uid="uid://bmevcrxngu75l" path="res://assets/item/tile_0107.png" id="3_7xk1d"]
+[ext_resource type="Resource" uid="uid://bfswgypv4dwbg" path="res://resources/skill/fireball_skill.tres" id="3_vrehr"]
 [ext_resource type="Resource" uid="uid://dely7rpxs4k1w" path="res://resources/skill/fire_skill_test2.tres" id="4_7xk1d"]
 
 [node name="FireSkillTreeUI" type="Control"]
@@ -11,10 +12,10 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
+offset_left = 100.0
+offset_top = 100.0
+offset_right = -550.0
+offset_bottom = -270.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7h246")
@@ -33,6 +34,7 @@ offset_left = 374.0
 offset_top = 206.0
 offset_right = 414.0
 offset_bottom = 246.0
+texture_normal = ExtResource("3_7xk1d")
 skill_template = ExtResource("3_vrehr")
 
 [node name="SkillButton" parent="SkillButton" instance=ExtResource("2_qwddf")]
