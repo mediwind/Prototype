@@ -25,6 +25,7 @@ InventoryManager="*res://scenes/autoload/inventory_manager.gd"
 StatManager="*res://scenes/autoload/stat_manager.gd"
 BuildManager="*res://scenes/autoload/build_manager.gd"
 PlayerControlManager="*res://scenes/autoload/player_control_manager.gd"
+TimeManager="*res://scenes/autoload/time_manager.gd"
 
 [display]
 
