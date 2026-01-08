@@ -20,6 +20,13 @@ script = ExtResource("1_bxp25")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_hhsk8")
 
+[node name="HandAnchor" type="Marker2D" parent="."]
+position = Vector2(12, 10)
+
+[node name="ToolSprite" type="Sprite2D" parent="HandAnchor"]
+rotation = -1.5708
+scale = Vector2(0.5, 0.5)
+
 [node name="PickupArea2D" type="Area2D" parent="."]
 collision_layer = 16
 collision_mask = 0

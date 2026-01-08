@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://c2fk4nenruxuf"]
+
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/item_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bodg5qgx5fhhs" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Tools.png" id="2_tex"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_water"]
+atlas = ExtResource("2_tex")
+region = Rect2(32, 224, 16, 16)
+
+[resource]
+script = ExtResource("1_script")
+name = "Watering Can"
+icon = SubResource("AtlasTexture_water")
+description = "wUsed to water crops. Infinite water for now."
+max_stack = 1

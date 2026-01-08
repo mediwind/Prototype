@@ -4,6 +4,29 @@ var player_inventory_slots: Array = []
 var player_hotbar_slots: Array = []
 var player_equipment_slots: Array = []
 
+var equipped_hand_item: ItemData
+var active_hotbar_index: int = -1
+
+signal hand_equipped(item_data: ItemData)
+
+func equip_to_hand(index: int) -> void:
+    if index < 0 or index >= player_hotbar_slots.size():
+        return
+        
+    active_hotbar_index = index
+    var slot = player_hotbar_slots[index]
+    equipped_hand_item = slot.item_data
+    emit_signal("hand_equipped", slot.item_data)
+
+func consume_equipped_item(amount: int = 1) -> void:
+    if active_hotbar_index == -1:
+        return
+        
+    # Use the existing removal logic but target the specific hotbar slot
+    if remove_item_from_slot(equipped_hand_item, amount, "hotbar", active_hotbar_index):
+        # If successfully removed, re-equip to update hand (handle Empty case)
+        equip_to_hand(active_hotbar_index)
+
 
 func _is_same_item(a: ItemData, b: ItemData) -> bool:
     # 우선 동일한 리소스 참조인지 확인

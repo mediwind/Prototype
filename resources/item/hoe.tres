@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://de7xp2xf3671r"]
+
+[ext_resource type="Texture2D" uid="uid://bodg5qgx5fhhs" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Tools.png" id="1_pu8qu"]
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/item_data.gd" id="1_script"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_anx4b"]
+atlas = ExtResource("1_pu8qu")
+region = Rect2(192, 64, 16, 16)
+
+[resource]
+script = ExtResource("1_script")
+name = "Hoe"
+icon = SubResource("AtlasTexture_anx4b")
+description = "A basic tool for tilling soil."
+max_stack = 1
