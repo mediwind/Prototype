@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://dbmbbtdil3jry"]
+
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/item_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dtmg8fuwtfuey" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Harvested Crops, Seed Packets, Minerals, Food, Equipment, & Miscellaneous Objects.png" id="2_icon"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_SpeedGro_Quality_Unique"]
+atlas = ExtResource("2_icon")
+region = Rect2(160, 304, 16, 16)
+
+[resource]
+script = ExtResource("1_script")
+name = "Quality Speed-Gro"
+icon = SubResource("AtlasTexture_SpeedGro_Quality_Unique")
+description = "Stimulates leaf production. Increases growth rate by 20%."
+max_stack = 99

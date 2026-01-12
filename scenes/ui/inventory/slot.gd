@@ -5,6 +5,7 @@ signal slot_ui_needs_refresh(slot_type_to_refresh: String, slot_index_to_refresh
 # 아이콘 및 수량 표시를 위한 노드 (씬 트리에서 직접 할당 권장)
 @onready var icon_rect: TextureRect = $Icon
 @onready var amount_label: Label = $Amount
+@onready var quality_star: TextureRect = $QualityStar
 
 @export var equipment_slot_type: EquipmentData.EquipmentSlotType
 # 슬롯 데이터
@@ -12,12 +13,25 @@ signal slot_ui_needs_refresh(slot_type_to_refresh: String, slot_index_to_refresh
 	set(value):
 		item_data = value
 		_update_icon_display()
+		# 아이템이 제거되면 품질도 초기화
+		if item_data == null:
+			quality = 0
 @export var amount: int = 0: # @export 키워드 추가
 	set(value):
 		amount = value
 		if amount <= 0 and item_data != null:
 			item_data = null # item_data setter가 _update_icon_display 호출
 		_update_amount_display()
+
+@export var quality: int = 0:
+	set(value):
+		quality = value
+		_update_quality_display(quality)
+
+# 등급 아이콘 설정 (Sprite Sheet 사용)
+const QUALITY_SHEET = preload("res://assets/ui/icons/quality_stars.png")
+const STAR_SIZE = 16 # 별 아이콘 하나의 크기 (픽셀)
+
 
 # 슬롯 타입 및 인덱스 (Inventory.gd에서 설정)
 var slot_type: String
@@ -31,6 +45,7 @@ const PREVIEW_AMOUNT_OUTLINE_SIZE = 2
 func _ready():
 	_update_icon_display()
 	_update_amount_display()
+	_update_quality_display(quality) # 초기화 시 등급 아이콘 표시 보장
 	if not is_in_group("inventory_slot"): # 에디터에서 설정 안했을 경우 대비
 		add_to_group("inventory_slot")
 
@@ -222,9 +237,13 @@ func _try_merge_items(source_slot: Object, target_slot: Object, dragged_item: It
 			source_slot.item_data != null and source_slot.item_data is ItemData and \
 			target_slot.item_data.name == dragged_item.name):
 		return false
+	
+	# 등급 체크: 다르면 합치기 불가
+	if target_slot.quality != source_slot.quality:
+		return false
 
 	# ItemData 리소스에 max_stack 속성이 있다고 가정
-	var max_stack = target_slot.item_data.max_stack 
+	var max_stack = target_slot.item_data.max_stack
 	var space_in_target = max_stack - target_slot.amount
 	if space_in_target <= 0: return false
 
@@ -236,6 +255,7 @@ func _try_merge_items(source_slot: Object, target_slot: Object, dragged_item: It
 	if source_slot.amount <= 0:
 		source_slot.item_data = null
 		source_slot.amount = 0
+		source_slot.quality = 0
 	return true
 
 
@@ -244,23 +264,28 @@ func _try_merge_items(source_slot: Object, target_slot: Object, dragged_item: It
 func _try_place_or_swap_items(source_slot: Object, target_slot: Object, dragged_item: ItemData, p_dragged_amount: int, is_partial: bool) -> bool:
 	if is_partial:
 		# 타겟 슬롯이 비어있거나 (item_data가 null), 아이템이 없는 경우 (amount가 0)
-		if not target_slot.item_data: 
-			target_slot.item_data = dragged_item 
+		if not target_slot.item_data:
+			target_slot.item_data = dragged_item
 			target_slot.amount = p_dragged_amount
+			target_slot.quality = source_slot.quality # 부분 이동 시 품질 복사
+			
 			source_slot.amount -= p_dragged_amount
 			if source_slot.amount <= 0:
-				source_slot.item_data = null; source_slot.amount = 0
+				source_slot.item_data = null; source_slot.amount = 0; source_slot.quality = 0 # 소스 비우기
 			return true
-		return false 
+		return false
 	else: # 전체 드래그
 		var temp_item = target_slot.item_data
 		var temp_amount = target_slot.amount
+		var temp_quality = target_slot.quality # 품질도 스왑 대상
 		
 		target_slot.item_data = source_slot.item_data
 		target_slot.amount = source_slot.amount # 전체 드래그이므로 소스 슬롯의 현재 양을 그대로 가져옴
+		target_slot.quality = source_slot.quality
 		
 		source_slot.item_data = temp_item
 		source_slot.amount = temp_amount
+		source_slot.quality = temp_quality
 		return true
 
 
@@ -307,3 +332,47 @@ func _get_tooltip(_at_position: Vector2) -> String:
 			return item_data.description
 			
 	return "" # item_data가 없거나, description이 비어있으면 빈 툴팁 반환
+
+# 외부에서 슬롯 데이터를 한 번에 설정할 때 사용 (로드 시 등)
+func set_slot_data(slot_data: SlotData) -> void:
+	if slot_data and slot_data.item_data:
+		item_data = slot_data.item_data
+		amount = slot_data.amount
+		quality = slot_data.quality # quality setter가 _update_quality_display 호출
+	else:
+		item_data = null
+		amount = 0
+		quality = 0
+
+
+func _update_quality_display(quality: int = 0):
+	if not quality_star:
+		# print("Slot: QualityStar node missing!")
+		return
+	
+	if quality <= 0:
+		quality_star.texture = null
+		quality_star.visible = false
+		return
+		
+	# AtlasTexture를 즉석에서 생성해서 사용
+	var atlas = AtlasTexture.new()
+	atlas.atlas = QUALITY_SHEET
+	
+	# 스프라이트 시트 순서: 은(1) -> 금(2) -> 보라(3) 가정
+	# 인덱스: 0, 1, 2...
+	var index = quality - 1
+	if index < 0: index = 0
+	
+	atlas.region = Rect2(index * STAR_SIZE, 0, STAR_SIZE, STAR_SIZE)
+	quality_star.texture = atlas
+	
+	# DEBUG: Pink Square Test
+	# var debug_tex = PlaceholderTexture2D.new()
+	# debug_tex.size = Vector2(16, 16)
+	# quality_star.texture = debug_tex
+	
+	quality_star.visible = true
+	
+	# Debug: Texture size check
+	# print("Slot: Star Region: ", atlas.region)

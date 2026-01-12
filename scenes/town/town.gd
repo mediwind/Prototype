@@ -17,6 +17,7 @@ func _ready():
 	
 	# Connect Farming Signals
 	FarmManager.crop_updated.connect(_on_crop_updated)
+	FarmManager.crop_removed.connect(_on_crop_removed) # New signal
 	FarmManager.daily_growth_tick.connect(_on_daily_growth_tick)
 
 
@@ -37,15 +38,12 @@ const TILLED_SOIL_ATLAS_COORDS = Vector2i(6, 22) # Placeholder: User to confirm 
 const SOIL_SOURCE_ID = 0
 const CROP_SOURCE_ID = 1
 
+@onready var collectable_scene = preload("res://scenes/game_object/loot/collectable_object.tscn")
+
 func _unhandled_input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var hand_item = InventoryManager.equipped_hand_item
-		if not hand_item:
-			return
-			
+		# Common Logic: Position Checks
 		var mouse_pos = soil_tile_map.get_global_mouse_position()
-		
-		# Grid-Based Distance Check (3x3 area)
 		var player_pos = player.global_position
 		var player_coords = soil_tile_map.local_to_map(soil_tile_map.to_local(player_pos))
 		var target_coords = soil_tile_map.local_to_map(soil_tile_map.to_local(mouse_pos))
@@ -54,11 +52,62 @@ func _unhandled_input(event):
 		if diff.x > 1 or diff.y > 1:
 			return # Too far
 
+		var hand_item = InventoryManager.equipped_hand_item
+		
+		# PRIORITY 1: HARVEST
+		if FarmManager.farm_data.has(target_coords):
+			# Check Tool Requirement (Phase 5)
+			# We peek at the crop data to check tool requirement before acting
+			var crop_data = FarmManager.farm_data[target_coords]
+			var resource = crop_data.get("resource") as CropData
+			
+			if resource:
+				var tool_req = resource.harvest_tool # "Hand" or "Scythe"
+				
+				# Validation: If Scythe required, must handle Scythe
+				if tool_req == "Scythe":
+					if not hand_item or hand_item.name != "Scythe":
+						# TODO: Shake visual or feedback "Need Scythe"
+						print("Farming: Needs Scythe!")
+						return # Block interaction
+				
+				# Proceed to Harvest
+				var harvested_item = FarmManager.harvest_crop(target_coords)
+				
+				if harvested_item:
+					print("Farming: Harvested ", harvested_item.name)
+					
+					# UNIFIED DROP LOGIC (Phase 5 + 6)
+					# Calculate Yield
+					var amount = randi_range(resource.min_harvest, resource.max_harvest)
+					
+					# Calculate Quality (Phase 6 - Placeholder RPG Logic)
+					# Normal: 80%, Silver (1): 15%, Gold (2): 5%
+					var quality = 0
+					var roll = randf()
+					if roll > 0.7:
+						quality = 2
+					elif roll > 0.4:
+						quality = 1
+					
+					# Spawn Drops
+					spawn_harvest_drops(target_coords, harvested_item, amount, quality)
+					return # Interaction consumed by harvest
+
+		# PRIORITY 2: USE TOOL
+		if not hand_item:
+			return
+			
 		# Interaction Logic
 		if hand_item.name == "Hoe":
-			print("Farming: Tilling soil at ", target_coords)
-			# Set the soil layer to Tilled Soil
-			soil_tile_map.set_cell(target_coords, SOIL_SOURCE_ID, TILLED_SOIL_ATLAS_COORDS)
+			# Validation: Is this tile tillable?
+			var tile_data = soil_tile_map.get_cell_tile_data(target_coords)
+			if tile_data and tile_data.get_custom_data("is_tillable"):
+				print("Farming: Tilling soil at ", target_coords)
+				# Set the soil layer to Tilled Soil
+				soil_tile_map.set_cell(target_coords, SOIL_SOURCE_ID, TILLED_SOIL_ATLAS_COORDS)
+			else:
+				print("Farming: Cannot till here.")
 			
 		elif hand_item.name == "Watering Can":
 			# TODO: Check if there is a crop or tilled soil? For now, just water the crop data
@@ -84,9 +133,33 @@ func _unhandled_input(event):
 			# CONSUMPTION: Remove 1 seed
 			InventoryManager.consume_equipped_item(1)
 
+func spawn_harvest_drops(coords: Vector2i, item_data: ItemData, amount: int, quality: int = 0):
+	# Calculate world position center of the tile
+	var center_pos = soil_tile_map.map_to_local(coords)
+	
+	for i in range(amount):
+		var drop = collectable_scene.instantiate()
+		add_child(drop)
+		
+		# Set Data
+		drop.setup_drop(item_data, 1, quality) # Drops stack of 1 individually
+		
+		# Animation Target: Random scatter around the tile
+		var angle = randf() * TAU
+		var distance = randf_range(16.0, 32.0)
+		var offset = Vector2(cos(angle), sin(angle)) * distance
+		var target_pos = center_pos + offset
+		
+		# Start Bounce
+		drop.animate_drop(center_pos, target_pos)
+
 
 func _on_crop_updated(coords: Vector2i, data: Dictionary):
 	_update_tile_visual(coords, data)
+
+func _on_crop_removed(coords: Vector2i):
+	# Clear the tile
+	crop_tile_map.erase_cell(coords)
 
 func _on_daily_growth_tick(updates: Dictionary):
 	# Staggered Growth Effect (The "Pop")

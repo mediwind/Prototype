@@ -71,7 +71,7 @@ func _create_slots_for_type(p_slot_type: String, p_slots_data_array: Array, p_co
 		return
 
 	for i in range(p_slots_data_array.size()):
-		var slot_data_object = p_slots_data_array[i] 
+		var slot_data_object = p_slots_data_array[i]
 		var new_slot_node = slot_scene.instantiate()
 
 		if not _configure_and_add_slot(new_slot_node, slot_data_object, p_slot_type, i, p_container):
@@ -84,21 +84,23 @@ func _configure_and_add_slot(slot_node: Panel, p_slot_data_obj: Object, p_type: 
 		printerr("Inventory.gd: Instantiated slot for '%s[%d]' is not a valid Slot Panel." % [p_type, p_idx])
 		return false
 
-	if p_slot_data_obj: 
+	if p_slot_data_obj:
 		if "item_data" in p_slot_data_obj and "amount" in p_slot_data_obj:
-			slot_node.item_data = p_slot_data_obj.item_data
-			slot_node.amount = p_slot_data_obj.amount
+			slot_node.set_slot_data(p_slot_data_obj)
 		else:
 			printerr("Inventory.gd: Slot data object for '%s[%d]' is missing 'item_data' or 'amount' properties." % [p_type, p_idx])
-			slot_node.item_data = null 
+			slot_node.item_data = null
 			slot_node.amount = 0
 	else:
 		printerr("Inventory.gd: Received null slot data object for '%s[%d]'." % [p_type, p_idx])
-		slot_node.item_data = null 
+		slot_node.item_data = null
 		slot_node.amount = 0
 
 	slot_node.slot_type = p_type
 	slot_node.slot_index = p_idx
+	
+	if p_slot_data_obj:
+		print("InvUI_Init: Created slot %s[%d] -> Q: %d" % [p_type, p_idx, p_slot_data_obj.quality])
 
 	_connect_slot_refresh_signal(slot_node, p_type, p_idx)
 	p_cont.add_child(slot_node)
@@ -147,8 +149,7 @@ func _on_slot_ui_refresh_requested(p_slot_type: String, p_slot_index: int):
 			return
 		var slot_node_to_update = slot_nodes[p_slot_index]
 		var current_data = data_array[p_slot_index]
-		slot_node_to_update.item_data = current_data.item_data
-		slot_node_to_update.amount = current_data.amount
+		slot_node_to_update.set_slot_data(current_data)
 		return
 
 	# 기존 인벤토리/핫바 처리
@@ -156,13 +157,13 @@ func _on_slot_ui_refresh_requested(p_slot_type: String, p_slot_index: int):
 		return
 
 	var slot_node_to_update = ui_container.get_child(p_slot_index)
-	if not (slot_node_to_update is Panel): 
+	if not (slot_node_to_update is Panel):
 		printerr("Inventory.gd: Node at %s[%d] is not a Panel for UI refresh." % [p_slot_type, p_slot_index])
 		return
 
 	var current_data = data_array[p_slot_index]
-	slot_node_to_update.item_data = current_data.item_data
-	slot_node_to_update.amount = current_data.amount
+	print("InvUI [%s:%d]: Passing data -> Amount: %d, Q: %d" % [p_slot_type, p_slot_index, current_data.amount, current_data.quality])
+	slot_node_to_update.set_slot_data(current_data)
 
 
 # 슬롯 타입 문자열에 따라 해당하는 UI 컨테이너 노드를 반환합니다.
@@ -192,10 +193,10 @@ func _get_data_array_by_type(type_str: String) -> Array:
 # UI 새로고침을 위한 인덱스가 유효한 범위 내에 있는지 확인합니다.
 func _is_valid_index_for_refresh(idx: int, ui_cont: Container, data_arr: Array) -> bool:
 	if idx < 0 or idx >= ui_cont.get_child_count():
-		printerr("Inventory.gd: Invalid UI index %d (max %d)." % [idx, ui_cont.get_child_count() -1])
+		printerr("Inventory.gd: Invalid UI index %d (max %d)." % [idx, ui_cont.get_child_count() - 1])
 		return false
 	if idx < 0 or idx >= data_arr.size():
-		printerr("Inventory.gd: Invalid data index %d (max %d)." % [idx, data_arr.size() -1])
+		printerr("Inventory.gd: Invalid data index %d (max %d)." % [idx, data_arr.size() - 1])
 		return false
 	return true
 
@@ -254,7 +255,7 @@ func _is_drop_on_valid_inventory_ui(control: Control) -> bool:
 
 func _process_map_drop(payload: Dictionary):
 	var item_removed = InventoryManager.remove_item_from_slot(
-		payload.item_data, payload.amount, 
+		payload.item_data, payload.amount,
 		payload.source_slot_type, payload.source_slot_index
 	)
 	if item_removed:
@@ -301,6 +302,6 @@ func _calculate_drop_position(base_pos: Vector2) -> Vector2:
 func _request_ui_refresh_for_source_slot(payload_with_source: Dictionary):
 	if payload_with_source.has("source_slot_type") and payload_with_source.has("source_slot_index"):
 		_on_slot_ui_refresh_requested(
-			payload_with_source.source_slot_type, 
+			payload_with_source.source_slot_type,
 			payload_with_source.source_slot_index
 		)
