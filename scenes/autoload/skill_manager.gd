@@ -62,6 +62,11 @@ func get_skill_level(skill_name: String) -> int:
 	return 0
 
 
+func has_skill(skill_id: String) -> bool:
+	# Checks if the skill is acquired (level > 0)
+	return get_skill_level(skill_id) > 0
+
+
 func equip_skill(slot_index: int, skill_id: String):
 	var old_slot = -1
 	for slot in skill_data.equipped_skills:

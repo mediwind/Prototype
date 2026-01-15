@@ -57,6 +57,10 @@ func _setup_tree_mode():
 	if not skill_template:
 		return
 		
+	# Auto-assign icon from template (QoL)
+	if skill_template.icon:
+		texture_normal = skill_template.icon
+		
 	if get_parent() is SkillButton:
 		call_deferred("build_connection_line")
 

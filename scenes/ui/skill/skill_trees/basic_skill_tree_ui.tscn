@@ -1,8 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://ddvqb30ex6dp3"]
+[gd_scene load_steps=9 format=3 uid="uid://ddvqb30ex6dp3"]
 
 [ext_resource type="Script" uid="uid://b5pwc2b0mn0gh" path="res://scenes/ui/skill/skill_tree_ui.gd" id="1_0txi6"]
 [ext_resource type="PackedScene" uid="uid://ugmw2gl1gade" path="res://scenes/ui/skill/skill_button.tscn" id="2_ph2uk"]
-[ext_resource type="Texture2D" uid="uid://c0rkxjnmmftwv" path="res://assets/item/tile_0130.png" id="3_ph2uk"]
 [ext_resource type="Resource" uid="uid://kytshjy0muna" path="res://resources/skill/icebolt_skill.tres" id="4_hea75"]
 [ext_resource type="Resource" uid="uid://c1acrdkxc1ajq" path="res://resources/skill/fire_rate.tres" id="4_ii44o"]
 [ext_resource type="Resource" uid="uid://b7o3eaxiwfipd" path="res://resources/skill/test2.tres" id="5_7cw3w"]
@@ -16,10 +15,10 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 100.0
-offset_top = 100.0
-offset_right = -550.0
-offset_bottom = -270.0
+offset_left = 95.0
+offset_top = 95.0
+offset_right = -545.0
+offset_bottom = -265.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_0txi6")
@@ -34,11 +33,10 @@ grow_vertical = 2
 
 [node name="SkillButton" parent="." instance=ExtResource("2_ph2uk")]
 layout_mode = 0
-offset_left = 374.0
-offset_top = 270.0
-offset_right = 414.0
-offset_bottom = 310.0
-texture_normal = ExtResource("3_ph2uk")
+offset_left = 300.0
+offset_top = 100.0
+offset_right = 340.0
+offset_bottom = 140.0
 skill_template = ExtResource("4_hea75")
 
 [node name="SkillButton2" parent="SkillButton" instance=ExtResource("2_ph2uk")]

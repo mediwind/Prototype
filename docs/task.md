@@ -1,0 +1,43 @@
+# Task List
+
+- [ ] **Phase 8: Refactoring & Scalability**
+        - [/] **FarmManager: Growth Logic Update** <!-- id: 1 -->
+            - [x] Change growth tracking from `days_grown` (int) to `accumulated_growth_points` (float).
+            - [x] Implement Daily Tick Logic: 1 Day = 100 Points base.
+            - [x] Update SpeedGro/Fertilizer logic to apply multipliers to daily points.
+            - [x] Verify point accumulation and stage transitions.
+        - [/] **LevelAndExpManager: Category Support** <!-- id: 2 -->
+            - [x] Refactor `LevelAndExpData` to support multiple categories (Farming, Combat, etc.).
+            - [x] Update `LevelAndExpManager` methods (`add_experience`, `get_level`) to accept `category` parameter.
+            - [x] Define default categories (Farming, Combat, Mining, Fishing, Foraging).
+            - [x] Update `SaveManager` to handle new data structure (migration or reset).
+    - [x] **UI Updates** <!-- id: 3 -->
+        - [x] Implement `get_main_level()` calculation logic.
+        - [x] Create `DebugLevelHUD` to visualize/test levels.
+        - [x] Update debug UI or HUD to show specific category levels.
+    - [x] Update debug UI or HUD to show specific category levels.
+
+- [x] **Phase 9: Farming Skills & Passive System**
+    - [x] **Data & Resources** <!-- id: 5 -->
+        - [x] Create `fast_grower.tres` (Passive, Growth Speed).
+        - [x] Create `master_farmer.tres` (Passive, Quality Chance).
+    - [x] **System Logic** <!-- id: 6 -->
+        - [x] Update `SkillManager` with `has_skill(id)` helper.
+        - [x] Update `FarmManager` to check for skills and apply bonuses.
+    - [x] **UI Implementation** <!-- id: 7 -->
+        - [x] Create `FarmingSkillTreeUI` scene.
+        - [x] Add Farming Tab to `TabbedSkillTreeUI`.
+    - [x] **Verification** <!-- id: 8 -->
+        - [x] Test skill acquisition and effect on crop growth (Fast Grower confirmed).
+        - [x] Implement `Master Farmer` quality logic.
+        - [x] **UI QoL**: Auto-set SkillButton icon from Template.
+
+- [ ] **Phase 10: Tools & Interaction Range**
+    - [ ] **Interaction Logic**
+        - [ ] Implement `ShapeCast2D` or `Area2D` for directional tool range (Scythe/Weapon).
+        - [ ] Detach logic from animation (enable immediate testing without assets).
+    - [ ] **Scythe Implementation**
+        - [ ] Implement `harvest_range` in `CropData` or `ItemData`.
+        - [ ] Create generic "Harvest in Area" function in `FarmManager` or `Town.gd`.
+    - [ ] **Visual Feedback**
+        - [ ] Add temporary debug visual (Polygon or Line2D) to show hit area when clicking.

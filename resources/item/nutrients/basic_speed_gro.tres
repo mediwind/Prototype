@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://b5md1nqvksi0b"]
+[gd_resource type="Resource" script_class="ItemData" load_steps=5 format=3 uid="uid://b5md1nqvksi0b"]
 
+[ext_resource type="Resource" path="res://resources/farming/nutrients/data_basic_speed_gro.tres" id="1_e4uos"]
 [ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/item_data.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dtmg8fuwtfuey" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Harvested Crops, Seed Packets, Minerals, Food, Equipment, & Miscellaneous Objects.png" id="2_icon"]
 
@@ -13,3 +14,4 @@ name = "Basic Speed-Gro"
 icon = SubResource("AtlasTexture_SpeedGro_Basic_Unique")
 description = "Stimulates leaf production. Increases growth rate by 10%."
 max_stack = 99
+fertilizer_data = ExtResource("1_e4uos")

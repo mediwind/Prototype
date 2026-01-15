@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://dqhq6mmnxq438"]
+[gd_scene load_steps=11 format=4 uid="uid://dqhq6mmnxq438"]
 
 [ext_resource type="TileSet" uid="uid://bhpjte4l1h6wi" path="res://resources/tileset.tres" id="1_1xlid"]
 [ext_resource type="PackedScene" uid="uid://bkgb4p0vuag2s" path="res://scenes/manager/enemy_manager.tscn" id="1_8gj33"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="2_p1h8n"]
 [ext_resource type="PackedScene" uid="uid://dk2ejswm22v7c" path="res://scenes/ui/building/building_ui.tscn" id="4_yyfjg"]
 [ext_resource type="PackedScene" uid="uid://bmumqx5usaham" path="res://scenes/ui/control/control_switch_ui.tscn" id="5_yyfjg"]
+[ext_resource type="PackedScene" uid="uid://dp8hmaps4enrc" path="res://scenes/ui/debug/debug_level_hud.tscn" id="6_debug"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_b1x3f")
@@ -28,6 +29,8 @@ process_mode = 3
 mouse_filter = 2
 
 [node name="ControlSwitchUi" parent="UI" instance=ExtResource("5_yyfjg")]
+
+[node name="DebugLevelHUD" parent="UI" instance=ExtResource("6_debug")]
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 use_parent_material = true

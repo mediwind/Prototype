@@ -74,3 +74,42 @@ trigger: always_on
 ## 🚀 PART 4. 개발 전략 (Development Strategy)
 - **Make Systems First:** 아트 리소스 작업 전, 시스템 아키텍처와 로직을 우선 완성한다.
 - **Scalability:** 모든 기능은 나중에 다른 시스템과 엮일 수 있도록 확장성을 고려하여 설계한다.
+
+---
+
+## 🤖 PART 5. 에이전트 협업 가이드 (Agent Workflow)
+
+### 1. 세션 시작 및 종료 루틴 (Start-End Routine)
+- **Start:** 세션 시작 시 반드시 `docs/task.md`를 읽어 프로젝트의 현재 진행 상황(Context)을 파악한다.
+- **End:** 작업 완료 후 `docs/task.md`에 진행 내역을 업데이트하고, 중요 변경 사항은 `docs/walkthrough.md`에 요약한다.
+- **Archiving:** `task.md` 내용이 비대해지면 완료된 Phase를 `docs/task_archive.md`로 이동하여 관리한다.
+
+### 2. 문서화 원칙 (Documentation as Memory)
+- **파일 기반 기억:** 에이전트 간 인수인계는 대화 내역이 아닌 **프로젝트 내 문서(`docs/`)**를 통해 이루어진다.
+- **Rules:** 프로젝트의 중요한 규칙 변경 사항은 즉시 이 파일(`godot-rpg-game-dev-rules.md`)에 반영한다.
+
+---
+
+## 📝 PART 6. 커밋 메시지 표준 (Commit Standards)
+
+### 1. 기본 형식
+```text
+type(scope): subject
+
+- body line 1
+- body line 2
+...
+```
+
+### 2. Type 가이드
+- **feat:** 새로운 기능 추가
+- **fix:** 버그 수정
+- **refactor:** 기능 변경 없는 코드 구조 개선
+- **docs:** 문서 수정
+- **style:** 코드 포맷팅, 세미콜론 누락 등 (로직 변경 없음)
+- **test:** 테스트 코드 추가/수정
+- **chore:** 빌드 업무 수정, 패키지 매니저 설정 등
+
+### 3. 작성 규칙
+- **Subject:** 50자 이내, 명령문으로 작성 (예: "Add farming skill", "Fix crash on startup").
+- **Body:** 각 줄은 "Implemented...", "Added...", "Fixed..." 와 같이 과거 분사형이나 명사형으로 시작하여 상세 내용을 기술한다.

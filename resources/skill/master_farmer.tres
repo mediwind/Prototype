@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillTemplate" load_steps=4 format=3 uid="uid://d3mswg6i58cbg"]
+
+[ext_resource type="Texture2D" uid="uid://dtmg8fuwtfuey" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Harvested Crops, Seed Packets, Minerals, Food, Equipment, & Miscellaneous Objects.png" id="1_v8jub"]
+[ext_resource type="Script" uid="uid://cqk4ufmwwyse2" path="res://resources/skill/skill_template.gd" id="2_skill"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_phfrq"]
+atlas = ExtResource("1_v8jub")
+region = Rect2(48, 16, 16, 16)
+
+[resource]
+script = ExtResource("2_skill")
+id = "master_farmer"
+max_level = 1
+skill_point_cost = 1
+title = "Master Farmer"
+description = "Passive: High chance for high quality crops."
+skill_type = "passive"
+cooldown = 0.0
+base_value = 0.0
+damage_type = "physical"
+icon = SubResource("AtlasTexture_phfrq")
+cost = 0

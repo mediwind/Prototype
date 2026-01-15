@@ -99,9 +99,6 @@ func _configure_and_add_slot(slot_node: Panel, p_slot_data_obj: Object, p_type: 
 	slot_node.slot_type = p_type
 	slot_node.slot_index = p_idx
 	
-	if p_slot_data_obj:
-		print("InvUI_Init: Created slot %s[%d] -> Q: %d" % [p_type, p_idx, p_slot_data_obj.quality])
-
 	_connect_slot_refresh_signal(slot_node, p_type, p_idx)
 	p_cont.add_child(slot_node)
 	return true
