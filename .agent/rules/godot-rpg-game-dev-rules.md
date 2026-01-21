@@ -87,6 +87,8 @@ trigger: always_on
 
 ### 2. 문서화 원칙 (Documentation as Memory)
 - **파일 기반 기억:** 에이전트 간 인수인계는 대화 내역이 아닌 **프로젝트 내 문서(`docs/`)**를 통해 이루어진다.
+- **Append Logic:** 기본적으로 `docs/task.md`와 `docs/walkthrough.md`는 하단에 내용을 누적(Append)한다. **임의로 완료된 상위 Phase를 삭제하거나 내용을 축약/덮어쓰지 않는다.**
+- **Archiving Policy:** 단, 파일이 비대해져 가독성을 해칠 경우(예: 500줄 이상), 완료된 오래된 Phase 항목들을 `docs/task_archive.md` 등으로 **이동(Cut & Paste)**하여 관리한다. 이는 '삭제'가 아닌 '보관' 프로세스이다.
 - **Rules:** 프로젝트의 중요한 규칙 변경 사항은 즉시 이 파일(`godot-rpg-game-dev-rules.md`)에 반영한다.
 
 ---

@@ -33,3 +33,99 @@ This phase focused on creating a robust foundation for the RPG elements of the g
 - [x] **Growth**: Crops grow over multiple days (or instantly with Fast Grower).
 - [x] **Leveling**: Adding XP increments category level and updates Main Level.
 - [x] **Drops**: `Master Farmer` skill successfully forces Gold-quality drops.
+
+# Phase 10: Tools & Interaction Range - Walkthrough
+
+## Summary of Changes
+Implemented directional interaction logic for tools (specifically the Scythe) and refactored the physics/collision system to support a unified "Attack/Harvest" mechanism.
+
+### 1. Physics Layer Refactoring
+Defined a clear standard for Collision Layers in `project.godot`:
+- **Layer 1:** Terrain
+- **Layer 2:** Player
+- **Layer 3:** Enemy
+- **Layer 7:** PlayerHitbox (Attack)
+- **Layer 8:** EnemyHurtbox (Damageable Body)
+- **Layer 9:** EnemyHitbox (Enemy Attack)
+- **Layer 10:** PlayerHurtbox (Damageable Body)
+- **Layer 11:** Farming (Crops)
+
+Updated `BasicEnemy` and `BasicBullet` to use these new layers, fixing legacy "Layer 4/32" confusion.
+
+### 2. Hitbox Component Decoupling
+Refactored `HitboxComponent` to remove strict dependency on `BaseBullet`.
+- **Before:** `if owner is BaseBullet`
+- **After:** `if owner.has_method("on_hit")` (Duck Typing)
+- **Benefit:** Now Scythe, Sword, Traps, and Bullets can all use the same Hitbox logic.
+
+### 3. Directional Tool Logic (Scythe)
+Implemented "Mouse Facing" logic in `PlayerHuman` and `Town.gd`:
+- **Use:** Clicking with a Directional Tool (Scythe) turns the player towards the mouse immediately.
+- **Effect:** A procedural "Slash" visual (`DebugToolHitVisual`) appears.
+- **Dual Detection:** The attack checks for **both**:
+    1.  **Farming Layer:** Harvests crops in the arc.
+    2.  **Enemy Layer:** Deals damage to generic enemies (via Duck Typing).
+
+## Verification Steps (Manual)
+
+### 1. Physics & Combat Regression Test
+- **Action:** Equip a Gun (or Turret) and shoot an Enemy.
+- **Expected:** Bullets (Layer 7) should hit Enemy (Layer 8) and deal damage. Verify `BasicBullet` collision settings.
+
+### 2. Scythe Directional Harvest
+- **Action:** Equip Scythe. Stand near crops. Click mouse *away* from player (e.g. Right).
+- **Expected:**
+    - Player sprite flips to face Right.
+    - Blue "Slash" visual appears in front of player.
+    - Crops in that 3x3 area are harvested.
+
+### 3. Scythe Combat Test
+- **Action:** Equip Scythe. Stand near an Enemy. Click.
+- **Expected:** Enemy takes damage (Log: "Scythe hit enemy!").
+
+## Regression Fixes (Post-Refactor)
+### 1. Item Pickup Restoration
+- **Issue:** Items stopped flying to player.
+- **Fix:**
+    - Player `PickupArea2D`: Assigned to **Layer 6 (Pickup)** (Layer 32).
+    - `CollectableObject`: Mask set to **Layer 6**.
+    - **Result:** Items now correctly detect player proximity and trigger collection.
+
+### 2. Combat Damage Restoration
+- **Issue:** Bullets hit but dealt no damage.
+- **Fix:**
+    - `BasicEnemy` & `WizardEnemy` Hurtbox: Mask set to **Layer 7 (PlayerHitbox)** (Mask 64).
+    - `WizardEnemy` Body: Layer set to **Layer 3 (Enemy)** (Val 4).
+    - **Result:** Hurtbox now detects generic `HitboxComponent` (Bullet/Tools) and receives damage via `area_entered`.
+
+### 3. Watering Can Fix
+- **Issue:** Unable to water tiles with crops.
+- **Fix:**
+    - `Town.gd`: `_try_harvest_crop` now filters execution flow.
+    - **Result:** If crop is not ripe (harvest fails), input falls through to execute "Watering" logic.
+
+### 4. Turret Attack Fix
+- **Issue:** Placed Turrets ignored enemies.
+- **Fix:**
+    - `Turret` AttackRange: Updated Mask from Layer 4 to **Layer 3 (Enemy)**.
+    - **Result:** Turrets now correctly detect Enemy bodies and open fire.
+
+# Walkthrough - Combat System Refactor (Phase 11-12)
+
+## Changes
+- **Architecture:** Replaced `ActionController` with `EquipmentActionHandler` (Logic) and `ActionVisualEffect` (Visuals).
+- **Data-Driven:** Implemented `WeaponData` resource for easier item creation.
+- **Feedback:** Added `FloatingTextSpawner` for universal damage/heal numbers.
+- **Enemies:** added `KnockbackComponent` to `BasicEnemy` and `WizardEnemy`.
+
+## Verification Results
+### Combat
+- [x] Player can swing Sword/Scythe.
+- [x] White visual arc appears.
+- [x] Enemies take damage and are knocked back.
+- [x] Floating damage numbers appear on hit.
+
+### Refactoring
+- [x] Renamed `ActionController` to `EquipmentActionHandler`.
+- [x] Fixed all `Parse Error` and `Indentation Error` issues.
+- [x] `WizardEnemy.tscn` load error resolved.

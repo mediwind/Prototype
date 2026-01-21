@@ -42,3 +42,44 @@
         - [x] Decouple `HitboxComponent` for reuse.
     - [x] **Visual Feedback**
         - [x] Add temporary debug visual (Polygon2D Slash Effect).
+
+- [x] **Phase 11: Data-Driven Action System**
+    - [x] **Data Structures**
+        - [x] Create `WeaponData.gd` (extends `EquipmentData`).
+        - [x] Update `HitboxComponent` to support knockback/source position.
+    - [x] **Components**
+        - [x] Create `KnockbackComponent` (Impulse logic).
+        - [x] Create `ActionVisualEffect` (Hybrid Visuals).
+        - [x] Create `ActionController` (Player/Enemy Action Handler).
+    - [x] **Integration & Migration**
+        - [x] Create `ScytheWeaponData.tres`.
+        - [x] Refactor `Town.gd` to use `ActionController`.
+        - [/] Verify Scythe functionality (Regression Test).
+        - [/] Verify Knockback on Enemies.
+    - [x] **Troubleshooting**
+        - [x] Fix `scythe.tres` missing dependency error (Restore ExtResource header).
+        - [x] Resolve `town.tscn` and `main.tscn` load failures.
+        - [x] Restore missing nodes (`KnockbackComponent`, `ActionController`) deleted during debug.
+        - [x] Fix `Parse Error` in tscn files caused by invalid `ExtResource` syntax in previous step.
+        - [x] Fix `ActionController` error: `Can't add child ... already has a parent` (Removed duplicate add_child call).
+        - [x] Fix `Results: 0` in hit check: Set `collide_with_areas = true` (Hurtbox is Area2D).
+        - [x] Fix Floating Text for Melee: Use `handle_hit` in `HurtboxComponent` to unify damage+text logic.
+    - [x] **Universal Feedback System (Extra)**
+        - [x] Refactor `HealthComponent` to signal change amount.
+        - [x] Create `FloatingTextSpawner` (Auto-spawn text, Green for Heal).
+        - [x] Apply to `BasicEnemy` and `WizardEnemy` (Added Knockback to Wizard too).
+        - [x] Fix `ActionController` cyclic dependency (Duck Typing).
+        - [x] Fix `Parse Error: Used space...`: Ran python script to normalize indentation to Tabs.
+        - [x] Fix TSCN Syntax: Replaced invalid path-based script assignment with `ExtResource` ID in `WizardEnemy` and `BasicEnemy`.
+
+- [x] **Phase 12: Refactoring & Cleanup**
+    - [x] Rename `ActionController` -> `EquipmentActionHandler` (File, Class, Node).
+    - [x] Integrate Knockback to `WizardEnemy`.
+    - [x] Remove debug logs.
+    - [x] Fix Regression: Restore `PlayerHuman.tscn` script connection.
+    - [x] Cleanup: Delete `action_controller.gd.uid`.
+
+- [x] **Phase 11.5: Final Verification**
+    - [x] Verify `BasicEnemy` and `WizardEnemy` load correctly.
+    - [x] Verify Floating Text appears for Damage and Heal.
+    - [x] Verify Combat Collision (`ActionController`).
