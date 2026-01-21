@@ -22,7 +22,7 @@ const LOGIC_TICK_HOUR = 6 # 06:00 AM
 # Configuration
 # 1 real second = 1 game minute (Default)
 # 24 real minutes = 1 game day
-var time_scale: float = 600.0
+var time_scale: float = 60.0
 var is_paused: bool = false
 
 # Current State

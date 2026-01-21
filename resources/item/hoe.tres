@@ -13,3 +13,5 @@ name = "Hoe"
 icon = SubResource("AtlasTexture_anx4b")
 description = "A basic tool for tilling soil."
 max_stack = 1
+interaction_type = 0
+interaction_range = 1

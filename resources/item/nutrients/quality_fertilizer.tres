@@ -15,4 +15,6 @@ icon = SubResource("AtlasTexture_cx8ij")
 description = "Improves soil quality moderately."
 max_stack = 99
 fertilizer_data = ExtResource("1_b4jgq")
+interaction_type = 0
+interaction_range = 1
 metadata/_custom_type_script = "uid://c5x21ww1vgp4q"

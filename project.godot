@@ -133,6 +133,11 @@ hotbar_9={
 2d_physics/layer_4="EnemyCollision"
 2d_physics/layer_5="PlayerPickup"
 2d_physics/layer_6="Penetration"
+2d_physics/layer_7="PlayerHitbox"
+2d_physics/layer_8="EnemyHurtbox"
+2d_physics/layer_9="EnemyHitbox"
+2d_physics/layer_10="PlayerHurtbox"
+2d_physics/layer_11="Farming"
 
 [rendering]
 

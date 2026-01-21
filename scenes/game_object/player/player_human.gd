@@ -11,6 +11,19 @@ func _process(_delta):
 	var direction = get_movement_vector()
 	velocity = direction * MAX_SPEED
 	move_and_slide()
+	
+	if direction.x != 0:
+		face_direction(direction)
+
+
+func face_direction(dir: Vector2):
+	if dir.x > 0:
+		$Sprite2D.flip_h = false
+	elif dir.x < 0:
+		$Sprite2D.flip_h = true
+
+func perform_action(item: ItemData, target_pos: Vector2) -> Dictionary:
+	return $EquipmentActionHandler.attempt_action(self, item, target_pos)
 
 func _input(event):
 	for i in range(1, 10):

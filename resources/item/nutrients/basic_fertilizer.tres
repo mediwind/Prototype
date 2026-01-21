@@ -15,3 +15,5 @@ icon = SubResource("AtlasTexture_pjmnt")
 description = "Improves soil quality a little."
 max_stack = 99
 fertilizer_data = ExtResource("1_8wm5d")
+interaction_type = 0
+interaction_range = 1

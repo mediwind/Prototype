@@ -32,12 +32,13 @@
         - [x] Implement `Master Farmer` quality logic.
         - [x] **UI QoL**: Auto-set SkillButton icon from Template.
 
-- [ ] **Phase 10: Tools & Interaction Range**
-    - [ ] **Interaction Logic**
-        - [ ] Implement `ShapeCast2D` or `Area2D` for directional tool range (Scythe/Weapon).
-        - [ ] Detach logic from animation (enable immediate testing without assets).
-    - [ ] **Scythe Implementation**
-        - [ ] Implement `harvest_range` in `CropData` or `ItemData`.
-        - [ ] Create generic "Harvest in Area" function in `FarmManager` or `Town.gd`.
-    - [ ] **Visual Feedback**
-        - [ ] Add temporary debug visual (Polygon or Line2D) to show hit area when clicking.
+- [x] **Phase 10: Tools & Interaction Range**
+    - [x] **Interaction Logic**
+        - [x] Implement Directional/Area interaction for Scythe (Mouse Facing).
+        - [x] Refactor Physics Layers for Combat/Farming unification.
+    - [x] **Scythe Implementation**
+        - [x] Implement `InteractionType` (POINT/DIRECTIONAL) in `ItemData`.
+        - [x] Implement generic area harvest logic in `Town.gd`.
+        - [x] Decouple `HitboxComponent` for reuse.
+    - [x] **Visual Feedback**
+        - [x] Add temporary debug visual (Polygon2D Slash Effect).

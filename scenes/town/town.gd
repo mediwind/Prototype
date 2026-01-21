@@ -50,69 +50,59 @@ func _unhandled_input(event):
 		var player_coords = soil_tile_map.local_to_map(soil_tile_map.to_local(player_pos))
 		var target_coords = soil_tile_map.local_to_map(soil_tile_map.to_local(mouse_pos))
 		
-		var diff = (target_coords - player_coords).abs()
-		if diff.x > 1 or diff.y > 1:
-			return # Too far
-
 		var hand_item = InventoryManager.equipped_hand_item
 		
-		# PRIORITY 1: HARVEST
+		# PRIORITY 1: CHECK ITEM TYPE (POINT or DIRECTIONAL)
+		# PRIORITY 1: CHECK ITEM TYPE (POINT or DIRECTIONAL)
+		if hand_item:
+			# Directional Tool Logic (Scythe, Weapon) -> Handled by EquipmentActionHandler
+			# We check if it HAS EquipmentData -> WeaponData
+			if hand_item.equipment_data and hand_item.equipment_data is WeaponData:
+				var result = player.perform_action(hand_item, mouse_pos)
+				if result and result.get("type") == "melee":
+					_check_farming_hit(result)
+				return
+ 
+			# Fallback for old DIRECTIONAL check if needed, or remove.
+			if hand_item.interaction_type == ItemData.InteractionType.DIRECTIONAL:
+				# Legacy path if not using WeaponData yet? 
+				# Our plan is Scythe uses WeaponData. So this block handles Scythe.
+				pass
+
+			# Point-Click Logic (Hoe, Watering Can) follows regular flow...
+		
+		# PRIORITY 2: POINT INTERACTION (Harvest / Till / Water)
+		# NOTE: Harvest is now context-sensitive. If hand is empty or tool matches.
+		
+		# Validation: Distance Check for Point Interaction
+		var diff = (target_coords - player_coords).abs()
+		if diff.x > 1 or diff.y > 1:
+			return # Too far for point interaction
+
 		if FarmManager.farm_data.has(target_coords):
-			# Check Tool Requirement (Phase 5)
-			# We peek at the crop data to check tool requirement before acting
+			# Check Tool Requirement
 			var crop_data = FarmManager.farm_data[target_coords]
 			var resource = crop_data.get("resource") as CropData
 			
 			if resource:
 				var tool_req = resource.harvest_tool # "Hand" or "Scythe"
 				
-				# Validation: If Scythe required, must handle Scythe
+				# If Scythe is required, Point-Clicking with Hand should fail or warn
+				# Use Directional Input for Scythe!
 				if tool_req == "Scythe":
 					if not hand_item or hand_item.name != "Scythe":
-						# TODO: Shake visual or feedback "Need Scythe"
-						print("Farming: Needs Scythe!")
-						return # Block interaction
+						print("Farming: This crop needs a Scythe! (Use Directional Attack)")
+						return
+					else:
+						# User point-clicked WITH Scythe. Allow it? 
+						# User requested "Directional logic". But point click is precise.
+						# Let's funnel it to Directional Logic for consistency ??
+						# Or allow precise scything. Let's allow precise scything as backup.
+						pass
 				
-				# Proceed to Harvest
-				var harvested_item = FarmManager.harvest_crop(target_coords)
-				
-				if harvested_item:
-					print("Farming: Harvested ", harvested_item.name)
-					
-					# UNIFIED DROP LOGIC (Phase 5 + 6)
-					# Calculate Yield
-					var amount = randi_range(resource.min_harvest, resource.max_harvest)
-					
-					# Calculate Quality (Phase 6 + 7)
-					# Normal: 80%, Silver (1): 15%, Gold (2): 5%
-					# Rule: Base thresholds (0.4 for Silver, 0.7 for Gold)
-					# Modifier: quality_boost adds to the roll (making it easier to reach high tiers)
-					
-					var modifiers = FarmManager.get_soil_modifiers(target_coords)
-					var quality_boost = modifiers.get("quality_boost", 0.0)
-					
-					# Passive Skill: Master Farmer
-					if SkillManager.has_skill("master_farmer"):
-						quality_boost += 1.0 # Guarantee high roll (Test Value)
-						print("Town: 'Master Farmer' passive active! Quality boosted.")
-					
-					var quality = 0
-					var roll = randf() + quality_boost
-					
-					# Thresholds:
-					# Gold: roll > 0.7 
-					# Silver: roll > 0.4
-					
-					if roll > 0.7:
-						quality = 2
-					elif roll > 0.4:
-						quality = 1
-					
-					print("[QA] Harvest Roll: %.2f (Base: %.2f + Boost: %.2f) -> Quality: %d" % [roll, roll - quality_boost, quality_boost, quality])
-					
-					# Spawn Drops
-					spawn_harvest_drops(target_coords, harvested_item, amount, quality)
-					return # Interaction consumed by harvest
+				# Proceed to Harvest (Unified Function)
+				if _try_harvest_crop(target_coords, hand_item):
+					return
 
 		# PRIORITY 2: USE TOOL
 		if not hand_item:
@@ -199,6 +189,58 @@ func _on_crop_updated(coords: Vector2i, data: Dictionary):
 func _on_crop_removed(coords: Vector2i):
 	# Clear the tile
 	crop_tile_map.erase_cell(coords)
+
+func _check_farming_hit(result: Dictionary):
+	# Grid Logic using Hit Data
+	var direction = result["direction"]
+	var range_val = result["range"]
+	var player_coords = soil_tile_map.local_to_map(soil_tile_map.to_local(player.global_position))
+	
+	# Approx Grid Direction
+	var angle_snap = snapped(direction.angle(), PI / 2)
+	var grid_dir = Vector2i(Vector2.RIGHT.rotated(angle_snap))
+	
+	for r in range(1, range_val + 2):
+		var check_coords = player_coords + (grid_dir * r)
+		var neighbors = [
+			check_coords,
+			check_coords + Vector2i(grid_dir.y, grid_dir.x),
+			check_coords - Vector2i(grid_dir.y, grid_dir.x)
+		]
+		
+		for nc in neighbors:
+			if FarmManager.farm_data.has(nc):
+				# Try Harvest (Implicitly allowed by Scythe action)
+				_try_harvest_crop(nc, InventoryManager.equipped_hand_item)
+
+
+func _try_harvest_crop(coords: Vector2i, _tool_item: ItemData) -> bool:
+	var crop_data = FarmManager.farm_data[coords]
+	var resource = crop_data.get("resource") as CropData
+	if not resource: return false
+	
+	# Auto-pass if tool matches requirement or if no requirement
+	# Scythe req is checked by caller for Point mode, but Directional mode implies Scythe usage.
+	
+	var harvested_item = FarmManager.harvest_crop(coords)
+	if harvested_item:
+		# Yield & Quality Logic... (Extracted from previous code)
+		var amount = randi_range(resource.min_harvest, resource.max_harvest)
+		var modifiers = FarmManager.get_soil_modifiers(coords)
+		var quality_boost = modifiers.get("quality_boost", 0.0)
+		if SkillManager.has_skill("master_farmer"):
+			quality_boost += 1.0
+		
+		var quality = 0
+		var roll = randf() + quality_boost
+		if roll > 0.7: quality = 2
+		elif roll > 0.4: quality = 1
+		
+		spawn_harvest_drops(coords, harvested_item, amount, quality)
+		return true
+	
+	return false
+
 
 func _on_daily_growth_tick(updates: Dictionary):
 	# Staggered Growth Effect (The "Pop")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=4 uid="uid://cmqvvth3hy45i"]
+[gd_scene load_steps=23 format=4 uid="uid://cmqvvth3hy45i"]
 
 [ext_resource type="Script" uid="uid://3suo00p3gg" path="res://scenes/town/town.gd" id="1_i0lau"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
@@ -10,6 +10,7 @@
 [ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/sword.tres" id="7_5vpkg"]
 [ext_resource type="Resource" uid="uid://de7xp2xf3671r" path="res://resources/item/hoe.tres" id="7_svnup"]
 [ext_resource type="Resource" uid="uid://q21hquvgyw82" path="res://resources/item/corn_seed.tres" id="8_yr8sw"]
+[ext_resource type="Resource" uid="uid://ctjqlj024eln6" path="res://resources/item/scythe.tres" id="9_fwdo8"]
 [ext_resource type="PackedScene" uid="uid://bsds21tghiius" path="res://scenes/town/battle_entrance.tscn" id="9_jil70"]
 [ext_resource type="Resource" uid="uid://c2fk4nenruxuf" path="res://resources/item/watering_can.tres" id="9_w25xm"]
 [ext_resource type="Resource" uid="uid://cdh43hb4x2bho" path="res://resources/item/nutrients/basic_fertilizer.tres" id="10_fwvjp"]
@@ -48,6 +49,10 @@ position = Vector2(154, 103)
 [node name="Hoe" parent="." instance=ExtResource("6_5vpkg")]
 position = Vector2(344, 71)
 item_data = ExtResource("7_svnup")
+
+[node name="Scythe" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(344, 71)
+item_data = ExtResource("9_fwdo8")
 
 [node name="WateringCan" parent="." instance=ExtResource("6_5vpkg")]
 position = Vector2(248, -40)

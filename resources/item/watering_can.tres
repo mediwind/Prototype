@@ -13,3 +13,5 @@ name = "Watering Can"
 icon = SubResource("AtlasTexture_water")
 description = "wUsed to water crops. Infinite water for now."
 max_stack = 1
+interaction_type = 0
+interaction_range = 1

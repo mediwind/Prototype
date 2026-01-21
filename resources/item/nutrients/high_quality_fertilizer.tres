@@ -15,3 +15,5 @@ icon = SubResource("AtlasTexture_HighQualityFert_Unique")
 description = "Drastically improves soil quality."
 max_stack = 99
 fertilizer_data = ExtResource("1_vsj52")
+interaction_type = 0
+interaction_range = 1

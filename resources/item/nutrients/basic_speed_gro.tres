@@ -15,3 +15,5 @@ icon = SubResource("AtlasTexture_SpeedGro_Basic_Unique")
 description = "Stimulates leaf production. Increases growth rate by 10%."
 max_stack = 99
 fertilizer_data = ExtResource("1_e4uos")
+interaction_type = 0
+interaction_range = 1

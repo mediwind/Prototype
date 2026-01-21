@@ -13,3 +13,5 @@ name = "Corn Seed"
 icon = SubResource("AtlasTexture_yprx2")
 description = "Seeds for planting corn."
 max_stack = 99
+interaction_type = 0
+interaction_range = 1

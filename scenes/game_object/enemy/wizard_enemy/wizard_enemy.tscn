@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://d1rjj3m2ryj4n"]
+[gd_scene load_steps=16 format=3 uid="uid://d1rjj3m2ryj4n"]
 
 [ext_resource type="Script" uid="uid://b2erqr5ocdg8n" path="res://scenes/game_object/enemy/wizard_enemy/wizard_enemy.gd" id="1_u0oxw"]
 [ext_resource type="PackedScene" uid="uid://bob443ncb55kj" path="res://scenes/component/velocity_component.tscn" id="2_r17se"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://q5456waekfa7" path="res://scenes/component/death_component.tscn" id="5_i2eab"]
 [ext_resource type="PackedScene" uid="uid://cdpwqed5wu1ub" path="res://scenes/component/hurt_box_component.tscn" id="6_abcad"]
 [ext_resource type="Texture2D" uid="uid://cbt7rc6ndkwuk" path="res://scenes/game_object/enemy/wizard_enemy/wizard_enemy.png" id="7_ta3au"]
+[ext_resource type="Script" uid="uid://ro5l5fkjo864" path="res://scenes/component/visual/floating_text_spawner.gd" id="8_ft_spawner"]
+[ext_resource type="Script" uid="uid://l4r8rwsg2ud" path="res://scenes/component/knockback_component.gd" id="9_kb_comp"]
 
 [sub_resource type="Resource" id="Resource_eavxl"]
 script = ExtResource("5_eavxl")
@@ -41,8 +43,8 @@ radius = 4.0
 
 [node name="WizardEnemy" type="CharacterBody2D" groups=["enemy"]]
 scale = Vector2(-1, 1)
-collision_layer = 8
-collision_mask = 9
+collision_layer = 4
+collision_mask = 7
 script = ExtResource("1_u0oxw")
 
 [node name="VelocityComponent" parent="." instance=ExtResource("2_r17se")]
@@ -61,7 +63,16 @@ health_component = NodePath("../HealthComponent")
 sprite = NodePath("../Visuals/Sprite2D")
 experience_to_player = 3
 
+[node name="KnockbackComponent" type="Node" parent="."]
+script = ExtResource("9_kb_comp")
+
+[node name="FloatingTextSpawner" type="Node2D" parent="." node_paths=PackedStringArray("health_component")]
+script = ExtResource("8_ft_spawner")
+health_component = NodePath("../HealthComponent")
+
 [node name="HurtboxComponent" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("6_abcad")]
+collision_layer = 128
+collision_mask = 64
 health_component = NodePath("../HealthComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent"]
