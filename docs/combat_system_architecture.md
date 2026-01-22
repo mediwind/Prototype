@@ -10,8 +10,9 @@ The system is designed around **Composition**. The Player (or Enemy) does not kn
 
 | Component | Role | Analogy |
 | :--- | :--- | :--- |
-| **WeaponData** | Stores stats (Damage, Range, Cooldown). | "The Blueprint" |
-| **EquipmentActionHandler** | Calculates hits, applies damage/knockback. | "The Brain & Muscle" |
+| **WeaponData** | Stores combat stats (Damage, Range, Cooldown). | "The Sword Blueprint" |
+| **ToolData** | Stores farming stats (Radius, Water Cost) & weak combat stats. | "The Tool Blueprint" |
+| **EquipmentActionHandler** | Central brain. Routes logic for Weapons (Combat) AND Tools (Farming). | "The Brain & Muscle" |
 | **ActionVisualEffect** | Renders visual feedback (Slash arcs, Particles). | "The Special FX" |
 | **HurtboxComponent** | Receives damage and notifies Health. | "The Armor" |
 | **FloatingTextSpawner** | Listens for health changes and shows numbers. | "The Scoreboard" |
@@ -56,10 +57,15 @@ The `EquipmentActionHandler` activates and performs two parallel tasks:
 *   "Draw a white arc here!"
 *   The effect plays for 0.2s and then deletes itself (`queue_free`).
 
-**Task B: The Logic (Physics)**
-*   It creates a **Physics Query** (invisible shape).
-*   It asks Godot: *"Who is in this sector defined by `WeaponData`?"*
-*   It filters results by Angle (e.g., 60-degree cone).
+**Task B: The Logic (Physics & Game Rules)**
+*   It checks the Item Type (`WeaponData` vs `ToolData`).
+*   **If Weapon:**
+    *   Creates a **Physics Query** (Sector/Arc).
+    *   Finds Enemies -> Applies Damage + Knockback.
+*   **If Tool (Hoe/Watering Can):**
+    *   Converts position to **Grid Coordinates**.
+    *   Calls `FarmManager` (Till/Water).
+    *   *Special Case (Scythe/Hoe):* Can also trigger a weak "Physics Query" to hit enemies (Damage 1).
 
 ### 💥 Step 3: Impact & Reaction
 If the Physics Query finds a `WizardEnemy`:

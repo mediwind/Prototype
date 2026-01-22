@@ -36,8 +36,10 @@ func on_inventory_ui_button_pressed():
 
 @onready var player = $PlayerHuman
 const INTERACTION_DISTANCE = 3.0 # Grid distance (Chebyshev)
-const TILLED_SOIL_ATLAS_COORDS = Vector2i(6, 22) # Placeholder: User to confirm location
-const SOIL_SOURCE_ID = 0
+const TILLED_SOIL_ATLAS_COORDS = Vector2i(6, 22) # Source ID 0 (Dry Tilled)
+const WET_SOIL_ATLAS_COORDS = Vector2i(2, 5) # Source ID 2 (Wet Tilled)
+const SOIL_SOURCE_ID = 0 # Default source (Dry)
+const WET_SOIL_SOURCE_ID = 2 # Wet source
 const CROP_SOURCE_ID = 1
 
 @onready var collectable_scene = preload("res://scenes/game_object/loot/collectable_object.tscn")
@@ -55,13 +57,15 @@ func _unhandled_input(event):
 		# PRIORITY 1: CHECK ITEM TYPE (POINT or DIRECTIONAL)
 		# PRIORITY 1: CHECK ITEM TYPE (POINT or DIRECTIONAL)
 		if hand_item:
-			# Directional Tool Logic (Scythe, Weapon) -> Handled by EquipmentActionHandler
-			# We check if it HAS EquipmentData -> WeaponData
-			if hand_item.equipment_data and hand_item.equipment_data is WeaponData:
+			# Directional Tool Logic (Scythe, Weapon, Hoe, Watering Can) -> Handled by EquipmentActionHandler
+			# We check if it HAS EquipmentData -> WeaponData or ToolData
+			if hand_item.equipment_data:
 				var result = player.perform_action(hand_item, mouse_pos)
-				if result and result.get("type") == "melee":
-					_check_farming_hit(result)
-				return
+				if result:
+					if result.get("type") == "melee":
+						_check_farming_hit(result)
+					# Tool actions (Hoe/Water) are handled inside ActionHandler -> FarmManager -> Signal -> Town Visual Update
+					return
  
 			# Fallback for old DIRECTIONAL check if needed, or remove.
 			if hand_item.interaction_type == ItemData.InteractionType.DIRECTIONAL:
@@ -108,22 +112,9 @@ func _unhandled_input(event):
 		if not hand_item:
 			return
 			
-		# Interaction Logic
-		if hand_item.name == "Hoe":
-			# Validation: Is this tile tillable?
-			var tile_data = soil_tile_map.get_cell_tile_data(target_coords)
-			if tile_data and tile_data.get_custom_data("is_tillable"):
-				print("Farming: Tilling soil at ", target_coords)
-				# Set the soil layer to Tilled Soil
-				soil_tile_map.set_cell(target_coords, SOIL_SOURCE_ID, TILLED_SOIL_ATLAS_COORDS)
-			else:
-				print("Farming: Cannot till here.")
-			
-		elif hand_item.name == "Watering Can":
-			# TODO: Check if there is a crop or tilled soil? For now, just water the crop data
-			if FarmManager.farm_data.has(target_coords):
-				print("Farming: Watering at ", target_coords)
-				FarmManager.water_crop(target_coords)
+		# Tool Logic Removed (Moved to EquipmentActionHandler)
+		# Only Seeds and Fertilizer remain here for now (Point Click)
+
 			
 		elif hand_item.name.ends_with("Seed") or hand_item.name == "Corn Seed":
 			# VALIDATION 1: Is there a crop already?
@@ -131,9 +122,11 @@ func _unhandled_input(event):
 				print("Farming: Crop already exists here.")
 				return
 				
-			# VALIDATION 2: Is the soil tilled?
+			# VALIDATION 2: Is the soil tilled? (Dry or Wet)
 			var tile_atlas_coords = soil_tile_map.get_cell_atlas_coords(target_coords)
-			if tile_atlas_coords != TILLED_SOIL_ATLAS_COORDS:
+			var is_tilled = (tile_atlas_coords == TILLED_SOIL_ATLAS_COORDS) or (tile_atlas_coords == WET_SOIL_ATLAS_COORDS)
+			
+			if not is_tilled:
 				print("Farming: Soil is not tilled.")
 				# Optional: Feedback UI
 				return
@@ -150,7 +143,9 @@ func _unhandled_input(event):
 			# Stardew: Only on tilled soil, before sprout stage?
 			# Let's keep it simple: Must be tilled soil.
 			var tile_atlas_coords = soil_tile_map.get_cell_atlas_coords(target_coords)
-			if tile_atlas_coords != TILLED_SOIL_ATLAS_COORDS:
+			var is_tilled = (tile_atlas_coords == TILLED_SOIL_ATLAS_COORDS) or (tile_atlas_coords == WET_SOIL_ATLAS_COORDS)
+			
+			if not is_tilled:
 				print("Farming: Must be tilled soil to fertilize.")
 				return
 				
@@ -222,6 +217,22 @@ func _try_harvest_crop(coords: Vector2i, _tool_item: ItemData) -> bool:
 	# Auto-pass if tool matches requirement or if no requirement
 	# Scythe req is checked by caller for Point mode, but Directional mode implies Scythe usage.
 	
+	# Strict Restriction: Only Scythe Tool can harvest (for now)!
+	# OR Hand if the crop allows hand harvesting (Stardew style).
+	# But Sword (WeaponData) should NOT harvest.
+	
+	var is_scythe = false
+	if _tool_item and _tool_item.equipment_data:
+		var data = _tool_item.equipment_data
+		if data is ToolData and data.tool_type == ToolData.ToolType.SCYTHE:
+			is_scythe = true
+			
+	if not is_scythe:
+		# If it's not a Scythe, reject harvest.
+		# (Unless we add 'Hand' harvesting later for berries, etc.)
+		# For now, simplistic rule: No Scythe, No Harvest.
+		return false
+	
 	var harvested_item = FarmManager.harvest_crop(coords)
 	if harvested_item:
 		# Yield & Quality Logic... (Extracted from previous code)
@@ -269,13 +280,46 @@ func _on_soil_updated(coords: Vector2i, data: Dictionary):
 	fertilizer_tile_map.erase_cell(coords)
 	# SpeedGroTileMap.erase_cell(coords) # TODO: Add this when user creates the node
 	
+	# 1. Base Soil State (Tilled / Watered)
+	# Default to clearing custom soil state if not tilled (Assumes base terrain is Layer 0 default)
+	# Actually, we shouldn't erase if we want to keep base terrain.
+	# But "Tilled" overrides base terrain? 
+	# Strategy: If tilled, Set Cell. If not tilled, Erase Cell (Restore Base)? or Set to Base?
+	# Using "Erase" on Layer 0 might remove the background grass!
+	# We likely want to set it to TILLED or WET.
+	
+	if data.get("tilled", false):
+		var target_source_id = SOIL_SOURCE_ID
+		var target_coords = TILLED_SOIL_ATLAS_COORDS
+		
+		# If watered, switch to Wet Source & Coords
+		if data.get("watered", false):
+			target_source_id = WET_SOIL_SOURCE_ID
+			target_coords = WET_SOIL_ATLAS_COORDS
+		
+		# Update Soil Map
+		soil_tile_map.set_cell(coords, target_source_id, target_coords)
+	else:
+		# If untilled, we might want to revert? 
+		# If we don't know the original tile, this is tricky.
+		# For now, we assume "Untilled" means "Do Nothing" or generic grass?
+		# But since we use set_cell on soil_tile_map (which might be the Main Ground Layer), erase might be bad.
+		# If SoilTileMap is a dedicated layer ABOVE ground, then erase is fine.
+		# Based on var soil_tile_map = $SoilTileMap, it sounds dedicated.
+		# Let's simple check: Is it Layer 0 of a specific Node? Yes.
+		# If it was THE ground, we'd see grass.
+		# Let's assume SoilTileMap is for Farming Soil Overlays.
+		# If so, untill = erase.
+		pass
+		# We won't auto-erase here unless we know it's safe. 
+		# FarmManager usually keeps tilled=true.
+	
+	
+	# 2. Fertilizer Visuals
 	# Iterate all applied nutrients
-	for type_key in data:
-		# Check if it's a valid nutrient dict (not 'wet' or other keys)
-		if typeof(data[type_key]) != TYPE_DICTIONARY or not data[type_key].has("type"):
-			continue
-			
-		var fert = data[type_key]
+	var nutrients = data.get("nutrients", {})
+	for type_key in nutrients:
+		var fert = nutrients[type_key]
 		var source_id = 3
 		
 		var type_col_base = 0
@@ -288,14 +332,11 @@ func _on_soil_updated(coords: Vector2i, data: Dictionary):
 			FertilizerData.FertilizerType.SPEED:
 				type_col_base = 3
 				# TODO: Switch to SpeedGroTileMap if user added it
-				# For now, if we use the same layer, they will overwrite each other visually
-				# User must add Layer 2 and assign it here
-				# Let's check if the node exists (we need to add variable or get_node)
 				var speed_layer = get_node_or_null("SpeedGroTileMap")
 				if speed_layer:
 					target_layer = speed_layer
 				else:
-					# Fallback: Just overwrite on same layer (Last one wins)
+					# Fallback
 					pass
 			_:
 				continue

@@ -2,7 +2,7 @@ extends Node
 
 # Key: Vector2i (Grid Coordinates), Value: Dictionary (Runtime Crop Data + Reference to Resource)
 var farm_data: Dictionary = {}
-# Key: Vector2i (Grid Coordinates), Value: Dictionary { "fertilizer": { "type": 0, "tier": 1, ... } }
+# Key: Vector2i (Grid Coordinates), Value: Dictionary { "tilled": bool, "watered": bool, "nutrients": { type_key: val } }
 var soil_data: Dictionary = {}
 
 # Registry for CropData resources
@@ -13,7 +13,7 @@ var crop_registry: Dictionary = {}
 
 signal crop_updated(coords: Vector2i, data: Dictionary)
 signal crop_removed(coords: Vector2i)
-signal soil_updated(coords: Vector2i, data: Dictionary) # New signal for fertilizer
+signal soil_updated(coords: Vector2i, data: Dictionary) # Data: { tilled, watered, nutrients }
 # Signal for a batch of updates (for staggered visual effect)
 signal daily_growth_tick(growth_results: Dictionary)
 
@@ -22,10 +22,6 @@ func _ready():
 	_build_crop_registry()
 	
 	# TEMPORARY TEST CODE: Force load Corn Crop since Autoload inspector is hard to access
-	# User question: Why is this needed?
-	# Answer: Autoloads are global script instances, not scenes in the editor. 
-	# We cannot "Open" FarmManager in the inspector to drag-drop resources unless we make it a .tscn and autoload that.
-	# For now, code-based loading is the fastest way to test without changing project structure.
 	var corn_crop = load("res://resources/farming/crops/corn_crop.tres")
 	if corn_crop:
 		crop_registry["Corn Seed"] = corn_crop
@@ -84,24 +80,60 @@ func water_crop(coords: Vector2i) -> void:
 			emit_signal("crop_updated", coords, data)
 
 
+func till_soil(coords: Vector2i) -> bool:
+	if not soil_data.has(coords):
+		soil_data[coords] = {
+			"tilled": true,
+			"watered": false,
+			"nutrients": {}
+		}
+		emit_signal("soil_updated", coords, soil_data[coords])
+		return true
+	else:
+		if not soil_data[coords].get("tilled", false):
+			soil_data[coords]["tilled"] = true
+			emit_signal("soil_updated", coords, soil_data[coords])
+			return true
+	return false
+
+func water_soil(coords: Vector2i) -> bool:
+	if not soil_data.has(coords) or not soil_data[coords].get("tilled", false):
+		return false # Cannot water untilled soil (Game Design Choice)
+	
+	if not soil_data[coords].get("watered", false):
+		soil_data[coords]["watered"] = true
+		emit_signal("soil_updated", coords, soil_data[coords])
+		return true
+	return false
+
+func is_soil_tilled(coords: Vector2i) -> bool:
+	return soil_data.has(coords) and soil_data[coords].get("tilled", false)
+
+func is_soil_watered(coords: Vector2i) -> bool:
+	return soil_data.has(coords) and soil_data[coords].get("watered", false)
+
+
 func apply_fertilizer(coords: Vector2i, fertilizer: FertilizerData) -> bool:
 	if not fertilizer:
 		return false
 	
+	# Requirement: Must be tilled
+	if not is_soil_tilled(coords):
+		return false
+
+	if not soil_data.has(coords):
+		soil_data[coords] = {"tilled": true, "watered": false, "nutrients": {}} # Should exist if tilled check passed, but safety
+		
+	var nutrients = soil_data[coords]["nutrients"]
+	
 	# Override Rule:
 	# 1. Fertilizer Type Check: Co-existence allowed for DIFFERENT types.
 	# 2. Tier Check: Only allow if new tier > existing tier (Upgrade). 
-	#    (Same tier refreshing duration is also acceptable standard behavior)
 	
-	if not soil_data.has(coords):
-		soil_data[coords] = {}
-		
-	# Use Nutrient Type as Key for Co-existence
-	# Instead of single "fertilizer" key, use the keys: 0 (Quality), 1 (Speed), etc.
 	var type_key = fertilizer.type
 	
-	if soil_data[coords].has(type_key):
-		var existing = soil_data[coords][type_key]
+	if nutrients.has(type_key):
+		var existing = nutrients[type_key]
 		if existing["tier"] >= fertilizer.tier:
 			print("FarmManager: Rejecting lower/equal tier fertilizer. Existing: ", existing["tier"], " New: ", fertilizer.tier)
 			return false
@@ -113,7 +145,7 @@ func apply_fertilizer(coords: Vector2i, fertilizer: FertilizerData) -> bool:
 		"days_remaining": fertilizer.duration_days
 	}
 		
-	soil_data[coords][type_key] = data
+	nutrients[type_key] = data
 	
 	print("FarmManager: Fertilizer applied at ", coords, " -> ", data)
 	emit_signal("soil_updated", coords, soil_data[coords])
@@ -128,8 +160,9 @@ func get_soil_modifiers(coords: Vector2i) -> Dictionary:
 	}
 	
 	if soil_data.has(coords):
-		for key in soil_data[coords]:
-			var fert = soil_data[coords][key]
+		var nutrients = soil_data[coords].get("nutrients", {})
+		for key in nutrients:
+			var fert = nutrients[key]
 			# Validate it's a nutrient dictionary (simple check)
 			if typeof(fert) == TYPE_DICTIONARY and fert.has("effect_value"):
 				var val = fert["effect_value"]
@@ -167,21 +200,10 @@ func harvest_crop(coords: Vector2i) -> ItemData:
 		# Use resource to update visual coordinate immediately
 		data["atlas_coords"] = _get_growth_atlas_coords(resource, resource.regrow_stage)
 		# Reset daily progress check implies we just need to wait for next day tick
-		# With Simple Logic (1 Day/Stage), setting to stage X means it waits for next day to go X+1
 		emit_signal("crop_updated", coords, data)
 	else:
 		# Remove Crop
 		farm_data.erase(coords)
-		# Emit update with null/empty data to clear visual
-		# We might need a specific way to tell Town to clear the tile
-		# Passing null or empty dictionary?
-		# Town.gd expects dictionary with 'atlas_coords'.
-		# Let's emit a signal with a flag or handle "erase" in town.
-		# Ideally: emit_signal("crop_removed", coords)?
-		# Or just reuse crop_updated with a special flag?
-		# Let's add 'crop_removed' signal or clear it.
-		# For now, let's just emit crop_updated with empty dict and handle in town?
-		# Or better: Add a remove_crop function.
 		emit_signal("crop_removed", coords)
 		
 	return drop_item
@@ -213,42 +235,36 @@ func _on_day_passed():
 		var changed = false
 		
 		# Growth Logic
-		if data["watered"]:
+		# Check if Watered (Required for growth)
+		var is_watered = is_soil_watered(coords)
+		
+		if is_watered:
 			var modifiers = get_soil_modifiers(coords)
 			var growth_speed = 1.0 + modifiers.get("speed_boost", 0.0)
 			
 			# Growth Point Logic Refactoring
-			# Base: 1 Day = 100 Points
-			# Modifiers: speed_boost adds percentage (e.g. 0.1 = +10% = 110 points)
-			
 			var base_daily_points = 100.0
 			
 			# Check Passive Skills (Polling)
 			if SkillManager.has_skill("fast_grower"):
-				growth_speed += 2.0 # +200% Growth Speed (Test Value)
+				growth_speed += 2.0 # +200% Growth Speed
 				print("FarmManager: 'Fast Grower' passive active! Growth speed boosted.")
 				
 			var daily_growth = base_daily_points * growth_speed
 			
-			# Apply to accumulated points
 			if not data.has("accumulated_growth_points"):
 				data["accumulated_growth_points"] = 0.0
 				
 			data["accumulated_growth_points"] += daily_growth
 			
-			# Debug
 			print("FarmManager: Crop at %s grew %.1f points. Total: %.1f" % [coords, daily_growth, data["accumulated_growth_points"]])
 			
-			data["watered"] = false # Reset water daily
 			changed = true
 			
 			# Check for Stage Progression
 			if data["stage"] < data["max_stage"]:
-				# Calculate points needed for ONE stage
-				# If crop_data says 1 day/stage, needed = 100.0. If 4 days, needed = 400.0
 				var points_needed_for_next_stage = data["growth_per_stage"] * 100.0
 				
-				# While loop to handle massive growth spikes (e.g. debug cheats or super fertilizer)
 				while data["accumulated_growth_points"] >= points_needed_for_next_stage:
 					data["accumulated_growth_points"] -= points_needed_for_next_stage
 					data["stage"] += 1
@@ -257,14 +273,11 @@ func _on_day_passed():
 					if data.has("resource"):
 						data["atlas_coords"] = _get_growth_atlas_coords(data.resource, data["stage"])
 					
-					# Cap at max stage
 					if data["stage"] >= data["max_stage"]:
-						data["accumulated_growth_points"] = 0.0 # Clear overflow if maxed? Or keep it? keeping 0 is safer.
+						data["accumulated_growth_points"] = 0.0
 						break
-
 		else:
-			# Not watered logic, just visual update for dry soil if we tracked soil wetness here
-			changed = true
+			print("FarmManager: Crop at %s did not grow (Not Watered)." % coords)
 			
 		if changed:
 			updates[coords] = data.duplicate()
@@ -274,9 +287,20 @@ func _on_day_passed():
 
 	# Soil Decay Logic
 	for coords in soil_data.keys():
+		var data = soil_data[coords]
+		var soil_changed = false
+		
+		# 1. Reset Watered State (Dry out)
+		# TODO: Check Water Retention fertilizer?
+		if data.get("watered", false):
+			data["watered"] = false
+			soil_changed = true
+		
+		# 2. Nutrient Decay
+		var nutrients = data.get("nutrients", {})
 		var keys_to_remove = []
-		for type_key in soil_data[coords]:
-			var fert = soil_data[coords][type_key]
+		for type_key in nutrients:
+			var fert = nutrients[type_key]
 			if fert["days_remaining"] > 0:
 				fert["days_remaining"] -= 1
 				if fert["days_remaining"] <= 0:
@@ -284,5 +308,8 @@ func _on_day_passed():
 		
 		if not keys_to_remove.is_empty():
 			for key in keys_to_remove:
-				soil_data[coords].erase(key)
-			emit_signal("soil_updated", coords, soil_data[coords])
+				nutrients.erase(key)
+			soil_changed = true
+			
+		if soil_changed:
+			emit_signal("soil_updated", coords, data)

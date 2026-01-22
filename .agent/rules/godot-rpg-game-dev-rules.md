@@ -91,6 +91,11 @@ trigger: always_on
 - **Archiving Policy:** 단, 파일이 비대해져 가독성을 해칠 경우(예: 500줄 이상), 완료된 오래된 Phase 항목들을 `docs/task_archive.md` 등으로 **이동(Cut & Paste)**하여 관리한다. 이는 '삭제'가 아닌 '보관' 프로세스이다.
 - **Rules:** 프로젝트의 중요한 규칙 변경 사항은 즉시 이 파일(`godot-rpg-game-dev-rules.md`)에 반영한다.
 
+### 3. 리소스 및 씬 파일 조작 가이드 (Resource & Scene Handling)
+- **Direct Edit Caution:** `.tres`나 `.tscn` 파일은 Godot 에디터가 관리하는 포맷으로, 텍스트 편집 시 UID나 내부 구조(Load Steps)가 미세하게 변경될 수 있다.
+- **Protocol:** `replace_file_content`로 `.tres` 파일의 참조 관계(ExtResource 변경 등)를 수정할 때 실패할 가능성이 높다고 판단되면, 무리하게 재시도하지 말고 **사용자에게 에디터 작업을 요청**한다.
+- **Example:** "호미 아이템의 EquipmentData 필드를 `hoe_tool_data.tres`로 교체해 주세요."와 같이 구체적으로 에디터 작업을 지시한다.
+
 ---
 
 ## 📝 PART 6. 커밋 메시지 표준 (Commit Standards)

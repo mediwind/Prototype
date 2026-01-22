@@ -3,7 +3,28 @@
 - [ ] **Phase 8: Refactoring & Scalability**
         - [/] **FarmManager: Growth Logic Update** <!-- id: 1 -->
             - [x] Change growth tracking from `days_grown` (int) to `accumulated_growth_points` (float).
-            - [x] Implement Daily Tick Logic: 1 Day = 100 Points base.
+- [ ] **Phase 13: Farming System Expansion** <!-- id: 13 -->
+    - [ ] **Data & Resources**
+        - [ ] Create `ToolData` resource (extends `EquipmentData`).
+        - [ ] Create `hoe_tool.tres` and `watering_can_tool.tres`.
+        - [ ] Assign `ToolData` to `Hoe` and `Watering Can` ItemData.
+    - [ ] **FarmManager Expansion**
+        - [ ] Refactor `soil_data` to track `tilled` and `watered` states.
+        - [ ] Implement `till_soil(coords)` and `water_soil(coords)`.
+        - [ ] Update `_on_day_passed` to dry out soil.
+    - [ ] **EquipmentActionHandler**
+        - [ ] Add `_execute_tool` logic.
+        - [ ] Integrate with `FarmManager` for Tilling/Watering.
+    - [ ] **Refactoring Town.gd**
+        - [ ] Remove hardcoded tool logic from `_unhandled_input`.
+        - [x] Update `_on_soil_updated` to handle visual updates for Tilled/Watered/Fertilizer.
+    - [x] **Phase 13.5: Tool & Weapon Refinement** <!-- id: 14 -->
+        - [x] **Scythe Migration**: Convert `Scythe` from `WeaponData` to `ToolData` (or hybrid).
+        - [x] **Combat Penalty**: Ensure Tools deal 1 damage and 0 knockback to enemies.
+        - [x] **Harvest Restriction**: Prevent `Sword` (or non-Scythe weapons) from harvesting.
+    - [ ] **Logic Deepening**
+        - [ ] Implement Water Capacity for Watering Can (optional, future).
+        - [ ] Season/Climate connection (optional, future).
             - [x] Update SpeedGro/Fertilizer logic to apply multipliers to daily points.
             - [x] Verify point accumulation and stage transitions.
         - [/] **LevelAndExpManager: Category Support** <!-- id: 2 -->

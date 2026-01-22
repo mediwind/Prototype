@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/item_data.gd" id="1_1uvtr"]
 [ext_resource type="Texture2D" uid="uid://bodg5qgx5fhhs" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Tools.png" id="1_4m32h"]
-[ext_resource type="Resource" path="res://resources/item/weapon_data/scythe_weapon.tres" id="2_weapon"]
+[ext_resource type="Resource" path="res://resources/item/tool_data/scythe_tool_data.tres" id="1_ju80o"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ju80o"]
 atlas = ExtResource("1_4m32h")
@@ -14,7 +14,7 @@ name = "Scythe"
 icon = SubResource("AtlasTexture_ju80o")
 description = ""
 max_stack = 1
-equipment_data = ExtResource("2_weapon")
+equipment_data = ExtResource("1_ju80o")
 interaction_type = 1
 interaction_range = 1
 metadata/_custom_type_script = "uid://c5x21ww1vgp4q"

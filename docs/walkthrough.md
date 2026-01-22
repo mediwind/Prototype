@@ -129,3 +129,41 @@ Implemented "Mouse Facing" logic in `PlayerHuman` and `Town.gd`:
 - [x] Renamed `ActionController` to `EquipmentActionHandler`.
 - [x] Fixed all `Parse Error` and `Indentation Error` issues.
 - [x] `WizardEnemy.tscn` load error resolved.
+
+# Walkthrough - Phase 13: Farming System Expansion
+
+## Overview
+This phase focused on finalizing the core farming interactions by integrating **Tools (Hoe, Watering Can)** into the new Action System and establishing a robust "Soil State" logic. We also refined the distinction between Tools and Weapons.
+
+## 1. Tool Data & Architecture
+- **Goal**: Standardize Farming Tools using the same system as Weapons (`EquipmentActionHandler`).
+- **Implementation**:
+    - Created `ToolData` (extends `EquipmentData`) with properties like `ToolType` and `EffectRadius`.
+    - Created Resources: `hoe_tool_data.tres`, `watering_can_tool_data.tres`, `scythe_tool_data.tres`.
+    - **Refactor**: Moved hardcoded Hoe/Water logic from `Town.gd` into `EquipmentActionHandler`.
+
+## 2. Soil Logic & Visuals
+- **Goal**: Accurately track and visualize soil states (Tilled, Watered).
+- **FarmManager**:
+    - Expanded `soil_data` to track `{ "tilled": true, "watered": false }`.
+    - Implemented `till_soil()` and `water_soil()` state machines.
+    - Updated `_on_day_passed` to dry out soil daily and require water for crop growth.
+- **Town.gd**:
+    - `_on_soil_updated`: Now renders distinct Tiles for Dry Tilled (Source 0) and Wet Tilled (Source 2).
+    - **Fix**: Allowed planting seeds/fertilizer on **both** Dry and Wet tilled soil.
+
+## 3. Tool vs Weapon Refinement (Phase 13.5)
+- **Goal**: Prevent accidental harvesting with Swords and allow generic tool usage in combat without breaking balance.
+- **Changes**:
+    - **Scythe Migration**: Converted Scythe from `WeaponData` to `ToolData` (Type: SCYTHE).
+    - **Harvest Rule**: Only items of type `ToolData` + `SCYTHE` can harvest crops. Swords cannot harvest.
+    - **Combat Balance**: All Tools (Hoe, Scythe) now deal **1 Damage / 0 Knockback** to enemies.
+    - **Watering Can**: Visual-only effect (no hitbox/damage) in combat/town.
+    - **Fix**: Removed dependency on `Town` context for combat, allowing Tools to "swing" (attack) even in the Main combat scene.
+
+## Verification Checklist
+- [x] **Tilling**: Hoe transforms Grass -> Dry Tilled Soil.
+- [x] **Watering**: Watering Can transforms Dry Tilled -> Wet Tilled Soil.
+- [x] **Planting**: Seeds work on both Dry and Wet Tilled Soil.
+- [x] **Harvesting**: Only Scythe harvests crops. Sword swings but ignores crops.
+- [x] **Combat**: Hoe/Scythe deal 1 damage to enemies. Watering Can shows range but does no damage.
