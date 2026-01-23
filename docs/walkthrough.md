@@ -167,3 +167,33 @@ This phase focused on finalizing the core farming interactions by integrating **
 - [x] **Planting**: Seeds work on both Dry and Wet Tilled Soil.
 - [x] **Harvesting**: Only Scythe harvests crops. Sword swings but ignores crops.
 - [x] **Combat**: Hoe/Scythe deal 1 damage to enemies. Watering Can shows range but does no damage.
+
+# Walkthrough - Phase 15: System Stabilization (Crafting & Persistence)
+
+## Overview
+This phase focused on "connecting the dots" between existing systems. We activated the **Farming Persistence** so crops save/load correctly and built the engine for the **Crafting System** (converting UI skeleton into working logic).
+
+## 1. Farming Persistence (Loose Coupling)
+- **Problem**: Crops disappeared after reloading or switching scenes.
+- **Solution**:
+    - **FarmManager**: Implemented `get_save_data()` and `load_save_data()`.
+    - **Lazy Loading**: Added protection against race conditions where data loaded before the `crop_registry` was built.
+    - **Town.gd**: Added `_refresh_all_visuals()` to force-render saved crops upon entering the scene.
+    - **Result**: Crops now persist across Game Days and Scene changes.
+
+## 2. Crafting System Implementation
+- **Problem**: The UI existed, but the "Craft" button did nothing.
+- **Solution**:
+    - **InventoryManager**: Added `has_item()`, `consume_item()`, and `can_add_item()` methods.
+    - **Hotbar Support**: Fixed `add_item` to correctly fill empty Hotbar slots if the main Inventory is full.
+    - **CraftingUI**:
+        - Replaced `Slot` with lightweight `DisplaySlot` to prevent drag-drop bugs.
+        - Connected "Craft" button to actual resource consumption logic.
+        - Implemented "Full Inventory" check to disable crafting when no space exists.
+
+## Verification
+- [x] **Persistence**: Planted Corn -> Went to Battle -> Returned -> Corn is still there.
+- [x] **Time Flow**: Time passes correctly while away from Town (Log confirmation).
+- [x] **Crafting**: Can craft items (Test Recipe). Ingredients are consumed.
+- [x] **Edge Case**: Crafting is disabled if Inventory & Hotbar are full.
+

@@ -6,3 +6,4 @@ class_name GameData
 @export var level_and_exp_data: LevelAndExpData
 @export var inventory_data: InventoryData
 @export var stat_data: StatData
+@export var farm_save_data: Dictionary = {}

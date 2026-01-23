@@ -313,3 +313,80 @@ func _on_day_passed():
 			
 		if soil_changed:
 			emit_signal("soil_updated", coords, data)
+
+# Persistence Strategy: "Loose Coupling"
+# SaveManager collects this dictionary without knowing internal details.
+func get_save_data() -> Dictionary:
+	var save_data = {
+		"farm_data": {},
+		"soil_data": soil_data
+	}
+	
+	# farm_data needs to be serialized because it contains complex inner dictionaries
+	# We only save what's necessary to reconstruct the state
+	for coords in farm_data:
+		var crop_info = farm_data[coords]
+		save_data["farm_data"][coords] = {
+			"id": crop_info["id"],
+			"stage": crop_info["stage"],
+			"watered": crop_info["watered"],
+			"accumulated_growth_points": crop_info.get("accumulated_growth_points", 0.0)
+		}
+	
+	return save_data
+
+func load_save_data(data: Dictionary) -> void:
+	if not data:
+		return
+		
+	# Race Condition Fix:
+	# SaveManager might call this BEFORE FarmManager._ready() runs.
+	# We must ensure the crop_registry is populated.
+	if crop_registry.is_empty():
+		print("FarmManager: Registry empty during load. Initializing now...")
+		_build_crop_registry()
+		
+		# TEMPORARY TEST CODE RE-INJECTION (Important for Corn Seed test)
+		var corn_crop = load("res://resources/farming/crops/corn_crop.tres")
+		if corn_crop:
+			crop_registry["Corn Seed"] = corn_crop
+			print("FarmManager: Force loaded Corn Seed data (Lazy Load).")
+
+	# 1. Restore Soil Data
+	soil_data = data.get("soil_data", {})
+	
+	# 2. Restore Farm Data (Crops)
+	farm_data.clear()
+	var saved_farm_data = data.get("farm_data", {})
+	
+	for coords in saved_farm_data:
+		var saved_crop = saved_farm_data[coords]
+		var seed_name = saved_crop["id"]
+		
+		# Validate against registry
+		if not crop_registry.has(seed_name):
+			printerr("FarmManager: Failed to load crop '%s' at %s (Data missing)" % [seed_name, coords])
+			continue
+			
+		var crop_resource = crop_registry[seed_name]
+		var stage = saved_crop["stage"]
+		
+		# Reconstruct full runtime data
+		var reconstructed_data = {
+			"id": seed_name,
+			"resource": crop_resource,
+			"stage": stage,
+			"max_stage": crop_resource.max_stage,
+			"atlas_coords": _get_growth_atlas_coords(crop_resource, stage),
+			"growth_per_stage": crop_resource.growth_days_per_stage,
+			"watered": saved_crop["watered"],
+			"accumulated_growth_points": saved_crop.get("accumulated_growth_points", 0.0)
+		}
+		
+		farm_data[coords] = reconstructed_data
+	
+	print("FarmManager: Save data loaded. Crops: %d, Soil Tiles: %d" % [farm_data.size(), soil_data.size()])
+	
+	# Optional: Emit signals to update visuals immediately?
+	# Usually the scene loading will query FarmManager, but if loading happens mid-game:
+	# _refresh_all_visuals() # This would be nice to have

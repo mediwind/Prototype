@@ -22,9 +22,19 @@
         - [x] **Scythe Migration**: Convert `Scythe` from `WeaponData` to `ToolData` (or hybrid).
         - [x] **Combat Penalty**: Ensure Tools deal 1 damage and 0 knockback to enemies.
         - [x] **Harvest Restriction**: Prevent `Sword` (or non-Scythe weapons) from harvesting.
-    - [ ] **Logic Deepening**
-        - [ ] Implement Water Capacity for Watering Can (optional, future).
-        - [ ] Season/Climate connection (optional, future).
+    - [x] **Phase 14: System Analysis & Documentation** <!-- id: 15 -->
+        - [x] **Crafting System Audit**: Analyzed `crafting_table.tscn`, `RecipeData`, and `InventoryManager`.
+        - [x] **Documentation**: Created `docs/crafting_system_architecture.md`.
+        - [x] **Project Overview**: Organize existing systems into a high-level map if needed.
+    - [x] **Gap Analysis Findings**
+        - [x] **Farming Persistence**: `FarmManager` does not save/load `farm_data` or `soil_data`.
+        - [x] **Crafting Logic**: UI exists but no actual crafting logic (consume/produce) is implemented.
+
+    - [x] **Phase 15: System Stabilization (Crafting & Persistence)** <!-- id: 16 -->
+        - [x] **Farming Persistence**: Implement `get_save_data()` and `load_save_data()` in `FarmManager`.
+        - [x] **UI Refactor**: Create `display_slot.tscn` for non-interactive item display (Crafting UI).
+        - [x] **Inventory Expansion**: Add `has_items()` and `consume_items()` to `InventoryManager` (RecipeIngredient support).
+        - [x] **Crafting Logic**: Implement `_on_craft_button_pressed` in `CraftingUI` to consume ingredients and produce output.
             - [x] Update SpeedGro/Fertilizer logic to apply multipliers to daily points.
             - [x] Verify point accumulation and stage transitions.
         - [/] **LevelAndExpManager: Category Support** <!-- id: 2 -->

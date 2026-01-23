@@ -21,6 +21,19 @@ func _ready():
 	FarmManager.crop_removed.connect(_on_crop_removed)
 	FarmManager.soil_updated.connect(_on_soil_updated) # New connection
 	FarmManager.daily_growth_tick.connect(_on_daily_growth_tick)
+	
+	# Restore Visuals from Persistence
+	_refresh_all_visuals()
+
+
+func _refresh_all_visuals():
+	# 1. Restore Soil
+	for coords in FarmManager.soil_data:
+		_on_soil_updated(coords, FarmManager.soil_data[coords])
+		
+	# 2. Restore Crops
+	for coords in FarmManager.farm_data:
+		_on_crop_updated(coords, FarmManager.farm_data[coords])
 
 
 func on_skill_ui_button_pressed():

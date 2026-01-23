@@ -47,49 +47,49 @@ tile_set = ExtResource("12_placeholder")
 position = Vector2(154, 103)
 
 [node name="Hoe" parent="." instance=ExtResource("6_5vpkg")]
-position = Vector2(344, 71)
+position = Vector2(336, -216)
 item_data = ExtResource("7_svnup")
 
 [node name="Scythe" parent="." instance=ExtResource("6_5vpkg")]
-position = Vector2(344, 71)
+position = Vector2(264, -200)
 item_data = ExtResource("9_fwdo8")
 
 [node name="WateringCan" parent="." instance=ExtResource("6_5vpkg")]
-position = Vector2(248, -40)
+position = Vector2(176, -176)
 item_data = ExtResource("9_w25xm")
 
 [node name="BasicFertilizer" parent="." instance=ExtResource("6_5vpkg")]
-position = Vector2(120, -56)
+position = Vector2(96, -200)
 item_data = ExtResource("10_fwvjp")
 amount = 10
 
 [node name="QualityFertilizer" parent="." instance=ExtResource("6_5vpkg")]
-position = Vector2(312, -32)
+position = Vector2(328, -216)
 item_data = ExtResource("11_xbtnt")
 amount = 10
 
 [node name="HighQualityFertilizer" parent="." instance=ExtResource("6_5vpkg")]
-position = Vector2(248, -24)
+position = Vector2(216, -192)
 item_data = ExtResource("12_3sg37")
 amount = 10
 
 [node name="BasicSpeedGro" parent="." instance=ExtResource("6_5vpkg")]
-position = Vector2(184, -48)
+position = Vector2(120, -192)
 item_data = ExtResource("13_vky2r")
 amount = 10
 
 [node name="QualitySpeedGro" parent="." instance=ExtResource("6_5vpkg")]
-position = Vector2(312, 0)
+position = Vector2(352, -216)
 item_data = ExtResource("14_fwdo8")
 amount = 10
 
 [node name="HighQualitySpeedGro" parent="." instance=ExtResource("6_5vpkg")]
-position = Vector2(280, 0)
+position = Vector2(224, -208)
 item_data = ExtResource("15_wacgc")
 amount = 10
 
 [node name="CornSeed" parent="." instance=ExtResource("6_5vpkg")]
-position = Vector2(372, 138)
+position = Vector2(400, -192)
 item_data = ExtResource("8_yr8sw")
 amount = 99
 

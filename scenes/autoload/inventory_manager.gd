@@ -64,18 +64,26 @@ func add_item(item_data: ItemData, amount: int, quality: int = 0) -> int:
 	# 1. 인벤토리 슬롯에 합치기 (동일 아이템 & 동일 등급)
 	for slot in player_inventory_slots:
 		if slot.item_data and _is_same_item(slot.item_data, item_data):
-			# 등급 체크: 다르면 스킵
-			if slot.quality != quality:
-				continue
-				
+			if slot.quality != quality: continue
 			var can_add = max_stack - slot.amount
 			if can_add > 0:
 				var to_add = min(remaining, can_add)
 				slot.amount += to_add
 				remaining -= to_add
 				added += to_add
-				if remaining <= 0:
-					return added
+				if remaining <= 0: return added
+
+	# 1-2. 핫바 슬롯에 합치기 (동일 아이템 & 동일 등급) -> can_add_item과 로직 일치화
+	for slot in player_hotbar_slots:
+		if slot.item_data and _is_same_item(slot.item_data, item_data):
+			if slot.quality != quality: continue
+			var can_add = max_stack - slot.amount
+			if can_add > 0:
+				var to_add = min(remaining, can_add)
+				slot.amount += to_add
+				remaining -= to_add
+				added += to_add
+				if remaining <= 0: return added
 
 	# 2. 인벤토리 빈 슬롯에 새로 추가
 	for slot in player_inventory_slots:
@@ -83,11 +91,21 @@ func add_item(item_data: ItemData, amount: int, quality: int = 0) -> int:
 			var to_add = min(remaining, max_stack)
 			slot.item_data = item_data
 			slot.amount = to_add
-			slot.quality = quality # 등급 저장
+			slot.quality = quality
 			remaining -= to_add
 			added += to_add
-			if remaining <= 0:
-				return added
+			if remaining <= 0: return added
+
+	# 2-2. 핫바 빈 슬롯에 새로 추가 -> can_add_item과 로직 일치화
+	for slot in player_hotbar_slots:
+		if not slot.item_data:
+			var to_add = min(remaining, max_stack)
+			slot.item_data = item_data
+			slot.amount = to_add
+			slot.quality = quality
+			remaining -= to_add
+			added += to_add
+			if remaining <= 0: return added
 
 	# 3. 인벤토리가 가득 차서 일부만 추가되었거나 못 넣었을 때
 	return added
@@ -149,3 +167,115 @@ func remove_item_from_slot(item_data_to_remove: ItemData, amount_to_remove: int,
 		# 슬롯에 아이템이 없거나 다른 아이템인 경우
 		printerr("InventoryManager: Item not found or mismatch in specified slot for removal. Slot: %s[%d]" % [source_slot_type, source_slot_index])
 		return false
+
+
+# --- Recipe & Crafting Support Methods ---
+
+# Checks if the player has enough of a specific item across ALL inventory slots (Inventory + Hotbar)
+func has_item(item_data: ItemData, required_amount: int) -> bool:
+	if item_data == null:
+		return true
+		
+	var total_count = 0
+	
+	# Check Inventory Slots
+	for slot in player_inventory_slots:
+		if slot.item_data and _is_same_item(slot.item_data, item_data):
+			total_count += slot.amount
+	
+	# Check Hotbar Slots
+	for slot in player_hotbar_slots:
+		if slot.item_data and _is_same_item(slot.item_data, item_data):
+			total_count += slot.amount
+			
+	return total_count >= required_amount
+
+# Consumes a specific amount of an item from Inventory and Hotbar.
+# Prioritizes Inventory slots first, then Hotbar.
+# Returns true if successful (all items removed), false if not enough items (state remains unchanged).
+func consume_item(item_data: ItemData, amount_to_consume: int) -> bool:
+	if not has_item(item_data, amount_to_consume):
+		return false
+	
+	var remaining_to_consume = amount_to_consume
+	
+	# Strategy: 
+	# To ensure atomicity (all or nothing), we might need two passes or a transactional approach.
+	# However, since we checked has_item() first, we are safe to proceed with removal.
+	
+	# 1. Remove from Inventory Slots
+	for slot in player_inventory_slots:
+		if remaining_to_consume <= 0: break
+		
+		if slot.item_data and _is_same_item(slot.item_data, item_data):
+			var take = min(slot.amount, remaining_to_consume)
+			slot.amount -= take
+			remaining_to_consume -= take
+			
+			if slot.amount <= 0:
+				slot.item_data = null
+				slot.amount = 0
+				slot.quality = 0
+				
+	# 2. Remove from Hotbar Slots (if needed)
+	if remaining_to_consume > 0:
+		for i in range(player_hotbar_slots.size()):
+			if remaining_to_consume <= 0: break
+			var slot = player_hotbar_slots[i]
+			
+			if slot.item_data and _is_same_item(slot.item_data, item_data):
+				var take = min(slot.amount, remaining_to_consume)
+				slot.amount -= take
+				remaining_to_consume -= take
+				
+				if slot.amount <= 0:
+					slot.item_data = null
+					slot.amount = 0
+					slot.quality = 0
+					
+					# If we removed the currently equipped item, update hand
+					if i == active_hotbar_index:
+						equip_to_hand(active_hotbar_index)
+
+	return true
+
+
+# Checks if the player can add a specific amount of items to the inventory.
+# Does NOT actually add the items.
+func can_add_item(item_data: ItemData, amount: int) -> bool:
+	var remaining = amount
+	var max_stack = item_data.max_stack if "max_stack" in item_data else 99
+
+	# 1. Check stackable existing slots (Inventory)
+	for slot in player_inventory_slots:
+		if slot.item_data and _is_same_item(slot.item_data, item_data):
+			# If quality matches (assuming default 0 for now for verification)
+			if slot.quality == 0:
+				var space = max_stack - slot.amount
+				if space > 0:
+					remaining -= space
+					if remaining <= 0: return true
+
+	# 2. Check stackable existing slots (Hotbar) - Optional/Game Design Choice
+	# Usually loot goes to inventory first. Let's assume hotbar is also valid storage strictly speaking.
+	for slot in player_hotbar_slots:
+		if slot.item_data and _is_same_item(slot.item_data, item_data):
+			if slot.quality == 0:
+				var space = max_stack - slot.amount
+				if space > 0:
+					remaining -= space
+					if remaining <= 0: return true
+					
+	# 3. Check empty slots (Inventory)
+	for slot in player_inventory_slots:
+		if not slot.item_data:
+			remaining -= max_stack
+			if remaining <= 0: return true
+			
+	# 4. Check empty slots (Hotbar)
+	for slot in player_hotbar_slots:
+		if not slot.item_data:
+			remaining -= max_stack
+			if remaining <= 0: return true
+			
+	return remaining <= 0
