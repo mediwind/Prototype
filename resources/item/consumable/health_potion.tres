@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("3_1m0mc")
+id = "health_potion"
 name = "Health Potion"
 icon = ExtResource("2_1t2yb")
 description = "Drink!"

@@ -10,6 +10,7 @@ region = Rect2(112, 608, 16, 16)
 
 [resource]
 script = ExtResource("1_script")
+id = "high_quality_fertilizer"
 name = "High Quality Fertilizer"
 icon = SubResource("AtlasTexture_HighQualityFert_Unique")
 description = "Drastically improves soil quality."

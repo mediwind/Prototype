@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+ItemDatabase="*res://scenes/autoload/item_database.gd"
 SaveManager="*res://scenes/autoload/save_manager.gd"
 LevelAndExpManager="*res://scenes/autoload/level_and_exp_manager.gd"
 SkillManager="*res://scenes/autoload/skill_manager.gd"

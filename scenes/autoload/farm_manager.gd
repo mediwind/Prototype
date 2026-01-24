@@ -24,7 +24,7 @@ func _ready():
 	# TEMPORARY TEST CODE: Force load Corn Crop since Autoload inspector is hard to access
 	var corn_crop = load("res://resources/farming/crops/corn_crop.tres")
 	if corn_crop:
-		crop_registry["Corn Seed"] = corn_crop
+		crop_registry["corn_seed"] = corn_crop
 		print("FarmManager: Force loaded Corn Seed data.")
 	
 	# Connect to TimeManager for daily updates
@@ -47,11 +47,11 @@ func add_crop(coords: Vector2i, seed_data: ItemData) -> void:
 		return
 	
 	# Lookup resource in registry
-	if not crop_registry.has(seed_data.name):
-		printerr("FarmManager: No CropData found for seed: ", seed_data.name)
+	if not crop_registry.has(seed_data.id):
+		printerr("FarmManager: No CropData found for seed ID: ", seed_data.id)
 		return
 
-	var crop_resource = crop_registry[seed_data.name]
+	var crop_resource = crop_registry[seed_data.id]
 	
 	# Initial Visual Calculation (Stage 0) with Randomization
 	var initial_atlas_coords = Vector2i(0, 0)
@@ -59,7 +59,7 @@ func add_crop(coords: Vector2i, seed_data: ItemData) -> void:
 		initial_atlas_coords = crop_resource.seed_coords.pick_random()
 	
 	var data = {
-		"id": seed_data.name,
+		"id": seed_data.id,
 		"resource": crop_resource, # Store reference to the Resource
 		"stage": 0,
 		"max_stage": crop_resource.max_stage,
@@ -349,7 +349,7 @@ func load_save_data(data: Dictionary) -> void:
 		# TEMPORARY TEST CODE RE-INJECTION (Important for Corn Seed test)
 		var corn_crop = load("res://resources/farming/crops/corn_crop.tres")
 		if corn_crop:
-			crop_registry["Corn Seed"] = corn_crop
+			crop_registry["corn_seed"] = corn_crop
 			print("FarmManager: Force loaded Corn Seed data (Lazy Load).")
 
 	# 1. Restore Soil Data

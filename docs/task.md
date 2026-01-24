@@ -134,13 +134,18 @@
         - [x] Verify Pickaxe harvests Rock (3 hits).
         - [x] Verify incorrect tool matches fail.
 
-- [ ] **Phase 17: Robust Persistence & Item Database**
-    - [ ] **Architecture**
-        - [ ] Create `ItemDatabase` (Autoload) to map string IDs to Resources.
-        - [ ] Add `id` field to `ItemData` class.
-    - [ ] **Refactoring**
-        - [ ] Refactor `SaveManager` to serialize Item IDs instead of file paths.
-        - [ ] Refactor `InventoryItem` serialization logic.
-    - [ ] **Migration**
-        - [ ] Update all existing Item resources with unique IDs.
-        - [ ] Verify save/load survives file movement.
+- [x] **Phase 17: Robust Persistence & Item Database**
+    - [x] **Data Architecture**
+        - [x] Update `ItemData.gd` to include `String id`.
+        - [x] Create `ItemDatabase` (Autoload) script.
+        - [x] Register `ItemDatabase` in `project.godot`.
+    - [x] **Migration & Registration**
+        - [x] Assign unique IDs to all existing Item Resources (Tools, Crops, Materials).
+        - [x] Implement automatic resource scanning (`load_all_items`) in `ItemDatabase`.
+    - [x] **System Refactoring**
+        - [x] Refactor `InventoryItem.gd` (SlotData) serialization (`serialize/deserialize`) to use IDs.
+        - [x] Refactor `SaveManager.gd` to rely on `ItemDatabase`.
+    - [/] **Verification**
+        - [x] Reset Save Data (`user://game_data.tres` deletion).
+        - [x] Verify Game Start (No errors).
+        - [x] Verify Inventory Save/Load (Persistence Check) - **(Fix Verified: Race Condition Resolved)**.

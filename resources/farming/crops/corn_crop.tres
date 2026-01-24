@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_script")
-id = "Corn Seed"
+id = "corn_seed"
 crop_name = "Corn"
 description = "A summer crop that keeps on giving."
 seed_coords = [Vector2i(8, 15), Vector2i(9, 15)]

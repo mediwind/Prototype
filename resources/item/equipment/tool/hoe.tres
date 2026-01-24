@@ -10,6 +10,7 @@ region = Rect2(192, 64, 16, 16)
 
 [resource]
 script = ExtResource("1_script")
+id = "hoe"
 name = "Hoe"
 icon = SubResource("AtlasTexture_anx4b")
 description = "A basic tool for tilling soil."

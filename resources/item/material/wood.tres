@@ -9,6 +9,7 @@ region = Rect2(64, 256, 16, 16)
 
 [resource]
 script = ExtResource("1_script")
+id = "wood"
 name = "Wood"
 icon = SubResource("AtlasTexture_82yaw")
 description = "A sturdy piece of wood."

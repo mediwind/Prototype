@@ -9,6 +9,7 @@ region = Rect2(288, 240, 16, 16)
 
 [resource]
 script = ExtResource("1_script")
+id = "copper_ore"
 name = "Copper Ore"
 icon = SubResource("AtlasTexture_1ros6")
 description = "A chunk of copper ore. Can be smelted."

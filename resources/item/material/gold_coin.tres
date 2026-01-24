@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_o6thb")
+id = "gold_coin"
 name = "Gold Coin"
 icon = ExtResource("1_ard1m")
 description = "Gold is always right!"

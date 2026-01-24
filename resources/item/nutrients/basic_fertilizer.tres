@@ -10,6 +10,7 @@ region = Rect2(128, 240, 16, 16)
 
 [resource]
 script = ExtResource("1_script")
+id = "basic_fertilizer"
 name = "Basic Fertilizer"
 icon = SubResource("AtlasTexture_pjmnt")
 description = "Improves soil quality a little."

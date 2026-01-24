@@ -10,6 +10,7 @@ region = Rect2(304, 96, 16, 16)
 
 [resource]
 script = ExtResource("1_script")
+id = "pickaxe"
 name = "Pickaxe"
 icon = SubResource("AtlasTexture_67g3a")
 description = "Used to break stones."

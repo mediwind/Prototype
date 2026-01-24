@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("3_d61nw")
+id = "sword"
 name = "Sword"
 icon = ExtResource("2_2u6va")
 description = "Swing!"

@@ -10,6 +10,7 @@ region = Rect2(144, 304, 16, 16)
 
 [resource]
 script = ExtResource("1_script")
+id = "basic_speed_gro"
 name = "Basic Speed-Gro"
 icon = SubResource("AtlasTexture_SpeedGro_Basic_Unique")
 description = "Stimulates leaf production. Increases growth rate by 10%."

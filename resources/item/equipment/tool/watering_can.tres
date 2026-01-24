@@ -10,6 +10,7 @@ region = Rect2(32, 224, 16, 16)
 
 [resource]
 script = ExtResource("1_script")
+id = "watering_can"
 name = "Watering Can"
 icon = SubResource("AtlasTexture_water")
 description = "wUsed to water crops. Infinite water for now."

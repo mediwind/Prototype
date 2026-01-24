@@ -223,3 +223,35 @@ This phase implemented the Gathering System (Trees/Rocks) and established a **Un
 - [x] **Rock**: Mines with Pickaxe. Drops Stone (100%) and Copper Ore (20%).
 - [x] **Logic**: Wrong tool usage deflects (does no damage).
 - [x] **Persistence**: Resource scenes are correctly configured with new components.
+
+# Walkthrough - Phase 17: Robust Persistence (ID System)
+
+## Overview
+Replaced the fragile "File Path Separation" persistence model with a robust **ID-based System**. This prevents save file corruption when moving or renaming item resources.
+
+## 1. Architecture: Item Database
+- **Problem**: Saving `res://path/to/item.tres` breaks if the file moves.
+- **Solution**:
+    - **IDs**: Added `id` (String) to `ItemData`.
+    - **Database**: Created `ItemDatabase` (Autoload) to scan and map IDs to Resources at startup.
+    - **Inventory**: `SlotData` now saves `saved_item_id` (String) instead of the Resource itself.
+
+## 2. Serialization Workflow
+- **Save**:
+    1.  `SaveManager` calls `inventory_data.prepare_serialization()`.
+    2.  Inventory syncs `item_data.id` -> `saved_item_id`.
+    3.  `ResourceSaver` writes the String ID to disk.
+- **Load**:
+    1.  `SaveManager` loads the file (getting String IDs).
+    2.  `SaveManager` calls `inventory_data.restore_item_references()`.
+    3.  Inventory looks up `saved_item_id` in `ItemDatabase` and restores `item_data`.
+
+## 3. Race Condition Fix
+- **Issue**: `SaveManager` loaded before `ItemDatabase` was ready, causing restoration to fail (Empty Inventory).
+- **Fix**: Reordered `project.godot` Autoloads to ensure `ItemDatabase` initializes first.
+
+## Verification
+- [x] **Resource Migration**: All items and crops have unique IDs (`wood`, `corn_seed`, etc.).
+- [x] **Saving**: Logs confirm `SavedID` is populated correctly.
+- [x] **Loading**: Autoload reordering ensures data is restored.
+- [x] **Persistence**: Inventory survives Game Restart.

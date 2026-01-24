@@ -10,6 +10,7 @@ region = Rect2(304, 160, 16, 16)
 
 [resource]
 script = ExtResource("1_script")
+id = "axe"
 name = "Axe"
 icon = SubResource("AtlasTexture_mwuv4")
 description = "Used to chop wood."

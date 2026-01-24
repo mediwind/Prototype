@@ -9,6 +9,7 @@ region = Rect2(96, 176, 16, 16)
 
 [resource]
 script = ExtResource("1_script")
+id = "corn"
 name = "Corn"
 icon = SubResource("AtlasTexture_corn")
 description = "A golden, sweet ear of corn."

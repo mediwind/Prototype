@@ -30,3 +30,31 @@ func ensure_slots(inv_size := inventory_max_size, hotbar_size := hotbar_max_size
         hotbar_slots.pop_back()
     while equipment_slots.size() > equipment_slot_count:
         equipment_slots.pop_back()
+
+
+func restore_item_references() -> void:
+    for slot in inventory_slots:
+        slot.try_load_item_from_id()
+    for slot in hotbar_slots:
+        slot.try_load_item_from_id()
+    for slot in equipment_slots:
+        slot.try_load_item_from_id()
+
+func prepare_serialization() -> void:
+    for slot in inventory_slots:
+        if slot.item_data:
+            slot.saved_item_id = slot.item_data.id
+        else:
+            slot.saved_item_id = ""
+            
+    for slot in hotbar_slots:
+        if slot.item_data:
+            slot.saved_item_id = slot.item_data.id
+        else:
+            slot.saved_item_id = ""
+            
+    for slot in equipment_slots:
+        if slot.item_data:
+            slot.saved_item_id = slot.item_data.id
+        else:
+            slot.saved_item_id = ""
