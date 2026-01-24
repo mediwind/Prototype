@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://btqlrsumgi3yc"]
 
 [ext_resource type="Texture2D" uid="uid://bychrtj8026wk" path="res://assets/item/tile_0104.png" id="2_2u6va"]
-[ext_resource type="Resource" uid="uid://b8x7x5x5x5x5" path="res://resources/item/weapon_data/sword_weapon.tres" id="2_new_weapon"]
-[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/item_data.gd" id="3_d61nw"]
+[ext_resource type="Resource" uid="uid://b8x7x5x5x5x5" path="res://resources/item/definitions/weapon_data/sword_weapon.tres" id="2_new_weapon"]
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/definitions/item_data.gd" id="3_d61nw"]
 
 [resource]
 script = ExtResource("3_d61nw")

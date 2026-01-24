@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://bknqa1i8c5b3b"]
 
-[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/item_data.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/definitions/item_data.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dtmg8fuwtfuey" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Harvested Crops, Seed Packets, Minerals, Food, Equipment, & Miscellaneous Objects.png" id="2_icon"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_corn"]

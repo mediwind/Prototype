@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://ms0vn753ehfk" path="res://scenes/game_object/gatherable/gatherable_object.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dtmg8fuwtfuey" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Harvested Crops, Seed Packets, Minerals, Food, Equipment, & Miscellaneous Objects.png" id="2_texture"]
-[ext_resource type="Resource" uid="uid://cxf85y0eqmwiv" path="res://resources/item/material/stone.tres" id="3_drop"]
-[ext_resource type="Resource" uid="uid://cut0do86fgb5e" path="res://resources/item/material/copper_ore.tres" id="4_rare"]
+[ext_resource type="Resource" uid="uid://cxf85y0eqmwiv" path="res://resources/item/materials/stone.tres" id="3_drop"]
+[ext_resource type="Resource" uid="uid://cut0do86fgb5e" path="res://resources/item/materials/copper_ore.tres" id="4_rare"]
 [ext_resource type="PackedScene" uid="uid://be5n54in08sec" path="res://scenes/component/lootcomponent/item_drop_component.tscn" id="5_drop_component_scene"]
 [ext_resource type="Script" uid="uid://dksdckws5ieyx" path="res://resources/loot/drop_data.gd" id="6_drop_data"]
 

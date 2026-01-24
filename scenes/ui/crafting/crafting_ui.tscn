@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bbpy7wd68wd7o" path="res://scenes/ui/crafting/crafting_ui.gd" id="1_ofhe1"]
 [ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="1_oxfa4"]
-[ext_resource type="Resource" uid="uid://b67b0mntyy8q3" path="res://resources/item/consumable/health_potion.tres" id="2_ofhe1"]
-[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/equipment/weapon/sword.tres" id="3_ceir7"]
+[ext_resource type="Resource" uid="uid://b67b0mntyy8q3" path="res://resources/item/consumables/health_potion.tres" id="2_ofhe1"]
+[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/weapons/sword.tres" id="3_ceir7"]
 
 [node name="CraftingUI" type="PanelContainer"]
 process_mode = 3

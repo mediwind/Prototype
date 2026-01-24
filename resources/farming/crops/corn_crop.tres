@@ -1,7 +1,8 @@
 [gd_resource type="Resource" script_class="CropData" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://resources/farming/crop_data.gd" id="1_script"]
-[ext_resource type="Resource" path="res://resources/item/farming/corn.tres" id="2_harvest_item"]
+[ext_resource type="Script" uid="uid://dc8qnhoff8vm2" path="res://resources/farming/crop_data.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://bknqa1i8c5b3b" path="res://resources/item/produce/corn.tres" id="2_harvest_item"]
+
 
 [resource]
 script = ExtResource("1_script")

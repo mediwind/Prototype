@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://b5bnhffpf41pr"]
 
 [ext_resource type="Texture2D" uid="uid://dkj73fdkok1uf" path="res://scenes/game_object/loot/gold.png" id="1_ard1m"]
-[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/item_data.gd" id="1_o6thb"]
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/definitions/item_data.gd" id="1_o6thb"]
 
 [resource]
 script = ExtResource("1_o6thb")

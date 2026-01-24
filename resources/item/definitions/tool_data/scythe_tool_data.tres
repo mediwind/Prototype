@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ToolData" load_steps=2 format=3 uid="uid://dnd3mcwivybej"]
 
-[ext_resource type="Script" uid="uid://2aehffo27xgi" path="res://resources/item/tool_data.gd" id="1_tool"]
+[ext_resource type="Script" uid="uid://2aehffo27xgi" path="res://resources/item/definitions/tool_data.gd" id="1_tool"]
 
 [resource]
 script = ExtResource("1_tool")

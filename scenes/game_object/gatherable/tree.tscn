@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ms0vn753ehfk" path="res://scenes/game_object/gatherable/gatherable_object.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://ng4t20h41wa6" path="res://assets/tile/PC _ Computer - Stardew Valley - Tilesets - Outdoors (Spring).png" id="2_texture"]
-[ext_resource type="Resource" uid="uid://dp07t485dgy4d" path="res://resources/item/material/wood.tres" id="3_drop"]
+[ext_resource type="Resource" uid="uid://dp07t485dgy4d" path="res://resources/item/materials/wood.tres" id="3_drop"]
 [ext_resource type="PackedScene" uid="uid://be5n54in08sec" path="res://scenes/component/lootcomponent/item_drop_component.tscn" id="3_drop_component_scene"]
 [ext_resource type="Script" uid="uid://dksdckws5ieyx" path="res://resources/loot/drop_data.gd" id="4_drop_data"]
 

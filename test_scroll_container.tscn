@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://ki3rd71ppy6q"]
 
 [ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="1_assyr"]
-[ext_resource type="Resource" uid="uid://b5bnhffpf41pr" path="res://resources/item/material/gold_coin.tres" id="2_1xey4"]
-[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/equipment/weapon/sword.tres" id="3_vxbto"]
-[ext_resource type="Resource" uid="uid://b67b0mntyy8q3" path="res://resources/item/consumable/health_potion.tres" id="4_rjcss"]
+[ext_resource type="Resource" uid="uid://b5bnhffpf41pr" path="res://resources/item/materials/gold_coin.tres" id="2_1xey4"]
+[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/weapons/sword.tres" id="3_vxbto"]
+[ext_resource type="Resource" uid="uid://b67b0mntyy8q3" path="res://resources/item/consumables/health_potion.tres" id="4_rjcss"]
 
 [node name="Control" type="Control"]
 layout_mode = 3

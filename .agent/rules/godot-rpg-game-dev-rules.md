@@ -108,6 +108,7 @@ trigger: always_on
 ### 3. 리소스 및 씬 파일 조작 가이드 (Resource & Scene Handling)
 - **Direct Edit Caution:** `.tres`나 `.tscn` 파일은 Godot 에디터가 관리하는 포맷으로, 텍스트 편집 시 UID나 내부 구조(Load Steps)가 미세하게 변경될 수 있다.
 - **Protocol:** `replace_file_content`로 `.tres` 파일의 참조 관계(ExtResource 변경 등)를 수정할 때 실패할 가능성이 높다고 판단되면, 무리하게 재시도하지 말고 **사용자에게 에디터 작업을 요청**한다.
+- **File System Operations:** 리소스 파일(`.tres`, `.tscn`, `.gd`)의 **이동(Move) 및 이름 변경(Rename)**은 절대로 터미널 명령(`mv`, `Rename-Item`)으로 수행하지 않는다. 이는 Godot의 내부 참조(Dependencies)를 깨뜨린다. 반드시 사용자에게 **"Godot 에디터의 FileSystem 탭에서 수행해달라"**고 요청해야 한다.
 - **Example:** "호미 아이템의 EquipmentData 필드를 `hoe_tool_data.tres`로 교체해 주세요."와 같이 구체적으로 에디터 작업을 지시한다.
 
 ---

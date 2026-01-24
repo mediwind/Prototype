@@ -149,3 +149,11 @@
         - [x] Reset Save Data (`user://game_data.tres` deletion).
         - [x] Verify Game Start (No errors).
         - [x] Verify Inventory Save/Load (Persistence Check) - **(Fix Verified: Race Condition Resolved)**.
+
+- [x] **Phase 18: Workspace Cleanup (Manual)**
+    - [x] **Structure Reorganization**
+        - [x] Move items to `tools`, `weapons`, `consumables`, `materials`.
+        - [x] Split `farming` into `seeds` and `produce`.
+        - [x] Move base scripts to `definitions`.
+    - [x] **Verification**
+        - [x] Verify no missing resources or broken dependencies.
