@@ -114,3 +114,33 @@
     - [x] Verify `BasicEnemy` and `WizardEnemy` load correctly.
     - [x] Verify Floating Text appears for Damage and Heal.
     - [x] Verify Combat Collision (`ActionController`).
+
+- [ ] **Phase 16: Gathering System (Trees & Rocks)**
+    - [x] **Data & Resources**
+        - [x] Create `wood.tres`, `stone.tres`, `copper_ore.tres` (ItemData).
+        - [x] Create `axe.tres` (Item) and `axe_tool_data.tres` (ToolData).
+        - [x] Create `pickaxe.tres` (Item) and `pickaxe_tool_data.tres` (ToolData).
+        - [x] Update `ToolData.gd` adding `efficiency` (resource damage).
+    - [x] **System Logic**
+        - [x] Create `GatherableObject.gd` (Health, Tool Requirement, Loot Drop).
+        - [x] Update `EquipmentActionHandler.gd` to handle `GatherableObject` interaction.
+        - [x] Implement `check_tool_match` logic (Axe->Tree, Pickaxe->Rock).
+    - [x] **Scenes**
+        - [x] Create `tree.tscn` (Sprite from `Outdoors (Spring).png`).
+        - [x] Create `rock.tscn` (Sprite from `Miscellaneous...png`).
+    - [x] **Verification**
+        - [x] Place Tree/Rock in Town.
+        - [x] Verify Axe harvests Tree (3 hits).
+        - [x] Verify Pickaxe harvests Rock (3 hits).
+        - [x] Verify incorrect tool matches fail.
+
+- [ ] **Phase 17: Robust Persistence & Item Database**
+    - [ ] **Architecture**
+        - [ ] Create `ItemDatabase` (Autoload) to map string IDs to Resources.
+        - [ ] Add `id` field to `ItemData` class.
+    - [ ] **Refactoring**
+        - [ ] Refactor `SaveManager` to serialize Item IDs instead of file paths.
+        - [ ] Refactor `InventoryItem` serialization logic.
+    - [ ] **Migration**
+        - [ ] Update all existing Item resources with unique IDs.
+        - [ ] Verify save/load survives file movement.

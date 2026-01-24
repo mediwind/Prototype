@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="RecipeIngredient" load_steps=3 format=3 uid="uid://b8r4phe7hikep"]
 
-[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/sword.tres" id="1_j37na"]
+[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/equipment/weapon/sword.tres" id="1_j37na"]
 [ext_resource type="Script" uid="uid://bv5pdr64dv25g" path="res://resources/recipe/recipe_ingredient.gd" id="1_kwsv4"]
 
 [resource]

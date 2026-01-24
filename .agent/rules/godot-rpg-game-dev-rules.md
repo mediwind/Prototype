@@ -15,17 +15,22 @@ trigger: always_on
 - **단일 책임:** 하나의 스크립트나 컴포넌트는 오직 하나의 역할만 수행한다.
 - **Node-Based:** 엔티티(Player, Enemy) 로직 확장 시 자식 노드를 추가하고, 부모는 이를 조합(Coordinate)하는 역할만 수행한다.
 
-### 2. 시그널 관리: "Explicit Code-Based Connection"
+### 2. 터미널 및 파일 작업 가이드 (CLI Safety)
+- **PowerShell 문법 준수:** `rm` (Remove-Item) 사용 시 다중 파일 삭제는 콤마(`,`)로 구분한다. (예: `rm file1, file2`)
+- **삭제 주의:** 중요한 파일 삭제 시 `delete_file` 툴을 우선 사용하거나, 확실한 경우에만 CLI를 사용한다.
+- **오류 방지:** 사용자 환경(Windows PowerShell)을 항상 인지하고 Bash 문법 사용을 지양한다.
+
+### 3. 시그널 관리: "Explicit Code-Based Connection"
 - **GUI 연결 금지:** Godot 에디터의 'Node' 탭을 통한 시그널 연결을 지양한다.
 - **코드 명시성:** 시그널 정의(`signal`), 연결(`.connect()`), 해제는 반드시 **GDScript 코드 내에서 명시적으로 작성**한다.
 - **연결 시점:** 주로 `_ready()` 내에서 수행하여 스크립트만으로 통신 흐름을 파악할 수 있게 한다.
 
-### 3. 데이터 관리: "Resource-Driven & Inspector-First"
+### 4. 데이터 관리: "Resource-Driven & Inspector-First"
 - **데이터 분리:** 모든 수치, 설정 데이터는 `.gd`가 아닌 `.tres` (Resource) 파일로 관리한다.
 - **@export 활용:** 하드코딩을 피하고 모든 파라미터를 인스펙터에 노출하여 GUI 방식 개발을 지향한다.
 - **Resource Integrity:** 데이터 반환 시 원본 오염 방지를 위해 반드시 `.duplicate()`를 사용한다. (예: `get_effective_stats()`)
 
-### 4. 코딩 컨벤션 (GDScript 2.0)
+### 5. 코딩 컨벤션 (GDScript 2.0)
 - **Godot 4.4 표준:** Typed Arrays, `@onready`, `Callable`, 정적 타입 지정을 적극 사용하여 에러를 방지한다.
 - **Manager 패턴:** 주요 시스템은 단일 책임 원칙에 따라 싱글톤(Autoload)으로 구현한다.
 - **두 줄 띄어쓰기:** 스크립트 상에서 func _()와 다음 func _() 사이는 한 줄 대신 두 줄씩 띄어쓰기한다.
@@ -89,6 +94,10 @@ trigger: always_on
 - **End:** 작업 완료 후 `docs/task.md`에 진행 내역을 업데이트하고, 중요 변경 사항은 `docs/walkthrough.md`에 요약한다.
 - **Archiving:** `task.md` 내용이 비대해지면 완료된 Phase를 `docs/task_archive.md`로 이동하여 관리한다.
 - **역질문과 제안:** 기술부채가 빠르게 쌓이거나 비가역적 실수를 방지하기 위하여 현재의 시스템에 대해 파악하지 못한 점이 있거나 조금이라도 모순되거나 의문점이 있다면 언제나 주저말고 반드시 사용자에게 역질문이나 제안을 한다.
+
+### 4. 폴더 구조 합의 (Directory Structure Consensus)
+- **사전 논의:** 새로운 시스템이나 콘텐츠 리소스(아이템, 스킬 등)를 대량으로 추가하기 전에, 반드시 폴더 구조와 파일 명명 규칙을 사용자와 상의하여 확정한다.
+- **분류 기준:** 파일은 기능(feature)보다는 타입(Type)이나 용도(Usage)를 기준으로 분류하는 것을 권장한다. (예: `resources/item/farming/`, `resources/item/equipment/`)
 
 ### 2. 문서화 원칙 (Documentation as Memory)
 - **파일 기반 기억:** 에이전트 간 인수인계는 대화 내역이 아닌 **프로젝트 내 문서(`docs/`)**를 통해 이루어진다.

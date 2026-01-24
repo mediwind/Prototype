@@ -117,6 +117,72 @@ func _execute_tool(user: Node2D, tool: ToolData, target_pos: Vector2) -> Diction
 			var result = _execute_melee_tool_variant(user, tool_stats, (user.get_global_mouse_position() - user.global_position).normalized())
 			return result # Return immediately as it returns dictionary logic
 
+		ToolData.ToolType.AXE, ToolData.ToolType.PICKAXE:
+			var mouse_dir = (user.get_global_mouse_position() - user.global_position).normalized()
+			
+			# 1. Combat Swing (1 Damage, 0 Knockback)
+			var tool_stats = {
+				"damage": 1.0,
+				"knockback_force": 0.0,
+				"arc_angle": 90.0,
+				"attack_range": 1.0,
+				"visual_color": Color.LIGHT_SLATE_GRAY if tool.tool_type == ToolData.ToolType.PICKAXE else Color.SADDLE_BROWN
+			}
+			
+			# Execute visual/combat swing first
+			var combat_result = _execute_melee_tool_variant(user, tool_stats, mouse_dir)
+			
+			# 2. Gathering Check (Specific to GatherableObject)
+			# Re-use the query from combat or do a specific one? 
+			# Combat hits Hurtboxes (Area2D layer 8). Gatherable might be Bodies or Areas.
+			# Trees are StaticBody2D (Collision Layer 1? Or a new Gatherable Layer?)
+			# Plan says Trees/Rocks have StaticBody2D.
+			# StaticBody2D usually blocks movement (Layer 1).
+			# We need to detect Layer 1 bodies.
+			
+			var space_state = user.get_world_2d().direct_space_state
+			var query = PhysicsShapeQueryParameters2D.new()
+			var shape = CircleShape2D.new()
+			shape.radius = tool_stats["attack_range"] * 16.0
+			query.shape = shape
+			query.transform = Transform2D(0, user.global_position)
+			
+			# Layer 1 = Terrain/Static. We assume GatherableObjects are on Layer 1 for collision + hit detection?
+			# Or better: Check Layer 1 collision.
+			query.collision_mask = 1 # Terrain Layer
+			query.collide_with_bodies = true
+			query.collide_with_areas = false
+			
+			var results = space_state.intersect_shape(query)
+			var half_angle_rad = deg_to_rad(tool_stats["arc_angle"] / 2.0)
+			var look_angle = mouse_dir.angle()
+			
+			for result in results:
+				var collider = result["collider"]
+				# Check Angle
+				var dir_to_target = (collider.global_position - user.global_position).normalized()
+				var angle_diff = abs(angle_difference(look_angle, dir_to_target.angle()))
+				
+				if angle_diff <= half_angle_rad:
+					# Check if it's a GatherableObject
+					# It might be the StaticBody2D child, so check owner or script
+					var gatherable = collider
+					if not (gatherable is GatherableObject):
+						if collider.get_parent() is GatherableObject:
+							gatherable = collider.get_parent()
+						elif collider.owner is GatherableObject:
+							gatherable = collider.owner
+							
+					if gatherable is GatherableObject:
+						print("ActionHandler: Hitting Gatherable ", gatherable.name)
+						gatherable.hit(tool.efficiency, tool.tool_type)
+						handled = true
+						# Break after one hit? Or Area hit? 
+						# Area hit feels better for upgrades.
+			
+			combat_result["handled"] = handled
+			return combat_result
+
 				
 	return {
 		"type": "tool",

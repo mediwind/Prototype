@@ -197,3 +197,29 @@ This phase focused on "connecting the dots" between existing systems. We activat
 - [x] **Crafting**: Can craft items (Test Recipe). Ingredients are consumed.
 - [x] **Edge Case**: Crafting is disabled if Inventory & Hotbar are full.
 
+
+# Walkthrough - Phase 16: Gathering & Unified Drop System
+
+## Overview
+This phase implemented the Gathering System (Trees/Rocks) and established a **Unified Drop System** to handle loot generation flexibly across both resources and enemies.
+
+## 1. Unified Drop System (Architecture)
+- **Goal**: Flexible loot tables (e.g., Tree -> Wood, Rock -> Stone + Rare Copper).
+- **Solution**:
+    - Created `DropData` (Resource): Defines Item, Chance, and Amount range.
+    - Created `ItemDropComponent` (Node): Holds a list of `DropData` and handles spawning logic.
+    - **Benefit**: Can be attached to *any* object (Enemy, Chest, Resource) to spawn items.
+
+## 2. Resources & Tools
+- **GatherableObject**:
+    - Refactored to use `ItemDropComponent` instead of hardcoded export variables.
+    - Integrated with `EquipmentActionHandler` for tool interaction.
+- **Tools**:
+    - Implemented `Axe` (Chops Wood) and `Pickaxe` (Mines Stone).
+    - Added `efficiency` to `ToolData` (defines damage to resources).
+
+## Verification
+- [x] **Tree**: Chops with Axe. Drops Wood (100%).
+- [x] **Rock**: Mines with Pickaxe. Drops Stone (100%) and Copper Ore (20%).
+- [x] **Logic**: Wrong tool usage deflects (does no damage).
+- [x] **Persistence**: Resource scenes are correctly configured with new components.

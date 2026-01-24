@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ItemData" load_steps=5 format=3 uid="uid://c2fk4nenruxuf"]
 
-[ext_resource type="Resource" path="res://resources/item/tool_data/watering_can_tool_data.tres" id="1_jvmbc"]
+[ext_resource type="Resource" uid="uid://2xjv2dtfi1em" path="res://resources/item/tool_data/watering_can_tool_data.tres" id="1_jvmbc"]
 [ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/item_data.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://bodg5qgx5fhhs" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Tools.png" id="2_tex"]
 

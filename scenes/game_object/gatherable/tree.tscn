@@ -1,0 +1,39 @@
+[gd_scene load_steps=8 format=3 uid="uid://c4mkieib51cko"]
+
+[ext_resource type="Script" uid="uid://ms0vn753ehfk" path="res://scenes/game_object/gatherable/gatherable_object.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ng4t20h41wa6" path="res://assets/tile/PC _ Computer - Stardew Valley - Tilesets - Outdoors (Spring).png" id="2_texture"]
+[ext_resource type="Resource" uid="uid://dp07t485dgy4d" path="res://resources/item/material/wood.tres" id="3_drop"]
+[ext_resource type="PackedScene" uid="uid://be5n54in08sec" path="res://scenes/component/lootcomponent/item_drop_component.tscn" id="3_drop_component_scene"]
+[ext_resource type="Script" uid="uid://dksdckws5ieyx" path="res://resources/loot/drop_data.gd" id="4_drop_data"]
+
+[sub_resource type="Resource" id="Resource_wood"]
+script = ExtResource("4_drop_data")
+item_data = ExtResource("3_drop")
+drop_chance = 1.0
+min_amount = 3
+max_amount = 5
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tree"]
+size = Vector2(16, 16)
+
+[node name="Tree" type="Node2D" node_paths=PackedStringArray("item_drop_component")]
+script = ExtResource("1_script")
+required_tool_type = 4
+item_drop_component = NodePath("ItemDropComponent")
+
+[node name="ItemDropComponent" parent="." instance=ExtResource("3_drop_component_scene")]
+drop_data_list = Array[ExtResource("4_drop_data")]([SubResource("Resource_wood")])
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_texture")
+offset = Vector2(0, -16)
+region_enabled = true
+region_rect = Rect2(48, 0, 48, 96)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(0, 32)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_tree")

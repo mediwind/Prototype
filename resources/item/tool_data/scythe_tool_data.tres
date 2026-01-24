@@ -4,8 +4,9 @@
 
 [resource]
 script = ExtResource("1_tool")
-tool_type = 2
+tool_type = 3
 effect_radius = 1
+efficiency = 1
 water_consumption = 0
 slot_type = 5
 stats = {

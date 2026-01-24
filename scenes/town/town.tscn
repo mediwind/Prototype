@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=4 uid="uid://cmqvvth3hy45i"]
+[gd_scene load_steps=27 format=4 uid="uid://cmqvvth3hy45i"]
 
 [ext_resource type="Script" uid="uid://3suo00p3gg" path="res://scenes/town/town.gd" id="1_i0lau"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
@@ -7,12 +7,12 @@
 [ext_resource type="PackedScene" uid="uid://bhmc4t4dtf2u" path="res://scenes/ui/town_ui.tscn" id="4_53e74"]
 [ext_resource type="PackedScene" uid="uid://byadw4tmkg3sw" path="res://scenes/game_object/player/player_human.tscn" id="4_v00pm"]
 [ext_resource type="PackedScene" uid="uid://dr3pik6bvrlif" path="res://scenes/game_object/loot/collectable_object.tscn" id="6_5vpkg"]
-[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/sword.tres" id="7_5vpkg"]
-[ext_resource type="Resource" uid="uid://de7xp2xf3671r" path="res://resources/item/hoe.tres" id="7_svnup"]
-[ext_resource type="Resource" uid="uid://q21hquvgyw82" path="res://resources/item/corn_seed.tres" id="8_yr8sw"]
-[ext_resource type="Resource" uid="uid://ctjqlj024eln6" path="res://resources/item/scythe.tres" id="9_fwdo8"]
+[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/equipment/weapon/sword.tres" id="7_5vpkg"]
+[ext_resource type="Resource" uid="uid://de7xp2xf3671r" path="res://resources/item/equipment/tool/hoe.tres" id="7_svnup"]
+[ext_resource type="Resource" uid="uid://q21hquvgyw82" path="res://resources/item/farming/corn_seed.tres" id="8_yr8sw"]
+[ext_resource type="Resource" uid="uid://ctjqlj024eln6" path="res://resources/item/equipment/tool/scythe.tres" id="9_fwdo8"]
 [ext_resource type="PackedScene" uid="uid://bsds21tghiius" path="res://scenes/town/battle_entrance.tscn" id="9_jil70"]
-[ext_resource type="Resource" uid="uid://c2fk4nenruxuf" path="res://resources/item/watering_can.tres" id="9_w25xm"]
+[ext_resource type="Resource" uid="uid://c2fk4nenruxuf" path="res://resources/item/equipment/tool/watering_can.tres" id="9_w25xm"]
 [ext_resource type="Resource" uid="uid://cdh43hb4x2bho" path="res://resources/item/nutrients/basic_fertilizer.tres" id="10_fwvjp"]
 [ext_resource type="PackedScene" uid="uid://bcofbjoggjp61" path="res://scenes/town/crafting_table.tscn" id="10_vb1k2"]
 [ext_resource type="PackedScene" uid="uid://dbihe5ydr615c" path="res://scenes/ui/crafting/crafting_ui.tscn" id="11_g3yvl"]
@@ -22,6 +22,10 @@
 [ext_resource type="Resource" uid="uid://b5md1nqvksi0b" path="res://resources/item/nutrients/basic_speed_gro.tres" id="13_vky2r"]
 [ext_resource type="Resource" uid="uid://dbmbbtdil3jry" path="res://resources/item/nutrients/quality_speed_gro.tres" id="14_fwdo8"]
 [ext_resource type="Resource" uid="uid://nlrx257mpni4" path="res://resources/item/nutrients/high_quality_speed_gro.tres" id="15_wacgc"]
+[ext_resource type="Resource" uid="uid://8ku0fw1t3po3" path="res://resources/item/equipment/tool/axe.tres" id="20_axe"]
+[ext_resource type="Resource" uid="uid://73sun64gbv46" path="res://resources/item/equipment/tool/pickaxe.tres" id="21_pickaxe"]
+[ext_resource type="PackedScene" uid="uid://c4mkieib51cko" path="res://scenes/game_object/gatherable/tree.tscn" id="22_tree"]
+[ext_resource type="PackedScene" uid="uid://bp6vf6utofva5" path="res://scenes/game_object/gatherable/rock.tscn" id="23_rock"]
 
 [node name="Town" type="Node"]
 script = ExtResource("1_i0lau")
@@ -94,8 +98,22 @@ item_data = ExtResource("8_yr8sw")
 amount = 99
 
 [node name="Sword" parent="." instance=ExtResource("6_5vpkg")]
-position = Vector2(223, 302)
+position = Vector2(319, -117)
 item_data = ExtResource("7_5vpkg")
+
+[node name="AxeDrop" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(333, -110)
+item_data = ExtResource("20_axe")
+
+[node name="PickaxeDrop" parent="." instance=ExtResource("6_5vpkg")]
+position = Vector2(221, -117)
+item_data = ExtResource("21_pickaxe")
+
+[node name="TestTree" parent="." instance=ExtResource("22_tree")]
+position = Vector2(100, 80)
+
+[node name="TestRock" parent="." instance=ExtResource("23_rock")]
+position = Vector2(180, 80)
 
 [node name="TownUI" parent="." instance=ExtResource("4_53e74")]
 
