@@ -14,3 +14,5 @@ name = "Corn"
 icon = SubResource("AtlasTexture_corn")
 description = "A golden, sweet ear of corn."
 max_stack = 99
+interaction_type = 0
+interaction_range = 1

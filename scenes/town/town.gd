@@ -9,6 +9,7 @@ extends Node
 
 @export var tabbed_skill_tree_scene: PackedScene
 @export var inventory_scene: PackedScene
+@export var chest_ui_scene: PackedScene # New Export
 
 
 func _ready():
@@ -19,11 +20,19 @@ func _ready():
 	# Connect Farming Signals
 	FarmManager.crop_updated.connect(_on_crop_updated)
 	FarmManager.crop_removed.connect(_on_crop_removed)
-	FarmManager.soil_updated.connect(_on_soil_updated) # New connection
+	FarmManager.soil_updated.connect(_on_soil_updated)
 	FarmManager.daily_growth_tick.connect(_on_daily_growth_tick)
+	
+	# Connect Inventory Signals
+	InventoryManager.hand_equipped.connect(_on_hand_equipped)
+	# Initial Check
+	_on_hand_equipped(InventoryManager.equipped_hand_item)
 	
 	# Restore Visuals from Persistence
 	_refresh_all_visuals()
+	
+	# Restore Placed Objects (Chest, Furniture)
+	BuildManager.restore_placed_objects(soil_tile_map, $Entities)
 
 
 func _refresh_all_visuals():
@@ -35,6 +44,21 @@ func _refresh_all_visuals():
 	for coords in FarmManager.farm_data:
 		_on_crop_updated(coords, FarmManager.farm_data[coords])
 
+func _on_hand_equipped(item: ItemData):
+	if item:
+		print("Town: Hand Equipped: ", item.name, " Type: ", item.get_class())
+		if item.get_script():
+			print("Town: Script Class: ", item.get_script().get_global_name())
+			
+	# Robust Check: Class Type OR Duck Typing (property check)
+	# This handles cases where class_name registration is flaky due to cyclic dependencies or reloading.
+	if item and (item is PlaceableData or "placeable_scene" in item):
+		print("Town: Starting Placement for ", item.name)
+		# We cast only if it is PlaceableData, otherwise we pass it duck-typed (BuildManager expects PlaceableData but GDScript is dynamic)
+		BuildManager.start_placing(item, soil_tile_map, $Entities)
+	else:
+		if item: print("Town: Item is NOT recognized as PlaceableData.")
+		BuildManager.cancel_build()
 
 func on_skill_ui_button_pressed():
 	var tabbed_skill_tree = tabbed_skill_tree_scene.instantiate()
@@ -47,7 +71,7 @@ func on_inventory_ui_button_pressed():
 	town_ui.add_child(inventory)
 	get_tree().paused = true
 
-@onready var player = $PlayerHuman
+@onready var player = $Entities/PlayerHuman
 const INTERACTION_DISTANCE = 3.0 # Grid distance (Chebyshev)
 const TILLED_SOIL_ATLAS_COORDS = Vector2i(6, 22) # Source ID 0 (Dry Tilled)
 const WET_SOIL_ATLAS_COORDS = Vector2i(2, 5) # Source ID 2 (Wet Tilled)
@@ -58,117 +82,153 @@ const CROP_SOURCE_ID = 1
 @onready var collectable_scene = preload("res://scenes/game_object/loot/collectable_object.tscn")
 
 func _unhandled_input(event):
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		# Common Logic: Position Checks
+	# Allow blocking if building
+	if BuildManager.is_building:
+		return
+
+	if event is InputEventMouseButton and event.pressed:
 		var mouse_pos = soil_tile_map.get_global_mouse_position()
 		var player_pos = player.global_position
-		var player_coords = soil_tile_map.local_to_map(soil_tile_map.to_local(player_pos))
-		var target_coords = soil_tile_map.local_to_map(soil_tile_map.to_local(mouse_pos))
 		
-		var hand_item = InventoryManager.equipped_hand_item
-		
-		# PRIORITY 1: CHECK ITEM TYPE (POINT or DIRECTIONAL)
-		# PRIORITY 1: CHECK ITEM TYPE (POINT or DIRECTIONAL)
-		if hand_item:
-			# Directional Tool Logic (Scythe, Weapon, Hoe, Watering Can) -> Handled by EquipmentActionHandler
-			# We check if it HAS EquipmentData -> WeaponData or ToolData
-			if hand_item.equipment_data:
-				var result = player.perform_action(hand_item, mouse_pos)
-				if result:
-					if result.get("type") == "melee":
-						_check_farming_hit(result)
-					# Tool actions (Hoe/Water) are handled inside ActionHandler -> FarmManager -> Signal -> Town Visual Update
-					return
- 
-			# Fallback for old DIRECTIONAL check if needed, or remove.
-			if hand_item.interaction_type == ItemData.InteractionType.DIRECTIONAL:
-				# Legacy path if not using WeaponData yet? 
-				# Our plan is Scythe uses WeaponData. So this block handles Scythe.
-				pass
-
-			# Point-Click Logic (Hoe, Watering Can) follows regular flow...
-		
-		# PRIORITY 2: POINT INTERACTION (Harvest / Till / Water)
-		# NOTE: Harvest is now context-sensitive. If hand is empty or tool matches.
-		
-		# Validation: Distance Check for Point Interaction
-		var diff = (target_coords - player_coords).abs()
-		if diff.x > 1 or diff.y > 1:
-			return # Too far for point interaction
-
-		if FarmManager.farm_data.has(target_coords):
-			# Check Tool Requirement
-			var crop_data = FarmManager.farm_data[target_coords]
-			var resource = crop_data.get("resource") as CropData
+		# RIGHT CLICK: INTERACTION (Chest, NPC)
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			# Check for interactables at mouse position
+			var space_state = soil_tile_map.get_world_2d().direct_space_state
+			var query = PhysicsPointQueryParameters2D.new()
+			query.position = mouse_pos
+			query.collide_with_bodies = true
+			query.collide_with_areas = true
 			
-			if resource:
-				var tool_req = resource.harvest_tool # "Hand" or "Scythe"
+			var results = space_state.intersect_point(query)
+			for result in results:
+				var collider = result["collider"]
+				# Check distance?
+				var dist = player_pos.distance_to(collider.global_position)
+				if dist > 32.0: # 2 tiles approx (Comfortable close range)
+					continue # Too far
+					
+				# Try interact
+				var interact_result = null
+				if collider.has_method("interact"):
+					interact_result = collider.interact(player)
+					get_viewport().set_input_as_handled()
+				elif collider.get_parent().has_method("interact"):
+					interact_result = collider.get_parent().interact(player)
+					get_viewport().set_input_as_handled()
+					
+				# Handle Result
+				if interact_result is InventoryData:
+					_open_container_ui(interact_result)
 				
-				# If Scythe is required, Point-Clicking with Hand should fail or warn
-				# Use Directional Input for Scythe!
-				if tool_req == "Scythe":
-					if not hand_item or hand_item.name != "Scythe":
-						print("Farming: This crop needs a Scythe! (Use Directional Attack)")
+				# If interaction happened, we return (only one interaction per click)
+				if interact_result != null or (collider.has_method("interact") or collider.get_parent().has_method("interact")):
+					return
+					
+		# LEFT CLICK: TOOL / FARMING
+		elif event.button_index == MOUSE_BUTTON_LEFT:
+			# Variables are already declared above
+			var player_coords = soil_tile_map.local_to_map(soil_tile_map.to_local(player_pos))
+			var target_coords = soil_tile_map.local_to_map(soil_tile_map.to_local(mouse_pos))
+			
+			var hand_item = InventoryManager.equipped_hand_item
+			
+			# PRIORITY 1: CHECK ITEM TYPE (POINT or DIRECTIONAL)
+			if hand_item:
+				# Directional Tool Logic
+				if hand_item.equipment_data:
+					var result = player.perform_action(hand_item, mouse_pos)
+					if result:
+						if result.get("type") == "melee":
+							_check_farming_hit(result)
 						return
-					else:
-						# User point-clicked WITH Scythe. Allow it? 
-						# User requested "Directional logic". But point click is precise.
-						# Let's funnel it to Directional Logic for consistency ??
-						# Or allow precise scything. Let's allow precise scything as backup.
-						pass
+
+				if hand_item.interaction_type == ItemData.InteractionType.DIRECTIONAL:
+					pass
+
+			# PRIORITY 2: POINT INTERACTION (Harvest / Till / Water)
+			var diff = (target_coords - player_coords).abs()
+			if diff.x > 1 or diff.y > 1:
+				return # Too far
+
+
+			if FarmManager.farm_data.has(target_coords):
+				# Check Tool Requirement
+				var crop_data = FarmManager.farm_data[target_coords]
+				var resource = crop_data.get("resource") as CropData
 				
-				# Proceed to Harvest (Unified Function)
-				if _try_harvest_crop(target_coords, hand_item):
+				if resource:
+					var tool_req = resource.harvest_tool # "Hand" or "Scythe"
+					
+					# If Scythe is required, Point-Clicking with Hand should fail or warn
+					# Use Directional Input for Scythe!
+					if tool_req == "Scythe":
+						if not hand_item or hand_item.name != "Scythe":
+							print("Farming: This crop needs a Scythe! (Use Directional Attack)")
+							return
+						else:
+							# User point-clicked WITH Scythe. Allow it? 
+							# User requested "Directional logic". But point click is precise.
+							# Let's funnel it to Directional Logic for consistency ??
+							# Or allow precise scything. Let's allow precise scything as backup.
+							pass
+					
+					# Proceed to Harvest (Unified Function)
+					if _try_harvest_crop(target_coords, hand_item):
+						return
+
+			# PRIORITY 2: USE TOOL
+			if not hand_item:
+				return
+				
+			# Tool Logic Removed (Moved to EquipmentActionHandler)
+			# Only Seeds and Fertilizer remain here for now (Point Click)
+
+				
+			# SEED PLANTING LOGIC
+			elif hand_item.crop_data:
+				# VALIDATION 1: Is there a crop already?
+				if FarmManager.farm_data.has(target_coords):
+					print("Farming: Crop already exists here.")
+					return
+					
+				# VALIDATION 2: Is the soil tilled? (Dry or Wet)
+				var tile_atlas_coords = soil_tile_map.get_cell_atlas_coords(target_coords)
+				var is_tilled = (tile_atlas_coords == TILLED_SOIL_ATLAS_COORDS) or (tile_atlas_coords == WET_SOIL_ATLAS_COORDS)
+				
+				if not is_tilled:
+					print("Farming: Soil is not tilled.")
+					# Optional: Feedback UI
 					return
 
-		# PRIORITY 2: USE TOOL
-		if not hand_item:
-			return
-			
-		# Tool Logic Removed (Moved to EquipmentActionHandler)
-		# Only Seeds and Fertilizer remain here for now (Point Click)
-
-			
-		elif hand_item.name.ends_with("Seed") or hand_item.name == "Corn Seed":
-			# VALIDATION 1: Is there a crop already?
-			if FarmManager.farm_data.has(target_coords):
-				print("Farming: Crop already exists here.")
-				return
-				
-			# VALIDATION 2: Is the soil tilled? (Dry or Wet)
-			var tile_atlas_coords = soil_tile_map.get_cell_atlas_coords(target_coords)
-			var is_tilled = (tile_atlas_coords == TILLED_SOIL_ATLAS_COORDS) or (tile_atlas_coords == WET_SOIL_ATLAS_COORDS)
-			
-			if not is_tilled:
-				print("Farming: Soil is not tilled.")
-				# Optional: Feedback UI
-				return
-
-			print("Farming: Planting ", hand_item.name, " at ", target_coords)
-			FarmManager.add_crop(target_coords, hand_item)
-			# CONSUMPTION: Remove 1 seed
-			InventoryManager.consume_equipped_item(1)
-
-
-		# FERTILIZER LOGIC
-		elif hand_item.fertilizer_data:
-			# VALIDATION 1: Is there a crop? (Maybe allowed, Stardew allows fertilizer before/after planting depending on game rules)
-			# Stardew: Only on tilled soil, before sprout stage?
-			# Let's keep it simple: Must be tilled soil.
-			var tile_atlas_coords = soil_tile_map.get_cell_atlas_coords(target_coords)
-			var is_tilled = (tile_atlas_coords == TILLED_SOIL_ATLAS_COORDS) or (tile_atlas_coords == WET_SOIL_ATLAS_COORDS)
-			
-			if not is_tilled:
-				print("Farming: Must be tilled soil to fertilize.")
-				return
-				
-			if FarmManager.apply_fertilizer(target_coords, hand_item.fertilizer_data):
+				print("Farming: Planting ", hand_item.name, " at ", target_coords)
+				# Pass the hand_item directly (it contains crop_data now, FarmManager should handle it)
+				# NOTE: FarmManager.add_crop might expect the Seed Item or the Crop Data.
+				# Let's check FarmManager briefly? 
+				# Assuming add_crop(coords, seed_item_data) logic exists.
+				FarmManager.add_crop(target_coords, hand_item)
+				# CONSUMPTION: Remove 1 seed
 				InventoryManager.consume_equipped_item(1)
-				# TODO: Play sound / visual effect
-				print("Farming: Applied fertilizer ", hand_item.name)
-		
-		else:
-			print("Town Input: Item held but no action matched. Name: ", hand_item.name, " | FertilizerData: ", hand_item.fertilizer_data)
+
+
+			# FERTILIZER LOGIC
+			elif hand_item.fertilizer_data:
+				# VALIDATION 1: Is there a crop? (Maybe allowed, Stardew allows fertilizer before/after planting depending on game rules)
+				# Stardew: Only on tilled soil, before sprout stage?
+				# Let's keep it simple: Must be tilled soil.
+				var tile_atlas_coords = soil_tile_map.get_cell_atlas_coords(target_coords)
+				var is_tilled = (tile_atlas_coords == TILLED_SOIL_ATLAS_COORDS) or (tile_atlas_coords == WET_SOIL_ATLAS_COORDS)
+				
+				if not is_tilled:
+					print("Farming: Must be tilled soil to fertilize.")
+					return
+					
+				if FarmManager.apply_fertilizer(target_coords, hand_item.fertilizer_data):
+					InventoryManager.consume_equipped_item(1)
+					# TODO: Play sound / visual effect
+					print("Farming: Applied fertilizer ", hand_item.name)
+			
+			else:
+				print("Town Input: Item held but no action matched. Name: ", hand_item.name, " | FertilizerData: ", hand_item.fertilizer_data)
 
 func spawn_harvest_drops(coords: Vector2i, item_data: ItemData, amount: int, quality: int = 0):
 	# Calculate world position center of the tile
@@ -361,3 +421,18 @@ func _on_soil_updated(coords: Vector2i, data: Dictionary):
 		var atlas_coords = Vector2i(type_col_base + variation, tier_row)
 				
 		target_layer.set_cell(coords, source_id, atlas_coords)
+
+func _open_container_ui(data: InventoryData):
+	if not chest_ui_scene:
+		print("Town: Chest UI Scene not assigned!")
+		return
+		
+	var chest_ui = chest_ui_scene.instantiate()
+	town_ui.add_child(chest_ui)
+	chest_ui.open(data)
+	
+	# Open Player Inventory too -> REMOVED (Handled by ChestUI internal layout now)
+	# var player_inv = inventory_scene.instantiate()
+	# town_ui.add_child(player_inv)
+	
+	get_tree().paused = true

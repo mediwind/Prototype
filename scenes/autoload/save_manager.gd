@@ -17,6 +17,8 @@ func save_game_data():
     # Collect data from Managers (Loose Coupling)
     if FarmManager:
         game_data.farm_save_data = FarmManager.get_save_data()
+    if BuildManager:
+        game_data.placed_objects_data = BuildManager.get_save_data()
         
     ResourceSaver.save(game_data, SAVE_FILE_PATH)
 
@@ -36,6 +38,8 @@ func load_game_data():
                 # Defer loading slightly to ensure FarmManager is ready? 
                 # _ready() order usually ensures Autoloads are ready.
                 FarmManager.load_save_data(game_data.farm_save_data)
+            if BuildManager:
+                BuildManager.load_save_data(game_data.placed_objects_data)
         else:
             print("Failed to load game data resource.")
             initialize_default_values()

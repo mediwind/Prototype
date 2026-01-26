@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="PlaceableData" load_steps=5 format=3 uid="uid://bkpwxk1df3dta"]
+
+[ext_resource type="Script" uid="uid://cha6tdapjo0i2" path="res://resources/item/definitions/placeable_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://0tgak5714vq2" path="res://assets/tile/PC _ Computer - Stardew Valley - Tilesets - Craftables.png" id="1_wtlm3"]
+[ext_resource type="PackedScene" uid="uid://6wp7em4op7us" path="res://scenes/game_object/placeable/chest/chest.tscn" id="2_scene"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lelth"]
+atlas = ExtResource("1_wtlm3")
+region = Rect2(32, 512, 16, 32)
+
+[resource]
+script = ExtResource("1_script")
+placeable_scene = ExtResource("2_scene")
+place_size = Vector2i(1, 1)
+can_rotate = false
+id = "wooden_chest"
+name = "Wooden Chest"
+icon = SubResource("AtlasTexture_lelth")
+description = "A sturdy chest for storing items."
+max_stack = 99
+interaction_type = 0
+interaction_range = 1

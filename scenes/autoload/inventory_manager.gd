@@ -74,7 +74,8 @@ func add_item(item_data: ItemData, amount: int, quality: int = 0) -> int:
 				if remaining <= 0: return added
 
 	# 1-2. 핫바 슬롯에 합치기 (동일 아이템 & 동일 등급) -> can_add_item과 로직 일치화
-	for slot in player_hotbar_slots:
+	for i in range(player_hotbar_slots.size()):
+		var slot = player_hotbar_slots[i]
 		if slot.item_data and _is_same_item(slot.item_data, item_data):
 			if slot.quality != quality: continue
 			var can_add = max_stack - slot.amount
@@ -83,6 +84,11 @@ func add_item(item_data: ItemData, amount: int, quality: int = 0) -> int:
 				slot.amount += to_add
 				remaining -= to_add
 				added += to_add
+				
+				# Refresh hand if we modified the active hotbar slot
+				if i == active_hotbar_index:
+					equip_to_hand(active_hotbar_index)
+					
 				if remaining <= 0: return added
 
 	# 2. 인벤토리 빈 슬롯에 새로 추가
@@ -97,7 +103,8 @@ func add_item(item_data: ItemData, amount: int, quality: int = 0) -> int:
 			if remaining <= 0: return added
 
 	# 2-2. 핫바 빈 슬롯에 새로 추가 -> can_add_item과 로직 일치화
-	for slot in player_hotbar_slots:
+	for i in range(player_hotbar_slots.size()):
+		var slot = player_hotbar_slots[i]
 		if not slot.item_data:
 			var to_add = min(remaining, max_stack)
 			slot.item_data = item_data
@@ -105,6 +112,11 @@ func add_item(item_data: ItemData, amount: int, quality: int = 0) -> int:
 			slot.quality = quality
 			remaining -= to_add
 			added += to_add
+			
+			# Refresh hand if we filled the active (empty) hotbar slot
+			if i == active_hotbar_index:
+				equip_to_hand(active_hotbar_index)
+				
 			if remaining <= 0: return added
 
 	# 3. 인벤토리가 가득 차서 일부만 추가되었거나 못 넣었을 때
@@ -151,6 +163,11 @@ func remove_item_from_slot(item_data_to_remove: ItemData, amount_to_remove: int,
 				# 스탯 재계산 (장비 슬롯에서 아이템 제거 시)
 				if source_slot_type == "equipment":
 					StatManager.recalculate_player_stats()
+				
+				# Refresh hand if active hotbar slot was cleared
+				if source_slot_type == "hotbar" and source_slot_index == active_hotbar_index:
+					equip_to_hand(active_hotbar_index)
+					
 			return true # 성공적으로 제거
 		else:
 			# 요청된 양보다 슬롯에 적게 들어있는 경우 (이런 경우는 드래그 로직상 발생하면 안 됨)

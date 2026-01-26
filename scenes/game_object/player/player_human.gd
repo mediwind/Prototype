@@ -23,6 +23,9 @@ func face_direction(dir: Vector2):
 		$Sprite2D.flip_h = true
 
 func perform_action(item: ItemData, target_pos: Vector2) -> Dictionary:
+	# Face the target direction
+	var dir = (target_pos - global_position).normalized()
+	face_direction(dir)
 	return $EquipmentActionHandler.attempt_action(self, item, target_pos)
 
 func _input(event):

@@ -255,3 +255,20 @@ Replaced the fragile "File Path Separation" persistence model with a robust **ID
 - [x] **Saving**: Logs confirm `SavedID` is populated correctly.
 - [x] **Loading**: Autoload reordering ensures data is restored.
 - [x] **Persistence**: Inventory survives Game Restart.
+
+## Phase 19: Housing & Storage System (2026-01-22)
+- **Architecture**: Implemented `PlaceableData` and `PlaceableObject` for generic building.
+- **Components**:
+    - **BuildManager**: Decoupled from generic scenes; handles generic placement and persistence.
+    - **Chest**: First furniture item with custom `InventoryData`, accessible via interaction.
+    - **UI**: Refactored `Slot.gd` to work with any `InventoryData` owner (not just global player). Created `ChestUI`.
+- **Fixes**:
+    - **Y-Sort**: Fixed player rendering behind trees/objects by reparenting all world entities to a Y-Sort enabled `Entities` node in `Town.tscn`.
+    - **Cyclic Dependency**: Resolved class registration issues between `PlaceableObject` and `BuildManager`.
+- **Content**: Added "Wooden Chest" crafting recipe. Only recipe definition added, needs "Furniture" tab in Crafting UI to be fully accessible? (Recipe category needs check).
+
+## Phase 19.5: Post-Implementation Fixes
+- **Ghost Item Glitch**: Fixed an issue where the player's hand didn't update when moving or swapping items in the inventory.
+    - **Logic**: Added checks in `Slot.gd` and `InventoryManager.gd` to refresh the hand if the active hotbar slot is modified.
+- **Persistence**: Fixed `Chest` inventory not saving correctly when switching scenes (`_exit_tree` sync added).
+- **Transient Objects**: Fixed Turrets (and other combat buildables) incorrectly saving to the Town file.

@@ -9,6 +9,7 @@ class_name ItemData
 @export var equipment_data: EquipmentData
 @export var consumable_data: ConsumableData
 @export var fertilizer_data: FertilizerData
+@export var crop_data: CropData
 
 # @export var quest_data: QuestItemData
 

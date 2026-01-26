@@ -37,6 +37,10 @@ const STAR_SIZE = 16 # 별 아이콘 하나의 크기 (픽셀)
 var slot_type: String
 var slot_index: int
 
+# OPTIONAL: Owner InventoryData (For Chets, etc.)
+# If null, uses global InventoryManager (Player)
+var inventory_data_owner: InventoryData = null
+
 const GROUP_INVENTORY_UI = "inventory_ui"
 const PREVIEW_SIZE = Vector2(32, 32)
 const PREVIEW_AMOUNT_OUTLINE_SIZE = 2
@@ -129,7 +133,8 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 		"amount": drag_amount,
 		"source_slot_type": slot_type,
 		"source_slot_index": slot_index,
-		"split": drag_amount < amount
+		"split": drag_amount < amount,
+		"source_inventory_data": inventory_data_owner # New: Source Inventory Reference
 	}
 	_store_drag_payload_in_inventory_ui(drag_payload)
 	return drag_payload
@@ -189,9 +194,11 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	var dragged_item_data: ItemData = data.item_data
 	var dragged_amount: int = data.amount
 	var is_partial_drag: bool = data.split
+	var source_inv_owner = data.get("source_inventory_data") # Can be null or InventoryData
 
-	var source_slot_ref: Object = _get_slot_data_reference_from_manager(source_type, source_idx) # 타입 명시 Object
-	var target_slot_ref: Object = _get_slot_data_reference_from_manager(slot_type, slot_index) # 타입 명시 Object
+	# Resolve Data References
+	var source_slot_ref: Object = _get_slot_data_reference(source_inv_owner, source_type, source_idx)
+	var target_slot_ref: Object = _get_slot_data_reference(inventory_data_owner, slot_type, slot_index)
 
 	if not source_slot_ref or not target_slot_ref:
 		_clear_drag_payload_from_inventory_ui()
@@ -206,26 +213,40 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	elif _try_place_or_swap_items(source_slot_ref, target_slot_ref, dragged_item_data, dragged_amount, is_partial_drag): # source_slot_ref, target_slot_ref는 Object
 		operation_performed = true
 
-	_finalize_drop_operation(operation_performed, source_type, source_idx)
+	_finalize_drop_operation(operation_performed, source_type, source_idx, source_inv_owner)
 
 
-# InventoryManager로부터 특정 타입과 인덱스에 해당하는 슬롯의 데이터 참조(Object)를 가져옵니다.
-func _get_slot_data_reference_from_manager(p_slot_type: String, p_slot_idx: int) -> Variant:
+# Helper to resolve slot data from either a specific InventoryData or the global InventoryManager
+func _get_slot_data_reference(p_inv_owner: InventoryData, p_slot_type: String, p_slot_idx: int) -> Variant:
 	var slots_array: Array
-	if p_slot_type == "inventory":
-		slots_array = InventoryManager.get_inventory_slots()
-	elif p_slot_type == "hotbar":
-		slots_array = InventoryManager.get_hotbar_slots()
-	elif p_slot_type == "equipment":
-		slots_array = InventoryManager.get_equipment_slots()
+	
+	# Case 1: Specific Inventory Data (e.g., Chest)
+	if p_inv_owner:
+		if p_slot_type == "inventory" or p_slot_type == "chest_inventory":
+			slots_array = p_inv_owner.inventory_slots
+		elif p_slot_type == "hotbar":
+			slots_array = p_inv_owner.hotbar_slots
+		elif p_slot_type == "equipment":
+			slots_array = p_inv_owner.equipment_slots
+		else:
+			return null
+	
+	# Case 2: Global InventoryManager (Player Default)
 	else:
-		printerr("Slot.gd: Unknown slot type '%s'." % p_slot_type)
-		return null
+		if p_slot_type == "inventory" or p_slot_type == "player_inventory":
+			slots_array = InventoryManager.get_inventory_slots()
+		elif p_slot_type == "hotbar":
+			slots_array = InventoryManager.get_hotbar_slots()
+		elif p_slot_type == "equipment":
+			slots_array = InventoryManager.get_equipment_slots()
+		else:
+			return null
 
 	if p_slot_idx < 0 or p_slot_idx >= slots_array.size():
 		printerr("Slot.gd: Invalid slot index %d for type '%s'." % [p_slot_idx, p_slot_type])
 		return null
-	return slots_array[p_slot_idx] # 이 반환값은 Object (InventoryManager의 슬롯 객체)
+		
+	return slots_array[p_slot_idx]
 
 
 # 드래그된 아이템을 타겟 슬롯의 아이템과 합치기를 시도합니다.
@@ -291,7 +312,7 @@ func _try_place_or_swap_items(source_slot: Object, target_slot: Object, dragged_
 
 # 드랍 작업(합치기, 놓기, 스왑)의 성공 여부에 따라 UI 갱신 신호를 보내고,
 # Inventory UI에 저장된 드래그 페이로드를 정리합니다.
-func _finalize_drop_operation(was_successful: bool, src_type: String, src_idx: int):
+func _finalize_drop_operation(was_successful: bool, src_type: String, src_idx: int, src_inv_owner: InventoryData):
     # 자기 자신에게 드랍했거나, 실제 작업이 성공한 경우 UI 갱신 필요
 	var needs_ui_refresh_for_target = (slot_type == src_type and slot_index == src_idx) or was_successful
 	var needs_ui_refresh_for_source = was_successful and not (src_type == slot_type and src_idx == slot_index)
@@ -304,6 +325,15 @@ func _finalize_drop_operation(was_successful: bool, src_type: String, src_idx: i
 	# 실제 작업이 성공했거나, 자기 자신에게 드랍하여 드래그를 끝내는 경우 drag_data 초기화
 	if was_successful or (slot_type == src_type and slot_index == src_idx):
 		_clear_drag_payload_from_inventory_ui()
+	
+	# Refresh player hand if active hotbar slot was involved (Source or Target)
+	if was_successful:
+		var active_idx = InventoryManager.active_hotbar_index
+		var source_is_active = (src_inv_owner == null and src_type == "hotbar" and src_idx == active_idx)
+		var target_is_active = (inventory_data_owner == null and slot_type == "hotbar" and slot_index == active_idx)
+		
+		if source_is_active or target_is_active:
+			InventoryManager.equip_to_hand(active_idx)
 	
 	StatManager.recalculate_player_stats()
 
@@ -367,12 +397,4 @@ func _update_quality_display(quality: int = 0):
 	atlas.region = Rect2(index * STAR_SIZE, 0, STAR_SIZE, STAR_SIZE)
 	quality_star.texture = atlas
 	
-	# DEBUG: Pink Square Test
-	# var debug_tex = PlaceholderTexture2D.new()
-	# debug_tex.size = Vector2(16, 16)
-	# quality_star.texture = debug_tex
-	
 	quality_star.visible = true
-	
-	# Debug: Texture size check
-	# print("Slot: Star Region: ", atlas.region)

@@ -41,20 +41,19 @@ func _execute_tool(user: Node2D, tool: ToolData, target_pos: Vector2) -> Diction
 	match tool.tool_type:
 		ToolData.ToolType.HOE:
 			# Validating "is_tillable" via TileMap Custom Data
-			# We need to access the SoilTileMap or the Ground Layer.
-			# Since ActionHandler is a Component, it doesn't know about Town directly.
-			# But 'user' is the Player, and Player is in Town.
-			# We can try to find the "SoilTileMap" in the user's tree context.
-			# Validating "is_tillable" via TileMap Custom Data
-			# We try to access the SoilTileMap.
-			# IF we are in a non-farming scene (Combat), town or soil_map might be null.
-			# But we still want to SWING (Combat).
-			var town = user.get_parent()
+			# Since Player is in Town/Entities, 'town' is user.owner or up 2 levels
+			# Or just use get_tree().current_scene if Town is the scene
 			var soil_map = null
-			if town:
-				soil_map = town.get_node_or_null("SoilTileMap")
+			var root = user.get_tree().current_scene
+			if root and root.has_node("SoilTileMap"):
+				soil_map = root.get_node("SoilTileMap")
 				
-			if soil_map:
+			# Check Range (Scalable via ToolData)
+			var user_tile = Vector2i(user.global_position / 16.0)
+			var dist_vec = (tile_pos - user_tile).abs()
+			if dist_vec.x > tool.effect_radius or dist_vec.y > tool.effect_radius:
+				handled = false # Too far
+			elif soil_map:
 				var tile_data = soil_map.get_cell_tile_data(tile_pos)
 				if tile_data and tile_data.get_custom_data("is_tillable"):
 					handled = FarmManager.till_soil(tile_pos)
@@ -69,12 +68,12 @@ func _execute_tool(user: Node2D, tool: ToolData, target_pos: Vector2) -> Diction
 
 			
 			# HOE COMBAT LOGIC (Weak Attack)
-			# Defined penalty: Damage 1, Knockback 0
+			# Defined penalty: Damage = Efficiency, Knockback 0
 			var tool_stats = {
-				"damage": 1.0,
+				"damage": float(tool.efficiency), # Use efficiency as damage
 				"knockback_force": 0.0,
 				"arc_angle": 90.0,
-				"attack_range": 1.0,
+				"attack_range": float(tool.effect_radius), # Combat range matches effect? Or keeps short? Usually tools have short melee range.
 				"visual_color": Color.AZURE
 			}
 			# Execute visual/combat swing regardless of till success
@@ -87,7 +86,12 @@ func _execute_tool(user: Node2D, tool: ToolData, target_pos: Vector2) -> Diction
 			return combat_result
 				
 		ToolData.ToolType.WATERING_CAN:
-			handled = FarmManager.water_soil(tile_pos)
+			var user_tile = Vector2i(user.global_position / 16.0)
+			var dist_vec = (tile_pos - user_tile).abs()
+			
+			if dist_vec.x <= tool.effect_radius and dist_vec.y <= tool.effect_radius:
+				handled = FarmManager.water_soil(tile_pos)
+			
 			if handled:
 				print("ActionHandler: Watered soil at ", tile_pos)
 			

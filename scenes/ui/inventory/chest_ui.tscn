@@ -1,0 +1,87 @@
+[gd_scene load_steps=3 format=3 uid="uid://dwg2roo53xesr"]
+
+[ext_resource type="Script" uid="uid://dv2msg20eip2q" path="res://scenes/ui/inventory/chest_ui.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="2_slot"]
+
+[node name="ChestUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+slot_scene = ExtResource("2_slot")
+
+[node name="BackgroundDim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.490196)
+
+[node name="ContainerPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_right = 300.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ContainerPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ContainerPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="PlayerSection" type="VBoxContainer" parent="ContainerPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="ContainerPanel/MarginContainer/HBoxContainer/PlayerSection"]
+layout_mode = 2
+text = "Player Inventory"
+horizontal_alignment = 1
+
+[node name="PlayerGrid" type="GridContainer" parent="ContainerPanel/MarginContainer/HBoxContainer/PlayerSection"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+columns = 5
+
+[node name="VSeparator" type="VSeparator" parent="ContainerPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="ChestSection" type="VBoxContainer" parent="ContainerPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="ContainerPanel/MarginContainer/HBoxContainer/ChestSection"]
+layout_mode = 2
+text = "Chest Storage"
+horizontal_alignment = 1
+
+[node name="ChestGrid" type="GridContainer" parent="ContainerPanel/MarginContainer/HBoxContainer/ChestSection"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+columns = 5

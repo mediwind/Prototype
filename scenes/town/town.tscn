@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=4 uid="uid://cmqvvth3hy45i"]
+[gd_scene load_steps=29 format=4 uid="uid://cmqvvth3hy45i"]
 
 [ext_resource type="Script" uid="uid://3suo00p3gg" path="res://scenes/town/town.gd" id="1_i0lau"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bulnv1je8d0i3" path="res://scenes/ui/inventory/InventoryUI.tscn" id="3_6g2qn"]
 [ext_resource type="PackedScene" uid="uid://bhmc4t4dtf2u" path="res://scenes/ui/town_ui.tscn" id="4_53e74"]
 [ext_resource type="PackedScene" uid="uid://byadw4tmkg3sw" path="res://scenes/game_object/player/player_human.tscn" id="4_v00pm"]
+[ext_resource type="PackedScene" uid="uid://dwg2roo53xesr" path="res://scenes/ui/inventory/chest_ui.tscn" id="4_wpqog"]
 [ext_resource type="PackedScene" uid="uid://dr3pik6bvrlif" path="res://scenes/game_object/loot/collectable_object.tscn" id="6_5vpkg"]
 [ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/weapons/sword.tres" id="7_5vpkg"]
 [ext_resource type="Resource" uid="uid://de7xp2xf3671r" path="res://resources/item/tools/hoe.tres" id="7_svnup"]
@@ -26,11 +27,13 @@
 [ext_resource type="Resource" uid="uid://73sun64gbv46" path="res://resources/item/tools/pickaxe.tres" id="21_pickaxe"]
 [ext_resource type="PackedScene" uid="uid://c4mkieib51cko" path="res://scenes/game_object/gatherable/tree.tscn" id="22_tree"]
 [ext_resource type="PackedScene" uid="uid://bp6vf6utofva5" path="res://scenes/game_object/gatherable/rock.tscn" id="23_rock"]
+[ext_resource type="Resource" uid="uid://bkpwxk1df3dta" path="res://resources/item/furniture/chest.tres" id="25_chest"]
 
 [node name="Town" type="Node"]
 script = ExtResource("1_i0lau")
 tabbed_skill_tree_scene = ExtResource("2_g3yvl")
 inventory_scene = ExtResource("3_6g2qn")
+chest_ui_scene = ExtResource("4_wpqog")
 
 [node name="GameCamera" parent="." instance=ExtResource("1_kmwi7")]
 
@@ -47,79 +50,87 @@ tile_set = ExtResource("12_placeholder")
 [node name="CropTileMap" type="TileMapLayer" parent="."]
 tile_set = ExtResource("12_placeholder")
 
-[node name="PlayerHuman" parent="." instance=ExtResource("4_v00pm")]
+[node name="Entities" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="PlayerHuman" parent="Entities" instance=ExtResource("4_v00pm")]
 position = Vector2(154, 103)
 
-[node name="Hoe" parent="." instance=ExtResource("6_5vpkg")]
+[node name="Hoe" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(336, -216)
 item_data = ExtResource("7_svnup")
 
-[node name="Scythe" parent="." instance=ExtResource("6_5vpkg")]
+[node name="Scythe" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(264, -200)
 item_data = ExtResource("9_fwdo8")
 
-[node name="WateringCan" parent="." instance=ExtResource("6_5vpkg")]
+[node name="WateringCan" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(176, -176)
 item_data = ExtResource("9_w25xm")
 
-[node name="BasicFertilizer" parent="." instance=ExtResource("6_5vpkg")]
+[node name="BasicFertilizer" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(96, -200)
 item_data = ExtResource("10_fwvjp")
 amount = 10
 
-[node name="QualityFertilizer" parent="." instance=ExtResource("6_5vpkg")]
+[node name="QualityFertilizer" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(328, -216)
 item_data = ExtResource("11_xbtnt")
 amount = 10
 
-[node name="HighQualityFertilizer" parent="." instance=ExtResource("6_5vpkg")]
+[node name="HighQualityFertilizer" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(216, -192)
 item_data = ExtResource("12_3sg37")
 amount = 10
 
-[node name="BasicSpeedGro" parent="." instance=ExtResource("6_5vpkg")]
+[node name="BasicSpeedGro" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(120, -192)
 item_data = ExtResource("13_vky2r")
 amount = 10
 
-[node name="QualitySpeedGro" parent="." instance=ExtResource("6_5vpkg")]
+[node name="QualitySpeedGro" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(352, -216)
 item_data = ExtResource("14_fwdo8")
 amount = 10
 
-[node name="HighQualitySpeedGro" parent="." instance=ExtResource("6_5vpkg")]
+[node name="HighQualitySpeedGro" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(224, -208)
 item_data = ExtResource("15_wacgc")
 amount = 10
 
-[node name="CornSeed" parent="." instance=ExtResource("6_5vpkg")]
+[node name="CornSeed" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(400, -192)
 item_data = ExtResource("8_yr8sw")
 amount = 99
 
-[node name="Sword" parent="." instance=ExtResource("6_5vpkg")]
+[node name="Sword" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(319, -117)
 item_data = ExtResource("7_5vpkg")
 
-[node name="AxeDrop" parent="." instance=ExtResource("6_5vpkg")]
+[node name="AxeDrop" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(333, -110)
 item_data = ExtResource("20_axe")
 
-[node name="PickaxeDrop" parent="." instance=ExtResource("6_5vpkg")]
+[node name="PickaxeDrop" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(221, -117)
 item_data = ExtResource("21_pickaxe")
 
-[node name="TestTree" parent="." instance=ExtResource("22_tree")]
+[node name="TestTree" parent="Entities" instance=ExtResource("22_tree")]
 position = Vector2(100, 80)
 
-[node name="TestRock" parent="." instance=ExtResource("23_rock")]
+[node name="TestRock" parent="Entities" instance=ExtResource("23_rock")]
 position = Vector2(180, 80)
 
-[node name="TownUI" parent="." instance=ExtResource("4_53e74")]
-
-[node name="BattleEntrance" parent="." instance=ExtResource("9_jil70")]
+[node name="BattleEntrance" parent="Entities" instance=ExtResource("9_jil70")]
 position = Vector2(549, 141)
 
-[node name="Area2D" parent="." instance=ExtResource("10_vb1k2")]
+[node name="CraftingTable" parent="Entities" instance=ExtResource("10_vb1k2")]
 position = Vector2(47, 104)
 crafting_ui_scene = ExtResource("11_g3yvl")
+
+[node name="ChestDrop" parent="Entities" instance=ExtResource("6_5vpkg")]
+position = Vector2(147, 337)
+item_data = ExtResource("25_chest")
+amount = 5
+
+[node name="TownUI" parent="." instance=ExtResource("4_53e74")]

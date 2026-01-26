@@ -26,12 +26,11 @@ drop_data_list = Array[ExtResource("4_drop_data")]([SubResource("Resource_wood")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_texture")
-offset = Vector2(0, -16)
+offset = Vector2(0, -48)
 region_enabled = true
 region_rect = Rect2(48, 0, 48, 96)
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
-position = Vector2(0, 32)
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
