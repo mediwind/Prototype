@@ -79,6 +79,17 @@ trigger: always_on
 - **Protocol:** 대신 모든 상태 관리 주체는 `get_save_data() -> Dictionary`와 `load_save_data(data: Dictionary)` 메서드를 구현한다.
 - **Integration:** 저장 시점 판단 및 I/O 처리는 `SaveManager`가 일괄 수행하며, 각 Manager에게 데이터를 요청/주입하는 방식을 따른다.
 
+### 6. QA 및 데이터 정합성 (QA & Integrity)
+- **Persistence First:** 새로운 시스템(System)이나 매니저(Manager)를 추가할 때, 기능 구현과 동시에 `SaveManager` 연동(저장/불러오기/리셋)을 **가장 먼저 구현하고 검증**한다.
+- **Reset Logic:** `New Game`은 단순 씬 재시작이 아니다. 모든 매니저의 상태가 초기값으로 완벽하게 돌아가는지(`reset_game_data`) 반드시 확인한다.
+- **Checklist:** 기능 추가 시 다음 3가지를 필수로 테스트한다.
+  1. **Session Persistence:** 저장 후 게임 껐다 켰을 때 데이터 유지 여부.
+  2. **Phantom Data:** 저장하지 않고 나갔을 때 데이터 롤백 여부.
+  3. **Clean New Game:** 진행 중 타이틀로 나가서 새 게임 시작 시 데이터 초기화 여부.
+  4. **Feature Check:** 새로운 기능을 추가할 때, **"이 기능에 저장/불러오기가 필요한 데이터가 있는가?"**를 반드시 자문하고, 있다면 즉시 `SaveManager`에 연동한다.
+
+
+
 ---
 
 ## 🚀 PART 4. 개발 전략 (Development Strategy)

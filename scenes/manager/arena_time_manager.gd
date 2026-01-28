@@ -34,7 +34,6 @@ func on_timer_timeout():
 	# add_child(end_screen_instance)
 	# end_screen_instance.play_jingle()
 	# MetaProgression.save()
-
 	get_tree().paused = true
 
 	var report_window = currency_report_window_scene.instantiate()
@@ -47,4 +46,4 @@ func on_timer_timeout():
 func _on_report_confirmed():
 	get_tree().paused = false
 	# report_window가 "OK" 버튼을 클릭했을 때 마을로 이동한다.
-	get_tree().change_scene_to_packed(town_scene)
+	SceneManager.change_scene(town_scene.resource_path)

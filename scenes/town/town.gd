@@ -13,7 +13,7 @@ extends Node
 
 
 func _ready():
-	SaveManager.save_game_data()
+	# SaveManager.save_game_data() # Removed unwanted auto-save on load
 	skill_ui_button.pressed.connect(on_skill_ui_button_pressed)
 	inventory_ui_button.pressed.connect(on_inventory_ui_button_pressed)
 	

@@ -6,8 +6,15 @@ var level_and_exp_data: LevelAndExpData
 
 
 func _ready():
+	load_save_data()
+
+
+func load_save_data():
+	# Ensure GameData exists
 	if SaveManager.game_data.level_and_exp_data == null:
 		SaveManager.game_data.level_and_exp_data = LevelAndExpData.new()
+	
+	# Refresh References
 	level_and_exp_data = SaveManager.game_data.level_and_exp_data
 	
 	# Validate default categories existence (for migration safety)
@@ -72,4 +79,12 @@ func get_main_level() -> int:
 	# Example: 5 Skills at Lv 1 (Total 5). Main = floor(5/2) + 1 = 3.
 	
 	if count == 0: return 1
-	return int(floor(total_level_sum / 2.0)) + 1
+	
+	# Adjusted Formula: Starts at Main Level 1 when all skills are Level 1.
+	# (Sum of Levels - Count of Skills) / 2 + 1
+	# Example: 5 Skills @ Lv1. Sum=5. Count=5. (5-5)/2 + 1 = 1.
+	# Example: 1 Skill reaches Lv3 (Total 7). (7-5)/2 + 1 = 2.
+	var scaling_factor = 2.0
+	var calculated_level = int(floor((total_level_sum - count) / scaling_factor)) + 1
+	
+	return max(1, calculated_level)

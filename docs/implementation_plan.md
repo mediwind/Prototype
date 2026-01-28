@@ -1,65 +1,71 @@
-# Phase 13.5: Tool & Weapon Refinement Implementation Plan
+# Phase 20: System Infrastructure & Scene Flow
 
 ## Goal Description
-Refine the distinction between Farming Tools and Combat Weapons. Specifically, migrate the **Scythe** to be primarily a Farming Tool (while retaining weak combat capabilities), impose combat penalties on all tools (Hoe, Watering Can, Scythe), and restrict harvesting mechanics so that true Weapons (Sword) cannot accidentally harvest crops.
+Establish the foundational "Legs" of the game: robust scene management and accessible system menus.
+This phase aims to eliminate development friction by allowing instant Save/Load testing and providing smooth, professional transitions between game states (Title -> Town -> Battle).
 
 ## User Review Required
-> [!IMPORTANT]
-> **Scythe Migration**: The Scythe will no longer use `WeaponData`. It will use `ToolData` extended with combat parameters (or handled internally via specific logic).
-> **Decision**: To avoid multiple inheritance issues, `ToolData` will support basic combat stats (damage, knockback) but default to weak values. Alternatively, `ActionHandler` will apply fixed weak stats for any `ToolData` item.
-> **Chosen Approach**: `ToolData` will have optional `can_harvest_crops` (bool) and `combat_stats` (Dictionary or fixed logic). Actually, `ToolType` enum expansion is cleaner. We will add `SCYTHE` to `ToolType` in `ToolData`.
+> [!NOTE]
+> **UI Theming Strategy**: We will adopt a **"Function First, Theme Later"** approach.
+> All UI will be built using standard Godot Controls (`Button`, `Panel`, `Label`) without applying complex styles initially.
+> This prevents "Technical Debt" because Godot's Theme system mimics CSS: we can apply a global `main_theme.tres` later, and all standard controls will update automatically.
+> **Constraint**: Do not override styles in the Inspector (e.g., "Theme Overrides -> Styles") unless absolutely necessary for layout logic. Use the default look for now.
 
 ## Proposed Changes
 
-### Data & Resources
-#### [MODIFY] [tool_data.gd](file:///d:/Godot/Prototype/resources/item/tool_data.gd)
-- Update `ToolType` enum: Add `SCYTHE`.
-- Add export vars for simple combat traits (optional, or hardcoded in handler for tools):
-  - `damage`: float = 1.0
-  - `knockback_force`: float = 0.0
+### System Core
+#### [NEW] [scene_manager.gd](file:///d:/Godot/Prototype/scenes/manager/scene_manager.gd)
+- **Autoload**: Register as `SceneManager`.
+- **Function**: `change_scene(scene_path: String, transition_type: String = "fade")`
+- **Implementation**:
+  - Instantiates a high-Z-index `ColorRect` (created via code or separate scene).
+  - Tweens opacity (0 -> 1).
+  - Calls `get_tree().change_scene_to_file()`.
+  - Tweens opacity (1 -> 0).
 
-#### [MODIFY] [scythe.tres](file:///d:/Godot/Prototype/resources/item/scythe.tres)
-- Replace `equipment_data` (currently `ScytheWeaponData.tres`) with a new `ScytheToolData.tres`.
+### UI System
+#### [NEW] [system_menu.tscn](file:///d:/Godot/Prototype/scenes/ui/system_menu/system_menu.tscn)
+- **Type**: `CanvasLayer` (Z-Index High).
+- **Structure**:
+  - `PanelContainer` (Center)
+    - `VBoxContainer`
+      - `Button`: Resume
+      - `Button`: Save
+      - `Button`: Load
+      - `Button`: Options (Placeholder)
+      - `Button`: Main Menu
+      - `Button`: Quit
+- **Logic**:
+  - Pauses the tree when opened (`Process Mode: Always`).
+  - Connects buttons to `SaveManager` and `SceneManager`.
 
-#### [NEW] [scythe_tool_data.tres]
-- Create new resource using `ToolData`.
-- Type: `SCYTHE`.
-- Stats: Damage 1.0, Knockback 0.0.
+#### [NEW] [title_screen.tscn](file:///d:/Godot/Prototype/scenes/ui/title_screen/title_screen.tscn)
+- **Structure**:
+  - Background Image
+  - `VBoxContainer`
+    - `Button`: New Game
+    - `Button`: Continue (Disabled if no save)
+    - `Button`: Quit
 
-### System Logic
-#### [MODIFY] [equipment_action_handler.gd](file:///d:/Godot/Prototype/scenes/component/equipment_action_handler.gd)
-- **Tool Logic (`_execute_tool`)**:
-  - Add case for `ToolType.SCYTHE`.
-  - Scythe Logic: Uses **Directional/Arc** logic (unlike Point-click Hoe/Water).
-  - *Challenge*: Scythe needs "Swing" visual and "Area" hit detection like a weapon.
-  - *Solution*: Move the common "Swing & Hit" logic to a shared helper or allow `ToolData` to trigger `_execute_melee` logic but with "Tool Mode" flag?
-  - *Refined Plan*:
-    - In `_execute_tool`, if type is SCYTHE:
-      - Call `_execute_melee` (reused) but pass a constructed "Pseudo-WeaponData" or modify `_execute_melee` to accept `EquipmentData`.
-      - **Better**: Update `_execute_melee` to take `damage` and `knockback` as direct arguments, or `EquipmentData` + overrides.
-- **Harvest Logic (`_apply_hit`)**:
-  - Current: `_try_harvest_crop` is called if `Town` detects a melee hit.
-  - New: `Town.gd`'s `_check_farming_hit` needs to check if the *Item* used was actually a proper Harvesting Tool (Scythe).
-  - Pass the source `ItemData` or `EquipmentData` into the result dictionary of `attempt_action`.
-  - In `Town.gd`, check: `if item.tool_data.tool_type == SCYTHE: harvest()`.
-
-#### [MODIFY] [town.gd](file:///d:/Godot/Prototype/scenes/town/town.gd)
-- In `_check_farming_hit`, retrieve the item that caused the hit.
-- Check if it is a `ToolData` AND type is `SCYTHE`.
-- If it is a `WeaponData` (Sword), **SKIP** harvest logic.
+### Refactoring
+#### [MODIFY] [arena_time_manager.gd](file:///d:/Godot/Prototype/scenes/manager/arena_time_manager.gd)
+- Replace direct `get_tree().change_scene_to_packed` with `SceneManager.change_scene()`.
 
 ## Verification Plan
 
+### Automated Tests
+- None (UI interaction).
+
 ### Manual Verification
-1. **Scythe Combat**:
-   - Equip Scythe -> Attack Enemy.
-   - Result: Damage = 1, Knockback = 0 (Enemy doesn't fly back).
-2. **Scythe Harvest**:
-   - Equip Scythe -> Swing at Crop.
-   - Result: Crop harvested.
-3. **Sword Harvest**:
-   - Equip Sword -> Swing at Crop.
-   - Result: Crop **NOT** harvested.
-4. **Sword Combat**:
-   - Equip Sword -> Attack Enemy.
-   - Result: Normal Damage (5+), Knockback applied.
+1.  **Title Screen**: Launch game. Click "New Game". Verify fade to Town.
+2.  **Pause Menu**: In Town, press ESC. Menu appears. Game pauses.
+3.  **Save/Load**:
+    - Move player.
+    - Press ESC -> Save.
+    - Move player somewhere else.
+    - Press ESC -> Load.
+    - Verify player returns to saved position.
+4.  **Scene Transition**: 
+    - Wait for Battle. 
+    - Win Battle.
+    - Verify smooth fade back to Town.

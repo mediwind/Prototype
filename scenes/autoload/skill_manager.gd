@@ -8,9 +8,17 @@ var skill_cooldowns: Dictionary = {}
 
 
 func _ready():
+	load_save_data()
+
+
+func load_save_data():
 	if SaveManager.game_data.skill_data == null:
 		SaveManager.game_data.skill_data = SkillData.new()
+	# Refresh Reference
 	skill_data = SaveManager.game_data.skill_data
+	# Clear volatile runtime state
+	skill_cooldowns.clear()
+	equipped_skills_changed.emit()
 
 
 func add_skill_point(amount: int):

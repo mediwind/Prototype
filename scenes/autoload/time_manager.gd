@@ -37,6 +37,18 @@ func _ready() -> void:
 	# Initialize state if needed, or wait for load_save_data
 	pass
 
+func reset_time() -> void:
+	current_year = 1
+	current_season = Season.SPRING
+	current_day = 1
+	current_hour = 6
+	current_minute = 0
+	accumulated_time = 0.0
+	is_paused = false
+	_emit_time_update()
+	print("[TimeManager] Time Reset to Default")
+
+
 func _process(delta: float) -> void:
 	if is_paused:
 		return

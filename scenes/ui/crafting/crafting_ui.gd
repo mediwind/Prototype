@@ -173,5 +173,6 @@ func _on_craft_button_pressed():
 
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"):
-		queue_free()
 		get_tree().paused = false
+		get_viewport().set_input_as_handled()
+		queue_free()

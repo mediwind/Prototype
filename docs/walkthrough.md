@@ -271,4 +271,42 @@ Replaced the fragile "File Path Separation" persistence model with a robust **ID
 - **Ghost Item Glitch**: Fixed an issue where the player's hand didn't update when moving or swapping items in the inventory.
     - **Logic**: Added checks in `Slot.gd` and `InventoryManager.gd` to refresh the hand if the active hotbar slot is modified.
 - **Persistence**: Fixed `Chest` inventory not saving correctly when switching scenes (`_exit_tree` sync added).
-- **Transient Objects**: Fixed Turrets (and other combat buildables) incorrectly saving to the Town file.
+
+# Walkthrough - Phase 20: System Infrastructure & Scene Flow
+
+## Overview
+This phase established the core game loop elements: **Scene Management**, **Time & Persistence**, and **System UIs**. We addressed critical bugs related to "Phantom Saves" (data not clearing on new game) and integrated all major systems (Time, Currency, Levels) into the save architecture.
+
+## 1. System Infrastructure
+- **SceneManager** (Autoload):
+    - Implemented `change_scene(path)` with a black fade transition to smooth out loading.
+    - Replaced hardcoded `get_tree().change_scene` calls in `TitleScreen` and `BattleEntrance`.
+- **SystemMenu**:
+    - Created a Pause Menu (ESC) containing "Resume", "Save", "Load", "Main Menu", "Quit".
+    - **Logic**: Pause menu now properly intercepts input to prevent double-pausing or UI conflict.
+
+## 2. Persistence & Data Integrity (Critical Fixes)
+- **Problem**: Starting a "New Game" often carried over previous state (Phantom Saves), and Time/Levels weren't saving.
+- **Solution (Architecture)**:
+    - **TimeManager**: Connected to `GameData` (`time_save_data`). Now saves Year/Season/Day/Hour.
+    - **LevelAndExpManager**: Connected to `GameData`. Now saves Main Level/Skill Levels properly.
+    - **CurrencyManager**: Connected to `GameData`. Gold/Faith/Soul now persist and reset correctly.
+    - **Phantom Fix**: 
+        1. Removed `Town._ready` auto-save.
+        2. Implemented `CACHE_MODE_REPLACE` in `SaveManager` to force clean reload from disk.
+        3. Ensured `New Game` triggers `reset_time()` and clears all manager states.
+
+## 3. Game Loop & UX Refinements
+- **In-Game Load**:
+    - Fixed "Load" button doing nothing visible. Now forces a scene reload to `Town.tscn` to reflect loaded data.
+- **Battle Restriction**:
+    - "Save" button is **Disabled** in Combat scenes ("No Save in Battle") to prevent soft-locks.
+- **Main Level Logic**:
+    - Adjusted formula to start at **Level 1** (instead of 3) by normalizing the base level count. `(Sum - Count)/2 + 1`.
+
+## Verification
+- [x] **Scene Flow**: Title -> Town -> Battle -> Town works with Fade.
+- [x] **Persistence**: Save in Town -> Exit -> Continue works. Time and Money are restored.
+- [x] **New Game**: Cleanly resets Time (Year 1 Spring 1 06:00), Money (0), and Levels (1).
+- [x] **Protection**: Cannot save during Battle.
+

@@ -44,8 +44,9 @@ func _add_tree_instance(packed_scene: PackedScene, tab_name: String) -> void:
 
 # 새로 추가: 탭 전체 UI에서 ESC 처리
 func _input(event):
-	if event is InputEventKey and event.keycode == KEY_ESCAPE:
+	if event is InputEventKey and event.keycode == KEY_ESCAPE and event.is_pressed() and not event.is_echo():
 		get_tree().paused = false
+		get_viewport().set_input_as_handled()
 		queue_free() # TabbedSkillTreeUI 자체를 제거하면 자식도 제거됨
 
 

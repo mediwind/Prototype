@@ -48,12 +48,26 @@ func _is_same_item(a: ItemData, b: ItemData) -> bool:
 
 
 func _ready():
+	load_save_data()
+
+
+func load_save_data():
+	# Ensure GameData exists
 	if SaveManager.game_data.inventory_data == null:
 		SaveManager.game_data.inventory_data = InventoryData.new()
-	SaveManager.game_data.inventory_data.ensure_slots()
-	player_inventory_slots = SaveManager.game_data.inventory_data.inventory_slots
-	player_hotbar_slots = SaveManager.game_data.inventory_data.hotbar_slots
-	player_equipment_slots = SaveManager.game_data.inventory_data.equipment_slots
+	
+	# Refresh References (Crucial for Load/New Game)
+	var data = SaveManager.game_data.inventory_data
+	data.ensure_slots()
+	
+	player_inventory_slots = data.inventory_slots
+	player_hotbar_slots = data.hotbar_slots
+	player_equipment_slots = data.equipment_slots
+	
+	# Reset Active State (Hand)
+	active_hotbar_index = -1
+	equipped_hand_item = null
+	# emit_signal("hand_equipped", null) # Optional: might trigger UI updates before UI is ready, safety first.
 
 
 func add_item(item_data: ItemData, amount: int, quality: int = 0) -> int:

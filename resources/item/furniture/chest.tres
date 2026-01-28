@@ -13,6 +13,7 @@ script = ExtResource("1_script")
 placeable_scene = ExtResource("2_scene")
 place_size = Vector2i(1, 1)
 can_rotate = false
+max_range = 5.0
 id = "wooden_chest"
 name = "Wooden Chest"
 icon = SubResource("AtlasTexture_lelth")

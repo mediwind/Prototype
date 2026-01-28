@@ -8,3 +8,4 @@ class_name GameData
 @export var stat_data: StatData
 @export var farm_save_data: Dictionary = {}
 @export var placed_objects_data: Dictionary = {} # Key: Vector2i (Coords), Value: Dictionary (ID, CustomData)
+@export var time_save_data: Dictionary = {}

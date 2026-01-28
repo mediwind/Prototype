@@ -319,7 +319,7 @@ func _on_day_passed():
 func get_save_data() -> Dictionary:
 	var save_data = {
 		"farm_data": {},
-		"soil_data": soil_data
+		"soil_data": soil_data.duplicate(true)
 	}
 	
 	# farm_data needs to be serialized because it contains complex inner dictionaries
@@ -336,9 +336,7 @@ func get_save_data() -> Dictionary:
 	return save_data
 
 func load_save_data(data: Dictionary) -> void:
-	if not data:
-		return
-		
+	# Note: We must allow empty data to clear the farm (e.g. New Game)
 	# Race Condition Fix:
 	# SaveManager might call this BEFORE FarmManager._ready() runs.
 	# We must ensure the crop_registry is populated.

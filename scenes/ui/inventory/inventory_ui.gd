@@ -215,6 +215,7 @@ func _is_left_mouse_button_released(event: InputEvent) -> bool:
 
 func _handle_escape_action():
 	if get_tree(): get_tree().paused = false
+	get_viewport().set_input_as_handled()
 	queue_free()
 
 
