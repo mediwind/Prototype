@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://5c4eyywjetvh"]
+
+[ext_resource type="Script" uid="uid://dtjc3xrvmhaw2" path="res://scenes/components/world/portal.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_portal"]
+resource_local_to_scene = true
+size = Vector2(32, 32)
+
+[node name="Portal" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_portal")
+debug_color = Color(0.6, 0.1, 0.8, 0.42)

@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://d1sekrey3jw1"]
+
+[ext_resource type="Texture2D" uid="uid://goyjdonlvbr5" path="res://assets/tile/PC _ Computer - Stardew Valley - Tilesets - Farm Buildings.png" id="1_texture"]
+[ext_resource type="PackedScene" uid="uid://5c4eyywjetvh" path="res://scenes/components/world/portal.tscn" id="2_portal"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_house_col"]
+size = Vector2(80, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_door"]
+size = Vector2(16, 20)
+
+[node name="HouseExterior" type="StaticBody2D"]
+y_sort_enabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_texture")
+offset = Vector2(0, -48)
+region_enabled = true
+region_rect = Rect2(0, 256, 144, 160)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-32, -32)
+shape = SubResource("RectangleShape2D_house_col")
+
+[node name="DoorPortal" parent="." instance=ExtResource("2_portal")]
+position = Vector2(16, -16)
+target_scene_path = "res://scenes/home/player_home.tscn"
+target_spawn_tag = "home_entry"
+
+[node name="CollisionShape2D" parent="DoorPortal" index="0"]
+shape = SubResource("RectangleShape2D_door")
+
+[editable path="DoorPortal"]

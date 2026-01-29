@@ -308,5 +308,34 @@ This phase established the core game loop elements: **Scene Management**, **Time
 - [x] **Scene Flow**: Title -> Town -> Battle -> Town works with Fade.
 - [x] **Persistence**: Save in Town -> Exit -> Continue works. Time and Money are restored.
 - [x] **New Game**: Cleanly resets Time (Year 1 Spring 1 06:00), Money (0), and Levels (1).
-- [x] **Protection**: Cannot save during Battle.
+
+# Walkthrough - Phase 21: World Expansion & Interiors
+
+## Overview
+This phase introduced the scalable **World System** required to expand beyond the initial Town scene. We implemented a data-driven Portal system, variable time flow for interiors, and the first interior scene (`PlayerHome`).
+
+## 1. Core World Systems
+- **Portal & SpawnPoint**:
+    - **SpawnPoint**: Validated marker for precise player positioning (using `spawn_id`).
+    - **Portal**: Area2D that triggers scene changes. Configured to detect Player (Layer 2) properly.
+    - **Logic**: `SceneManager` now accepts a `spawn_tag` to teleport the player to the matching `SpawnPoint` after scene load.
+- **Variable Time Flow**:
+    - **TimeManager**: Added `calendar_time_multiplier`.
+    - **Implementation**: `PlayerHome` sets this to `0.0` on entry (pausing day cycle) and `Town` resets it to `1.0` (resuming day cycle). This fulfills the requirement to pause time indoors or in specific missions.
+- **Persistence Integrity**:
+    - **Location Saving**: `GameData` now stores `current_scene_path` and `player_position`.
+    - **Restore Logic**: Loading a game now restores the player exactly where they saved, even inside buildings.
+
+## 2. Content: Player Home
+- **Exterior**: Created `HouseExterior` using Region-enabled Sprite to display a cottage in `Town.tscn`. Integrated a Portal at the door.
+- **Interior**: Created `PlayerHome.tscn`.
+    - Functioning **Exit Portal** back to Town.
+    - Visual feedback ("Time Paused") verifies the time dilation system.
+
+## Verification
+- [x] **Travel**: Portal from Town -> Home -> Home Entry Point works.
+- [x] **Return**: Portal from Home -> Town -> Outside Door works.
+- [x] **Time**: Logs confirm Time Scale = 0.0 Indoors, 1.0 Outdoors.
+- [x] **Persistence**: Saving inside the house and reloading keeps the player inside the house.
+
 

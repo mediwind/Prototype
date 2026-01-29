@@ -17,7 +17,12 @@ func _ready():
 	skill_ui_button.pressed.connect(on_skill_ui_button_pressed)
 	inventory_ui_button.pressed.connect(on_inventory_ui_button_pressed)
 	
+	# Outdoors: Ensure Time flows normally
+	if TimeManager:
+		TimeManager.set_calendar_time_multiplier(1.0)
+	
 	# Connect Farming Signals
+
 	FarmManager.crop_updated.connect(_on_crop_updated)
 	FarmManager.crop_removed.connect(_on_crop_removed)
 	FarmManager.soil_updated.connect(_on_soil_updated)
@@ -333,10 +338,14 @@ func _on_daily_growth_tick(updates: Dictionary):
 	coords_list.shuffle()
 	
 	for coords in coords_list:
+		if not is_inside_tree():
+			return
+			
 		var data = updates[coords]
 		# Random delay between 0.0 and 1.5 seconds distributed across updates
 		await get_tree().create_timer(randf_range(0.05, 0.2)).timeout
 		_update_tile_visual(coords, data)
+
 
 func _update_tile_visual(coords: Vector2i, data: Dictionary):
 	# source_id 1 is Crops (CROP_SOURCE_ID constant is used implicitly here or we can use the literal 1 to be safe until constant scope is fixed if needed, but we defined CROP_SOURCE_ID in script scope)

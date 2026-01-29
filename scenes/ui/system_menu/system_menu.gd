@@ -58,8 +58,21 @@ func on_save_pressed():
 func on_load_pressed():
 	SaveManager.load_game()
 	close_menu()
-	# Force reload to Town to reflect loaded data visually
-	SceneManager.change_scene("res://scenes/town/town.tscn")
+	
+	var target_scene = "res://scenes/town/town.tscn"
+	if SaveManager.game_data.current_scene_path != "":
+		target_scene = SaveManager.game_data.current_scene_path
+	
+	# Reload Scene
+	await SceneManager.change_scene(target_scene)
+	
+	# Restore Position (Post-Load)
+	# Note: This overrides SpawnPoint logic if both happen? 
+	# SceneManager handles SpawnPoint based on tag. Here tag is empty.
+	if SaveManager.game_data.player_position != Vector2.ZERO:
+		var player = get_tree().get_first_node_in_group("player")
+		if player:
+			player.global_position = SaveManager.game_data.player_position
 
 
 func on_main_menu_pressed():

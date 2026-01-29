@@ -110,6 +110,12 @@ trigger: always_on
 - **사전 논의:** 새로운 시스템이나 콘텐츠 리소스(아이템, 스킬 등)를 대량으로 추가하기 전에, 반드시 폴더 구조와 파일 명명 규칙을 사용자와 상의하여 확정한다.
 - **분류 기준:** 파일은 기능(feature)보다는 타입(Type)이나 용도(Usage)를 기준으로 분류하는 것을 권장한다. (예: `resources/item/farming/`, `resources/item/equipment/`)
 
+### 5. 씬 및 포탈 표준 (Scene & Portal Standards)
+- **Spawn Tag:** 모든 진입 가능한 씬(Scene)은 `SpawnPoint` 노드를 포함해야 하며, 고유한 `spawn_id` (String)를 가져야 한다. (예: `entrance_front`, `from_dungeon`)
+- **Portal:** 씬 이동은 반드시 `Portal` 컴포넌트를 통해 이루어지며, `target_scene_path`와 `target_spawn_tag`를 명시해야 한다.
+- **Scene Persistence:** 씬 파일 이름이나 경로를 변경할 경우, 연결된 모든 Portal의 참조를 Godot 에디터에서 수동으로 갱신해야 함을 유의한다.
+
+
 ### 2. 문서화 원칙 (Documentation as Memory)
 - **파일 기반 기억:** 에이전트 간 인수인계는 대화 내역이 아닌 **프로젝트 내 문서(`docs/`)**를 통해 이루어진다.
 - **Append Logic:** 기본적으로 `docs/task.md`와 `docs/walkthrough.md`는 하단에 내용을 누적(Append)한다. **임의로 완료된 상위 Phase를 삭제하거나 내용을 축약/덮어쓰지 않는다.**

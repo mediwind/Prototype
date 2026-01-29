@@ -53,6 +53,15 @@ func save_game_data():
 		game_data.placed_objects_data = BuildManager.get_save_data()
 	if TimeManager:
 		game_data.time_save_data = TimeManager.get_save_data()
+
+	# Capture Scene & Position
+	var current_scene = get_tree().current_scene
+	if current_scene:
+		game_data.current_scene_path = current_scene.scene_file_path
+		
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		game_data.player_position = player.global_position
 		
 	ResourceSaver.save(game_data, SAVE_FILE_PATH)
 

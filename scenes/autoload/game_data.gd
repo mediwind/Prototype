@@ -9,3 +9,5 @@ class_name GameData
 @export var farm_save_data: Dictionary = {}
 @export var placed_objects_data: Dictionary = {} # Key: Vector2i (Coords), Value: Dictionary (ID, CustomData)
 @export var time_save_data: Dictionary = {}
+@export var current_scene_path: String = ""
+@export var player_position: Vector2 = Vector2.ZERO

@@ -23,6 +23,8 @@ const LOGIC_TICK_HOUR = 6 # 06:00 AM
 # 1 real second = 1 game minute (Default)
 # 24 real minutes = 1 game day
 var time_scale: float = 60.0
+# Calnedar Time Multiplier: Affects day/season progression only. 0.0 = Time Paused (Indoors).
+var calendar_time_multiplier: float = 1.0
 var is_paused: bool = false
 
 # Current State
@@ -44,6 +46,7 @@ func reset_time() -> void:
 	current_hour = 6
 	current_minute = 0
 	accumulated_time = 0.0
+	calendar_time_multiplier = 1.0 # Reset to normal speed
 	is_paused = false
 	_emit_time_update()
 	print("[TimeManager] Time Reset to Default")
@@ -53,12 +56,19 @@ func _process(delta: float) -> void:
 	if is_paused:
 		return
 		
-	accumulated_time += delta * time_scale
+	# Apply both Time Scale (Config) and Calendar Multiplier (Scene Context)
+	accumulated_time += delta * time_scale * calendar_time_multiplier
 	
 	if accumulated_time >= 1.0:
 		var minutes_to_add = int(accumulated_time)
 		accumulated_time -= minutes_to_add
 		_advance_time(minutes_to_add)
+
+
+func set_calendar_time_multiplier(multiplier: float) -> void:
+	calendar_time_multiplier = multiplier
+	print("[TimeManager] Calendar Time Multiplier set to: ", multiplier)
+
 
 func _advance_time(minutes_to_add: int) -> void:
 	current_minute += minutes_to_add

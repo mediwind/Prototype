@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=4 uid="uid://cmqvvth3hy45i"]
+[gd_scene load_steps=31 format=4 uid="uid://cmqvvth3hy45i"]
 
 [ext_resource type="Script" uid="uid://3suo00p3gg" path="res://scenes/town/town.gd" id="1_i0lau"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
@@ -10,7 +10,9 @@
 [ext_resource type="PackedScene" uid="uid://dr3pik6bvrlif" path="res://scenes/game_object/loot/collectable_object.tscn" id="6_5vpkg"]
 [ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/weapons/sword.tres" id="7_5vpkg"]
 [ext_resource type="Resource" uid="uid://de7xp2xf3671r" path="res://resources/item/tools/hoe.tres" id="7_svnup"]
+[ext_resource type="PackedScene" uid="uid://d1sekrey3jw1" path="res://scenes/components/building/house_exterior.tscn" id="8_4yhmd"]
 [ext_resource type="Resource" uid="uid://q21hquvgyw82" path="res://resources/item/seeds/corn_seed.tres" id="8_yr8sw"]
+[ext_resource type="PackedScene" path="res://scenes/components/world/spawn_point.tscn" id="9_b3xbq"]
 [ext_resource type="Resource" uid="uid://ctjqlj024eln6" path="res://resources/item/tools/scythe.tres" id="9_fwdo8"]
 [ext_resource type="PackedScene" uid="uid://bsds21tghiius" path="res://scenes/town/battle_entrance.tscn" id="9_jil70"]
 [ext_resource type="Resource" uid="uid://c2fk4nenruxuf" path="res://resources/item/tools/watering_can.tres" id="9_w25xm"]
@@ -55,6 +57,13 @@ y_sort_enabled = true
 
 [node name="PlayerHuman" parent="Entities" instance=ExtResource("4_v00pm")]
 position = Vector2(154, 103)
+
+[node name="HouseExterior" parent="Entities" instance=ExtResource("8_4yhmd")]
+position = Vector2(0, 32)
+
+[node name="SpawnPoint" parent="Entities" instance=ExtResource("9_b3xbq")]
+position = Vector2(16, 48)
+spawn_id = "from_home"
 
 [node name="Hoe" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(336, -216)
