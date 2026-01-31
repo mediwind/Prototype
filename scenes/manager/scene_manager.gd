@@ -34,7 +34,7 @@ func _setup_transition_layer():
 	transition_layer.add_child(color_rect)
 
 
-func change_scene(scene_path: String, spawn_tag: String = ""):
+func change_scene(scene_path: String, spawn_tag: String = "", override_position: Vector2 = Vector2.INF):
 	if transition_layer == null:
 		_setup_transition_layer()
 	
@@ -51,14 +51,25 @@ func change_scene(scene_path: String, spawn_tag: String = ""):
 	# Wait for physics frame to ensure groups and nodes are fully registered
 	await get_tree().physics_frame
 	
-	_handle_spawn_position(spawn_tag)
+	if override_position != Vector2.INF:
+		_set_player_position(override_position)
+	else:
+		_handle_spawn_position(spawn_tag)
 	
 	tween = create_tween()
-
 	tween.tween_property(color_rect, "modulate:a", 0.0, TRANSITION_DURATION)
 	await tween.finished
 	
 	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE # Unblock input
+
+func _set_player_position(pos: Vector2):
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		player.global_position = pos
+		print("SceneManager: Player position override to ", pos)
+	else:
+		print("SceneManager: Player not found for position override.")
+
 
 func _handle_spawn_position(spawn_tag: String):
 	if spawn_tag == "":

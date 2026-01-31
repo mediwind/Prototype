@@ -11,7 +11,7 @@ var is_transient_build: bool = false
 var should_consume_item: bool = true
 
 # Persistence Data
-# Key: Vector2i (Coords), Value: Dictionary { "id": item_id, "custom_data": {} }
+# Key: Scene Path (String), Value: Dictionary { Vector2i(Coords): { "id": item_id, "custom_data": {} } }
 var placed_objects: Dictionary = {}
 
 func _process(_delta):
@@ -87,23 +87,32 @@ func place_object(coords: Vector2i):
 			instance.placeable_data = current_placeable_data
 			instance.set_meta("grid_coords", coords)
 			
-		placed_objects[coords] = object_data
+		_store_object_data(coords, object_data)
 	
 	# Emit signal if needed
 	# signal object_placed(coords, instance)
 
 func update_object_custom_data(coords: Vector2i, data: Dictionary):
-	if placed_objects.has(coords):
-		placed_objects[coords]["custom_data"] = data
+	var current_scene = get_tree().current_scene
+	if not current_scene: return
+	
+	var scene_path = current_scene.scene_file_path
+	if placed_objects.has(scene_path) and placed_objects[scene_path].has(coords):
+		placed_objects[scene_path][coords]["custom_data"] = data
 
 func check_build_possible(coords: Vector2i) -> bool:
 	if not current_placeable_data: return false
 	
 	# 1. Check if already occupied by BuildManager logic (Placed Objects)
-	if placed_objects.has(coords):
+	var current_scene = get_tree().current_scene
+	if not current_scene: return false
+	
+	var scene_path = current_scene.scene_file_path
+	if placed_objects.has(scene_path) and placed_objects[scene_path].has(coords):
 		return false
 		
-	# 2. Check FarmManager (Crops)
+	# 2. Check FarmManager (Crops) - Only relevant in farming scenes?
+	# For now assume FarmManager is global but data might be scene specific later.
 	if FarmManager.farm_data.has(coords):
 		return false
 		
@@ -137,9 +146,18 @@ func restore_placed_objects(_tilemap: TileMapLayer, _parent: Node2D):
 	tilemap = _tilemap
 	parent_node = _parent
 	
+	var current_scene = get_tree().current_scene
+	if not current_scene: return
+	
+	var scene_path = current_scene.scene_file_path
+	if not placed_objects.has(scene_path):
+		return
+		
+	var scene_objects = placed_objects[scene_path]
+	
 	# Iterate placed_objects and spawn
-	for coords in placed_objects:
-		var data = placed_objects[coords]
+	for coords in scene_objects:
+		var data = scene_objects[coords]
 		var item_id = data["id"]
 		var custom_data = data["custom_data"]
 		
@@ -161,17 +179,34 @@ func restore_placed_objects(_tilemap: TileMapLayer, _parent: Node2D):
 
 func get_save_data() -> Dictionary:
 	# Update runtime data from scene instances BEFORE saving
+	# We rely on parent_node being set to the CURRENT scene's entity holder.
 	if parent_node:
-		for child in parent_node.get_children():
-			if child.has_method("get_save_data") and child.has_meta("grid_coords"):
-				var coords = child.get_meta("grid_coords")
-				if placed_objects.has(coords):
-					placed_objects[coords]["custom_data"] = child.get_save_data()
+		var current_scene = get_tree().current_scene
+		if current_scene:
+			var scene_path = current_scene.scene_file_path
+			
+			for child in parent_node.get_children():
+				if child.has_method("get_save_data") and child.has_meta("grid_coords"):
+					var coords = child.get_meta("grid_coords")
+					
+					# Only update Key: Scene -> Key: Coords -> Key: custom_data
+					if placed_objects.has(scene_path) and placed_objects[scene_path].has(coords):
+						placed_objects[scene_path][coords]["custom_data"] = child.get_save_data()
 	
 	return placed_objects.duplicate()
 
 func load_save_data(data: Dictionary):
 	placed_objects = data
+
+func _store_object_data(coords: Vector2i, data: Dictionary):
+	var current_scene = get_tree().current_scene
+	if not current_scene: return
+	
+	var scene_path = current_scene.scene_file_path
+	if not placed_objects.has(scene_path):
+		placed_objects[scene_path] = {}
+	placed_objects[scene_path][coords] = data
+
 
 func _disable_collision_recursive(node: Node):
 	if node is CollisionShape2D or node is CollisionPolygon2D:

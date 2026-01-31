@@ -40,7 +40,14 @@ func on_continue_pressed():
 	TimeManager.is_paused = false # Resume time
 	# Check if we should go to a specific scene.
 	# If not, default to Town.
-	SceneManager.change_scene(FIRST_SCENE_PATH)
+	var target_scene = FIRST_SCENE_PATH
+	var target_pos = Vector2.INF
+	
+	if SaveManager.game_data.current_scene_path != "":
+		target_scene = SaveManager.game_data.current_scene_path
+		target_pos = SaveManager.game_data.player_position
+		
+	SceneManager.change_scene(target_scene, "", target_pos)
 
 
 func on_quit_pressed():

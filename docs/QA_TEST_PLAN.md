@@ -55,3 +55,28 @@
 데이터 오염이 의심될 때 확인할 코드:
 *   **InventoryManager / SkillManager / StatManager:** `load_save_data()` 메서드에서 `SaveManager.game_data` 로부터 참조를 갱신하고 있는지 확인. (구버전 `game_data` 참조 유지 버그 주의)
 *   **SaveManager:** `reset_game_data()` 및 `load_game_data()` 시 모든 Manager의 `load_save_data()`를 호출하여 리셋을 전파하는지 확인.
+
+---
+
+# 🌍 PART 2. World Expansion & Persistence (Phase 21)
+
+## Test Case 5: Portal Travel & Time Dilation
+**Goal:** Verify scene switching controls time flow.
+1. Enter 'Player Home'. -> Verify `TimeManager` stops (Clock stops). -> **[PASS]**
+2. Exit to 'Town'. -> Verify `TimeManager` resumes. -> **[PASS]**
+3. Verify spawn position matches the door. -> **[PASS]**
+
+## Test Case 6: Location Persistence
+**Goal:** Verify game loads at correct scene/pos.
+1. Save inside 'Player Home'. -> **[PASS]**
+2. Return to Title -> Continue.
+3. **Expectation:** Load directly into 'Player Home', not Town. -> **[PASS]** (Fixed Issue A)
+
+## Test Case 7: Multi-Scene Build Integrity
+**Goal:** Verify objects don't bleed between scenes.
+1. Place Chest at (10,10) in Town.
+2. Go to Home. Check (10,10).
+3. **Expectation:** (10,10) in Home should be empty. -> **[PASS]** (Fixed Ghosting)
+4. Place Chest at (10,10) in Home. Save.
+5. Exit game. Reload.
+6. **Expectation:** Both chests exist in their respective scenes without error. -> **[PASS]** (Fixed Corruption)

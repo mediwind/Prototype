@@ -317,8 +317,26 @@ This phase introduced the scalable **World System** required to expand beyond th
 ## 1. Core World Systems
 - **Portal & SpawnPoint**:
     - **SpawnPoint**: Validated marker for precise player positioning (using `spawn_id`).
-    - **Portal**: Area2D that triggers scene changes. Configured to detect Player (Layer 2) properly.
-    - **Logic**: `SceneManager` now accepts a `spawn_tag` to teleport the player to the matching `SpawnPoint` after scene load.
+### Phase 21.5: QA & Critical Bug Fixes (Session #2)
+**Date:** 2026-01-30
+
+Following the Phase 21 implementation, a rigorous QA session revealed several critical issues which have now been resolved.
+
+#### 🐛 Bugs Fixed
+1.  **Ghost Object Persistence**: Objects placed in Town appeared in Home (and vice versa) because `BuildManager` stored data globally.
+    *   **Fix**: Refactored `BuildManager` to store placed objects in a nested dictionary keyed by `scene_file_path`.
+2.  **Save Data Corruption**: Saving the game corrupted item IDs of placed objects, causing a crash on load.
+    *   **Fix**: Modified `BuildManager.get_save_data` to safely update `custom_data` without overwriting the object's identity metadata.
+3.  **Indoor Interaction Failure**: Players could not open chests indoors.
+    *   **Fix**: Ported `Town.gd` interaction logic to `PlayerHome.gd`, including parent-node checking (since Colliders are children of the actual Object) and added `_open_container_ui`.
+4.  **Entrance Glitch**: Loading a game caused a visual "pop" as the player moved after the screen faded in.
+    *   **Fix**: Updated `SceneManager` to accept an `override_position` and apply it *during* the black screen transition.
+
+#### 🏠 PlayerHome Architecture
+*   **TileMapLayer**: Added to `PlayerHome` to serve as the "Grid" for snapping furniture. It uses `farming_tileset.tres`.
+*   **UI Integration**: Manually added `TownUI`, `InventoryUI`, and `SkillTreeUI` to the scene to ensure functionality indoors.
+*   **Placeholder Art**: Used `ColorRect` for background (verify mouse_filter=Ignore to allow clicking through it).
+- **Logic**: `SceneManager` now accepts a `spawn_tag` to teleport the player to the matching `SpawnPoint` after scene load.
 - **Variable Time Flow**:
     - **TimeManager**: Added `calendar_time_multiplier`.
     - **Implementation**: `PlayerHome` sets this to `0.0` on entry (pausing day cycle) and `Town` resets it to `1.0` (resuming day cycle). This fulfills the requirement to pause time indoors or in specific missions.
