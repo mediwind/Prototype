@@ -23,7 +23,15 @@ func _on_hand_equipped(item: ItemData):
 	if item and (item is PlaceableData or "placeable_scene" in item):
 		print("PlayerHome: Starting Placement for ", item.name)
 		if floor_tile_map:
-			BuildManager.start_placing(item, floor_tile_map, $Entities)
+			# Define Success Callback
+			var callbacks = {
+				"on_success": func(_coords):
+					InventoryManager.consume_equipped_item(1)
+					if not InventoryManager.has_item(item, 1):
+						BuildManager.cancel_build()
+			}
+			
+			BuildManager.start_placing(item, floor_tile_map, $Entities, false, callbacks)
 	else:
 		BuildManager.cancel_build()
 

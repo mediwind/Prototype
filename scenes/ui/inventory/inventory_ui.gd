@@ -3,9 +3,9 @@ extends Control
 @export var slot_scene: PackedScene
 @export var collectable_object_scene: PackedScene
 
-@onready var grid_container: GridContainer = $CanvasLayer/GridContainer
-@onready var hotbar_container: HBoxContainer = $CanvasLayer/HotbarContainer
-@onready var equipment_ui: Control = $CanvasLayer/EquipmentUI
+@onready var grid_container: GridContainer = $GridContainer
+@onready var hotbar_container: HBoxContainer = $HotbarContainer
+@onready var equipment_ui: Control = $EquipmentUI
 
 const GROUP_INVENTORY_UI = "inventory_ui"
 const GROUP_INVENTORY_SLOT = "inventory_slot"

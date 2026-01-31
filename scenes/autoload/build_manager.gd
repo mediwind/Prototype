@@ -8,14 +8,20 @@ var parent_node: Node2D = null # Where to spawn (Entities)
 
 # State Flags
 var is_transient_build: bool = false
-var should_consume_item: bool = true
+# callbacks: { "on_success": Callable(coords), "on_cancel": Callable() }
+var build_callbacks: Dictionary = {}
 
 # Persistence Data
 # Key: Scene Path (String), Value: Dictionary { Vector2i(Coords): { "id": item_id, "custom_data": {} } }
 var placed_objects: Dictionary = {}
 
 func _process(_delta):
-	if not is_building or not preview_instance or not tilemap:
+	if not is_building or not preview_instance:
+		return
+		
+	# Validation: Check if tilemap is still valid (Scene change safety)
+	if not is_instance_valid(tilemap) or not tilemap.is_inside_tree():
+		cancel_build()
 		return
 		
 	# Follow Mouse
@@ -41,15 +47,24 @@ func _unhandled_input(event):
 			if check_build_possible(tile_pos):
 				place_object(tile_pos)
 				
-				if should_consume_item:
-					InventoryManager.consume_equipped_item(1)
-					if not InventoryManager.has_item(current_placeable_data, 1):
-						cancel_build()
+				# Call Success Callback (Client handles cost)
+				if build_callbacks.has("on_success"):
+					build_callbacks["on_success"].call(tile_pos)
+					
+				# Check if we should continue building?
+				# For now, let's assume we might continue if we have items, 
+				# BUT the client needs to re-trigger or we need a way to check 'can_afford'.
+				# Basic implementation: One logic per click.
+				
+				# If we want continuous building, client needs to handle it.
+				# For now, let's NOT close automatically? Or rely on Client to cancel?
+				# Valid Strategy: Keep building state until Cancel or Explicit Stop.
+				pass
 				
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			cancel_build()
 
-func start_placing(data: Resource, _tilemap: TileMapLayer, _parent: Node2D, _is_transient: bool = false, _consume_item: bool = true):
+func start_placing(data: Resource, _tilemap: TileMapLayer, _parent: Node2D, _is_transient: bool = false, callbacks: Dictionary = {}):
 	if is_building:
 		cancel_build()
 		
@@ -57,7 +72,7 @@ func start_placing(data: Resource, _tilemap: TileMapLayer, _parent: Node2D, _is_
 	tilemap = _tilemap
 	parent_node = _parent
 	is_transient_build = _is_transient
-	should_consume_item = _consume_item
+	build_callbacks = callbacks
 	is_building = true
 	
 	# Create Preview
@@ -224,4 +239,9 @@ func cancel_build():
 	if preview_instance:
 		preview_instance.queue_free()
 		preview_instance = null
+		
+	if build_callbacks.has("on_cancel"):
+		build_callbacks["on_cancel"].call()
+		
+	build_callbacks = {}
 	current_placeable_data = null

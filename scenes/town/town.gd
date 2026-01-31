@@ -47,7 +47,21 @@ func _on_hand_equipped(item: ItemData):
 	# Robust Check: Class Type OR Duck Typing (property check)
 	if item and (item is PlaceableData or "placeable_scene" in item):
 		print("Town: Starting Placement for ", item.name)
-		BuildManager.start_placing(item, soil_tile_map, $Entities)
+		
+		# Define what happens when we place an object in Town (Cost: 1 Item)
+		var on_success_callback = func(coords):
+			print("Town: Object placed at ", coords, ". Consuming item.")
+			InventoryManager.consume_equipped_item(1)
+			
+			# Check if we still have items to continue building
+			if not InventoryManager.has_item(item, 1):
+				BuildManager.cancel_build()
+		
+		var callbacks = {
+			"on_success": on_success_callback
+		}
+		
+		BuildManager.start_placing(item, soil_tile_map, $Entities, false, callbacks)
 	else:
 		# if item: print("Town: Item is NOT recognized as PlaceableData.")
 		BuildManager.cancel_build()
@@ -65,6 +79,20 @@ const CROP_SOURCE_ID = 1
 func _unhandled_input(event):
 	# Allow blocking if building
 	if BuildManager.is_building:
+		return
+
+	if event is InputEventKey and event.pressed and event.keycode == KEY_T:
+		print("Town: Debug Magic Build (Free Turret Mode)")
+		# Create dummy data on the fly
+		var dummy_data = PlaceableData.new()
+		dummy_data.id = "magic_turret"
+		dummy_data.name = "Magic Turret"
+		# Use Chest scene as placeholder if Turret scene doesn't exist yet, or generic placeable
+		# Assuming we want to test 'PlaceableObject'
+		dummy_data.placeable_scene = load("res://scenes/game_object/placeable/chest/chest.tscn")
+		
+		# Free Building! No callbacks = No Cost.
+		BuildManager.start_placing(dummy_data, soil_tile_map, $Entities, true, {})
 		return
 
 	if event is InputEventMouseButton and event.pressed:

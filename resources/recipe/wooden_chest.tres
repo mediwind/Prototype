@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="Recipe" load_steps=7 format=3 uid="uid://b58j4bg2eiec5"]
 
-[ext_resource type="Script" path="res://resources/recipe/recipe.gd" id="1_script"]
-[ext_resource type="Script" path="res://resources/recipe/recipe_ingredient.gd" id="2_ingredient_script"]
-[ext_resource type="Resource" path="res://resources/item/materials/wood.tres" id="3_wood"]
-[ext_resource type="Resource" path="res://resources/item/furniture/chest.tres" id="4_chest"]
+[ext_resource type="Script" uid="uid://rivc2ns3nrwb" path="res://resources/recipe/recipe.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bv5pdr64dv25g" path="res://resources/recipe/recipe_ingredient.gd" id="2_ingredient_script"]
+[ext_resource type="Resource" uid="uid://dp07t485dgy4d" path="res://resources/item/materials/wood.tres" id="3_wood"]
+[ext_resource type="Resource" uid="uid://bkpwxk1df3dta" path="res://resources/item/furniture/chest.tres" id="4_chest"]
 
 [sub_resource type="Resource" id="SubResource_input"]
 script = ExtResource("2_ingredient_script")
@@ -22,4 +22,4 @@ script = ExtResource("1_script")
 name = "Wooden Chest"
 ingredients = Array[ExtResource("2_ingredient_script")]([SubResource("SubResource_input")])
 output_items = Array[ExtResource("2_ingredient_script")]([SubResource("SubResource_output")])
-table_types = Array[String](["crafting_table"])
+table_types = Array[String](["alchemy"])

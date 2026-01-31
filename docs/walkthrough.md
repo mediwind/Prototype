@@ -384,3 +384,32 @@ This phase addressed the technical debt of "Copy-Paste UI" by implementing a pro
     - **Windows**: Verify `I` and `K` keys open windows.
     - **Travel**: Go to Player Home. Verify UI does not blink or disappear/duplicate.
     - **Interaction**: Open the Chest. Verify it works via `UIManager`.
+
+# Walkthrough - Phase 23: Building System Architecture Refactor
+
+## Overview
+This phase refactored the legacy `BuildManager` to be a pure "Placement Agent", decoupling it from cost management (items, mana, etc.). This prepares the system for future expansions like Skills, Traps, and NPC construction.
+
+## 1. Architecture: Callback-based System
+- **BuildManager**: Removed all item consumption logic. Added `callbacks` parameter to `start_placing`.
+- **Client Responsibility**: `Town.gd` and `PlayerHome.gd` now pass an `on_success` callback that handles inventory consumption.
+- **Benefit**: `BuildManager` no longer needs to know *what* is paying for the building (Item? Gold? Mana? Free?).
+
+## 2. Debug Feature: Magic Construction
+- **Feature**: Pressing `T` in Town activates "Magic Construction Mode".
+- **Implementation**: Uses `BuildManager` with an empty callback dictionary `{}`.
+- **Result**: Places a temporary Chest (Visual only) without consuming items. Demonstrates the "Free Build" capability.
+
+## 3. Bug Fixes (QA)
+- **Inventory Drag**: Fixed a regression where `InventoryUI`'s nested `CanvasLayer` (Layer 1) was blocked by the parent `GameUI` (Layer 100). Removed the nested layer to fix input priority.
+- **Scene Transition**: Fixed a crash (`get_viewport() is null`) in `BuildManager.gd` by validating the `tilemap` reference in `_process`.
+
+## 4. Documentation
+- **Manual**: Created `docs/building_system_manual.md` as a definitive guide for future agents on how to use the new system.
+
+## Verification
+- [x] **Regression**: Standard building consumes items correctly.
+- [x] **Architecture**: Magic Key (T) allows free building.
+- [x] **Stability**: Build mode cancels gracefully when switching scenes.
+- [x] **Input**: Inventory drag-and-drop works correctly on Layer 100.
+

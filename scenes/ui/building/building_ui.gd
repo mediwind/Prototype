@@ -30,7 +30,8 @@ func on_build_button_pressed(scene: PackedScene):
 	# Use Main node as parent for buildings in combat scene (or find specific container)
 	# BuildManager expects Node2D parent. Main is Node. Use tile_map (TileMapLayer is Node2D) as container for now.
 	# Turrets are transient (not saved) and should NOT consume hotbar items (UI based)
-	BuildManager.start_placing(data, tile_map, tile_map, true, false)
+	# Pass empty callbacks for now (or handle cooldowns/resources later)
+	BuildManager.start_placing(data, tile_map, tile_map, true, {})
 
 
 func _on_cancel_button_pressed():

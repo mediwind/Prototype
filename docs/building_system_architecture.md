@@ -42,14 +42,29 @@
 - **Action:** `BuildManager.start_selecting_location(building_data)` 호출.
 - **Callback:** 위치 선택 완료 시 -> 건물 짓지 않고 "공사장 표지판" 생성 & 다음 날 완공 예약.
 
-## 3. 구현 로드맵 (Migration Strategy)
+## 3. 구현 로드맵 (Phase 23 Execution Plan)
 
-지금 당장 모든 것을 뜯어고칠 필요는 없습니다. 기능이 추가될 때마다 조금씩 분리합니다.
+우리는 **"Over-Engineering"**을 방지하기 위해, NPC나 스킬 시스템이 완성되지 않은 상태에서도 안전하게 리팩토링을 진행합니다.
 
-1.  **Phase 20 (Economy):** 상점에서 건물을 살 때, 바로 설치하지 않고 `InventoryItem` 형태(청사진)로 지급하여 기존 로직 재사용.
-2.  **Phase 2?, Combat Update:** 스킬 시스템 도입 시 `BuildManager`의 `consume_item` 로직을 **Callback 함수**나 **Signal 연결** 방식으로 리팩토링.
-    - 예: `start_placing(data, on_success: Callable)` 형태로 변경하여 성공 시 실행할 함수를 주입받음.
+### 🎯 Scope Checklist
+1.  **NO NPC AI:** NPC 대화나 AI를 구현하지 않습니다.
+2.  **NO Skill Tree:** 복잡한 스킬 해금 로직을 구현하지 않습니다.
+3.  **Focus:** 오직 `BuildManager`를 "순수한 설치 도구"로 만드는 것에 집중합니다.
+
+### 🛤️ Step-by-Step
+1.  **Step 1: Ghost & Grid 분리 (The Purge)**
+    - 비용 계산(Item consumption) 로직을 `BuildManager`에서 제거합니다.
+    - 순수하게 마우스 따라다니는 'Ghost' 기능과 타일맵 'Snap' 기능만 남깁니다.
+
+2.  **Step 2: RequestHandler 도입 (The Interface)**
+    - `start_placement(item_data, on_success_callback)` 인터페이스를 정의합니다.
+    - 기존의 "아이템 사용" 로직을 이 인터페이스에 맞게 수정하여 연결합니다.
+
+3.  **Step 3: POC (Magic T Key)**
+    - **가짜 스킬(Magic Turret)**을 구현하여 아키텍처를 검증합니다.
+    - `T` 키를 누르면 "공짜 터렛" 설치 모드로 진입합니다.
+    - 이것이 작동하면, 나중에 스킬 시스템이 들어올 때 연결만 하면 끝납니다.
 
 ## 4. 결론
 지금의 `BuildManager` 방식은 소규모 프로젝트에 적합한 "Rapid Prototype" 형태입니다.
-하지만 2)에서 우려하신 대로 조건이 복잡해지면, **"설치 행위(Mechanic)"**와 **"설치 비용/조건(Context)"**을 분리하는 **Strategy Pattern**이나 **Callback/Signal 기반 패턴**으로 전환하는 것이 정답입니다.
+하지만 프로젝트 규모가 커지고 조건이 복잡해지면(전투 소모값 vs 마을 건설 자재 등), **"설치 행위(Mechanic)"**와 **"설치 비용/조건(Context)"**을 분리하는 **Strategy Pattern**이나 **Callback/Signal 기반 패턴**으로 전환하는 것이 정답입니다.

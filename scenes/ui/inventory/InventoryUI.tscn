@@ -13,13 +13,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_2or24")
 slot_scene = ExtResource("2_3udt2")
 collectable_object_scene = ExtResource("3_j0bl0")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="GridContainer" type="GridContainer" parent="CanvasLayer"]
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -33,8 +33,9 @@ grow_horizontal = 2
 grow_vertical = 2
 columns = 5
 
-[node name="HotbarContainer" type="HBoxContainer" parent="CanvasLayer"]
+[node name="HotbarContainer" type="HBoxContainer" parent="."]
 z_index = -1
+layout_mode = 1
 custom_minimum_size = Vector2(20, 20)
 anchors_preset = 7
 anchor_left = 0.5
@@ -47,8 +48,9 @@ offset_right = 20.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="EquipmentUI" parent="CanvasLayer" instance=ExtResource("4_uuiao")]
+[node name="EquipmentUI" parent="." instance=ExtResource("4_uuiao")]
 z_index = -1
+layout_mode = 1
 anchors_preset = 0
 anchor_top = 0.0
 anchor_bottom = 0.0

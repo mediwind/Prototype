@@ -1,82 +1,49 @@
-# 🧪 QA Test Plan: Persistence & System Flow
+# 🧪 QA Test Plan: Building System Refactor (Phase 23)
 
-본 문서는 게임의 저장/불러오기(Persistence) 및 씬 이동 로직의 무결성을 검증하기 위한 QA(Quality Assurance) 절차서입니다. 개발 단계에서 반복적으로 수행하여 데이터 오염 및 UX 결함을 방지합니다.
+이 문서는 **BuildManager 리팩토링** (비용 결제 로직 분리) 작업의 검증 절차를 다룹니다.
 
-## 📋 Test Case 1: "Clean" New Game Check (데이터 초기화 검증)
-> **목표:** 게임을 새로 시작했을 때, 이전 플레이 기록(Ghost Data)이 완벽하게 제거되었는지 확인.
-
-1.  **사전 준비:** 게임을 실행하고 아이템 획득, 농작물 심기 등을 수행하여 데이터를 "더럽힙니다(Dirty)".
-2.  **Step 1:** `Esc` -> [Quit]를 눌러 게임을 종료(바탕화면)하거나 타이틀 화면으로 나갑니다.
-3.  **Step 2:** 다시 게임을 실행하거나 [New Game]을 클릭합니다.
-4.  **검증 항목:**
-    -   [ ] **인벤토리:** `I` 혹은 `Tab`을 눌러 장비창/인벤토리가 비어있는지(초기 지급 아이템 제외) 확인.
-    -   [ ] **장비:** 캐릭터 스프라이트 또는 장비창에 이전 장비가 장착되어 있지 않은지 확인.
-    -   [ ] **농장:** 밭에 농작물이 없어야 하며, 땅이 갈려있지 않아야 함.
-    -   [ ] **시간:** 1년 봄 1일 06:00 (혹은 초기 설정 시간)부터 시작해야 함.
-
-## 💾 Test Case 2: Save & Continue Consistency (저장 무결성)
-> **목표:** 저장한 시점의 데이터가 정확하게 로드되는지 확인.
-
-1.  **Step 1:** [New Game]으로 시작.
-2.  **Step 2:**
-    -   특정 위치로 이동 (예: 집 앞).
-    -   특정 행동 수행 (예: 밭 1칸만 갈기, 아이템 1개 줍기).
-3.  **Step 3:** `Esc` -> [Save Game] 클릭. "저장됨" 로그 확인(옵션).
-4.  **Step 4:** 추가 행동 수행 (예: 밭 1칸 **더** 갈기, 아이템 **버리기**). **(저장하지 않음!)**
-5.  **Step 5:** `Esc` -> [Main Menu]로 타이틀 화면 이동.
-6.  **Step 6:** [Continue] 클릭.
-7.  **검증 항목:**
-    -   [ ] **위치:** 저장했던 집 앞에 위치하는가?
-    -   [ ] **농장:** 밭이 **1칸만** 갈려 있어야 함. (2칸이면 실패: 종료 시 자동저장 버그 의심)
-    -   [ ] **아이템:** 주웠던 아이템 1개가 있어야 하며, 버린 상태가 아니어야 함.
-
-## 🚫 Test Case 3: Quit Without Saving (데이터 롤백)
-> **목표:** 저장하지 않고 나갔을 때, 변경 사항이 반영되지 않아야 함.
-
-1.  **Step 1:** 게임 진행 중 (상태 A).
-2.  **Step 2:** 아이템을 습득하거나 돈을 씀 (상태 B).
-3.  **Step 3:** 저장하지 않고 `Esc` -> [Main Menu] -> [Continue].
-4.  **검증 항목:**
-    -   [ ] 상태 B가 아닌 **상태 A**여야 함. (돈이 줄어들지 않아야 함)
-
-## ⌨️ Test Case 4: UI UX Conflict (이중 ESC 방지)
-> **목표:** UI를 닫을 때 Pause Menu가 같이 뜨지 않아야 함.
-
-1.  **Step 1:** 인벤토리(`I`), 스킬창(`K`?), 제작창 등을 엽니다.
-2.  **Step 2:** `Esc` 키를 **한 번** 누릅니다.
-3.  **검증 항목:**
-    -   [ ] 열려있던 UI만 닫혀야 함.
-    -   [ ] 화면 중앙에 "Pause Menu"가 뜨지 않아야 함.
-4.  **Step 3:** 아무 UI도 없는 상태에서 `Esc`를 누릅니다.
-5.  **검증 항목:**
-    -   [ ] "Pause Menu"가 정상적으로 열려야 함.
-
-## 🛠️ Debugging Reference (개발자용)
-데이터 오염이 의심될 때 확인할 코드:
-*   **InventoryManager / SkillManager / StatManager:** `load_save_data()` 메서드에서 `SaveManager.game_data` 로부터 참조를 갱신하고 있는지 확인. (구버전 `game_data` 참조 유지 버그 주의)
-*   **SaveManager:** `reset_game_data()` 및 `load_game_data()` 시 모든 Manager의 `load_save_data()`를 호출하여 리셋을 전파하는지 확인.
+## 🎯 테스트 목표
+1.  **기존 기능 유지 확인 (Regression Test):** 인벤토리 아이템(상자 등)을 사용하여 건설할 때, 아이템이 정상적으로 소모되는지 확인합니다.
+2.  **신규 아키텍처 검증 (POC):** 인벤토리 소모 없이 작동하는 '매직 터렛(Magic Turret)' 건설을 통해, 시스템이 호출자(Caller)의 조건에 따라 유연하게 작동하는지 확인합니다.
 
 ---
 
-# 🌍 PART 2. World Expansion & Persistence (Phase 21)
+## 📋 테스트 시나리오
 
-## Test Case 5: Portal Travel & Time Dilation
-**Goal:** Verify scene switching controls time flow.
-1. Enter 'Player Home'. -> Verify `TimeManager` stops (Clock stops). -> **[PASS]**
-2. Exit to 'Town'. -> Verify `TimeManager` resumes. -> **[PASS]**
-3. Verify spawn position matches the door. -> **[PASS]**
+### 1. 기본 건설 및 아이템 소모 테스트 (Regression)
+- **준비:**
+    1.  게임을 시작하고 **Town(마을)** 씬으로 진입합니다.
+    2.  인벤토리에 '상자(Chest)' 아이템이 1개 이상 있는지 확인합니다. (없다면 `InventoryManager` 디버그 기능이나 코드를 통해 추가 필요)
+- **절차:**
+    1.  인벤토리 핫바에서 '상자'를 선택하여 손에 듭니다.
+    2.  플레이어 주변의 빈 땅을 클릭하여 상자를 설치합니다.
+- **기대 결과:**
+    - [ ] 상자가 마우스 위치(그리드)에 정상적으로 설치되어야 합니다.
+    - [ ] **인벤토리에서 상자 아이템 개수가 1개 줄어들어야 합니다.**
+    - [ ] 아이템이 0개가 되면 건설 모드가 자동으로 취소되거나 손이 비어야 합니다.
 
-## Test Case 6: Location Persistence
-**Goal:** Verify game loads at correct scene/pos.
-1. Save inside 'Player Home'. -> **[PASS]**
-2. Return to Title -> Continue.
-3. **Expectation:** Load directly into 'Player Home', not Town. -> **[PASS]** (Fixed Issue A)
+### 2. 매직 터렛(무료 건설) 테스트 (Architecture POC)
+- **준비:**
+    1.  **Town(마을)** 씬에 위치합니다.
+    2.  인벤토리에 아무런 아이템을 들고 있지 않아도 무방합니다.
+- **절차:**
+    1.  키보드 **`T` 키**를 누릅니다. (디버그용 단축키)
+    2.  마우스 커서에 'Magic Turret' (또는 상자 모양의 프록시) 미리보기가 나타나는지 확인합니다.
+    3.  빈 땅을 클릭하여 설치합니다.
+- **기대 결과:**
+    - [ ] 구조물이 정상적으로 설치되어야 합니다.
+    - [ ] **인벤토리의 어떤 아이템도 소모되지 않아야 합니다.**
+    - [ ] 로그창(Output)에 "Town: Debug Magic Build" 관련 메시지가 출력되면 좋습니다.
 
-## Test Case 7: Multi-Scene Build Integrity
-**Goal:** Verify objects don't bleed between scenes.
-1. Place Chest at (10,10) in Town.
-2. Go to Home. Check (10,10).
-3. **Expectation:** (10,10) in Home should be empty. -> **[PASS]** (Fixed Ghosting)
-4. Place Chest at (10,10) in Home. Save.
-5. Exit game. Reload.
-6. **Expectation:** Both chests exist in their respective scenes without error. -> **[PASS]** (Fixed Corruption)
+### 3. 건설 취소 테스트
+- **절차:**
+    1.  상자나 매직 터렛 건설 모드에 진입합니다.
+    2.  마우스 우클릭을 합니다.
+- **기대 결과:**
+    1.  [ ] 미리보기가 사라지고 건설 모드가 종료되어야 합니다.
+    2.  [ ] 아이템은 소모되지 않아야 합니다.
+
+---
+
+## 📝 참고 사항
+- 테스트 중 버그 발생 시 `docs/task.md`에 이슈를 기록하거나 즉시 스레드에 알려주세요.
