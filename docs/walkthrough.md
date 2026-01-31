@@ -357,3 +357,30 @@ Following the Phase 21 implementation, a rigorous QA session revealed several cr
 - [x] **Persistence**: Saving inside the house and reloading keeps the player inside the house.
 
 
+# Walkthrough - Phase 22: UI Architecture Refactoring (2026-01-31)
+
+## Overview
+This phase addressed the technical debt of "Copy-Paste UI" by implementing a proper **Persistent UI Layer**. We centralized UI logic into a new `UIManager` and created a single `GameUI` scene that persists across scene changes, cleaning up the mess of `TownUI` being duplicated everywhere.
+
+## 1. Architecture: Persistent UI
+- **GameUI Scene**: A new `CanvasLayer` that sits above the game world `SubViewport` (or simplified layer stack).
+    - Contains: `HUD` (Action Bar, Currency), `Windows` (Inventory, Skills), `SystemMenu`.
+    - **Benefit**: No need to add UI nodes to every new scene (Town, Home, Dungeon).
+- **UIManager (Autoload)**:
+    - Automatically instantiates `GameUI` at startup.
+    - Manages global input for UI toggles (`I` for Inventory, `K` for Skills, `Esc` for Menu).
+    - Exposes generic methods like `open_container_ui(data)` so game objects don't need to know about UI scenes.
+
+## 2. Refactoring & Cleanup
+- **Deleted Code**: Removed ~50 lines of duplicate UI connection code from `Town.gd` and `PlayerHome.gd`.
+- **Migration**:
+    - **Interaction**: Objects now call `UIManager.open_container_ui()` instead of local scene functions.
+    - **TownUI**: This node is now obsolete. The components (Action Bar, Currency) are now part of `GameUI`.
+
+## Verification Steps (Manual)
+1.  **Cleanup**: Manually delete the `TownUI` node from `Town.tscn` and `PlayerHome.tscn`.
+2.  **Play**: Run the game.
+    - **HUD**: Verify Action Bar and Money appear globally.
+    - **Windows**: Verify `I` and `K` keys open windows.
+    - **Travel**: Go to Player Home. Verify UI does not blink or disappear/duplicate.
+    - **Interaction**: Open the Chest. Verify it works via `UIManager`.

@@ -1,28 +1,17 @@
 extends Node
 
-@onready var skill_ui_button = $TownUI/HBoxContainer/SkillUIButton
-@onready var inventory_ui_button = $TownUI/HBoxContainer/InventoryUIButton
 @onready var soil_tile_map = $SoilTileMap
 @onready var fertilizer_tile_map = $FertilizerTileMap # User needs to add this node
 @onready var crop_tile_map = $CropTileMap
-@onready var town_ui = $TownUI
 
-@export var tabbed_skill_tree_scene: PackedScene
-@export var inventory_scene: PackedScene
-@export var chest_ui_scene: PackedScene # New Export
-
+# UI Scenes are now managed by UIManager
 
 func _ready():
-	# SaveManager.save_game_data() # Removed unwanted auto-save on load
-	skill_ui_button.pressed.connect(on_skill_ui_button_pressed)
-	inventory_ui_button.pressed.connect(on_inventory_ui_button_pressed)
-	
 	# Outdoors: Ensure Time flows normally
 	if TimeManager:
 		TimeManager.set_calendar_time_multiplier(1.0)
 	
 	# Connect Farming Signals
-
 	FarmManager.crop_updated.connect(_on_crop_updated)
 	FarmManager.crop_removed.connect(_on_crop_removed)
 	FarmManager.soil_updated.connect(_on_soil_updated)
@@ -56,25 +45,12 @@ func _on_hand_equipped(item: ItemData):
 			print("Town: Script Class: ", item.get_script().get_global_name())
 			
 	# Robust Check: Class Type OR Duck Typing (property check)
-	# This handles cases where class_name registration is flaky due to cyclic dependencies or reloading.
 	if item and (item is PlaceableData or "placeable_scene" in item):
 		print("Town: Starting Placement for ", item.name)
-		# We cast only if it is PlaceableData, otherwise we pass it duck-typed (BuildManager expects PlaceableData but GDScript is dynamic)
 		BuildManager.start_placing(item, soil_tile_map, $Entities)
 	else:
-		if item: print("Town: Item is NOT recognized as PlaceableData.")
+		# if item: print("Town: Item is NOT recognized as PlaceableData.")
 		BuildManager.cancel_build()
-
-func on_skill_ui_button_pressed():
-	var tabbed_skill_tree = tabbed_skill_tree_scene.instantiate()
-	town_ui.add_child(tabbed_skill_tree)
-	get_tree().paused = true
-
-
-func on_inventory_ui_button_pressed():
-	var inventory = inventory_scene.instantiate()
-	town_ui.add_child(inventory)
-	get_tree().paused = true
 
 @onready var player = $Entities/PlayerHuman
 const INTERACTION_DISTANCE = 3.0 # Grid distance (Chebyshev)
@@ -123,7 +99,8 @@ func _unhandled_input(event):
 					
 				# Handle Result
 				if interact_result is InventoryData:
-					_open_container_ui(interact_result)
+					if UIManager:
+						UIManager.open_container_ui(interact_result)
 				
 				# If interaction happened, we return (only one interaction per click)
 				if interact_result != null or (collider.has_method("interact") or collider.get_parent().has_method("interact")):
@@ -187,8 +164,7 @@ func _unhandled_input(event):
 				
 			# Tool Logic Removed (Moved to EquipmentActionHandler)
 			# Only Seeds and Fertilizer remain here for now (Point Click)
-
-				
+			
 			# SEED PLANTING LOGIC
 			elif hand_item.crop_data:
 				# VALIDATION 1: Is there a crop already?
@@ -202,14 +178,9 @@ func _unhandled_input(event):
 				
 				if not is_tilled:
 					print("Farming: Soil is not tilled.")
-					# Optional: Feedback UI
 					return
-
+					
 				print("Farming: Planting ", hand_item.name, " at ", target_coords)
-				# Pass the hand_item directly (it contains crop_data now, FarmManager should handle it)
-				# NOTE: FarmManager.add_crop might expect the Seed Item or the Crop Data.
-				# Let's check FarmManager briefly? 
-				# Assuming add_crop(coords, seed_item_data) logic exists.
 				FarmManager.add_crop(target_coords, hand_item)
 				# CONSUMPTION: Remove 1 seed
 				InventoryManager.consume_equipped_item(1)
@@ -218,7 +189,6 @@ func _unhandled_input(event):
 			# FERTILIZER LOGIC
 			elif hand_item.fertilizer_data:
 				# VALIDATION 1: Is there a crop? (Maybe allowed, Stardew allows fertilizer before/after planting depending on game rules)
-				# Stardew: Only on tilled soil, before sprout stage?
 				# Let's keep it simple: Must be tilled soil.
 				var tile_atlas_coords = soil_tile_map.get_cell_atlas_coords(target_coords)
 				var is_tilled = (tile_atlas_coords == TILLED_SOIL_ATLAS_COORDS) or (tile_atlas_coords == WET_SOIL_ATLAS_COORDS)
@@ -229,7 +199,6 @@ func _unhandled_input(event):
 					
 				if FarmManager.apply_fertilizer(target_coords, hand_item.fertilizer_data):
 					InventoryManager.consume_equipped_item(1)
-					# TODO: Play sound / visual effect
 					print("Farming: Applied fertilizer ", hand_item.name)
 			
 			else:
@@ -292,13 +261,6 @@ func _try_harvest_crop(coords: Vector2i, _tool_item: ItemData) -> bool:
 	var resource = crop_data.get("resource") as CropData
 	if not resource: return false
 	
-	# Auto-pass if tool matches requirement or if no requirement
-	# Scythe req is checked by caller for Point mode, but Directional mode implies Scythe usage.
-	
-	# Strict Restriction: Only Scythe Tool can harvest (for now)!
-	# OR Hand if the crop allows hand harvesting (Stardew style).
-	# But Sword (WeaponData) should NOT harvest.
-	
 	var is_scythe = false
 	if _tool_item and _tool_item.equipment_data:
 		var data = _tool_item.equipment_data
@@ -306,14 +268,11 @@ func _try_harvest_crop(coords: Vector2i, _tool_item: ItemData) -> bool:
 			is_scythe = true
 			
 	if not is_scythe:
-		# If it's not a Scythe, reject harvest.
-		# (Unless we add 'Hand' harvesting later for berries, etc.)
-		# For now, simplistic rule: No Scythe, No Harvest.
 		return false
 	
 	var harvested_item = FarmManager.harvest_crop(coords)
 	if harvested_item:
-		# Yield & Quality Logic... (Extracted from previous code)
+		# Yield & Quality Logic
 		var amount = randi_range(resource.min_harvest, resource.max_harvest)
 		var modifiers = FarmManager.get_soil_modifiers(coords)
 		var quality_boost = modifiers.get("quality_boost", 0.0)
@@ -333,7 +292,6 @@ func _try_harvest_crop(coords: Vector2i, _tool_item: ItemData) -> bool:
 
 func _on_daily_growth_tick(updates: Dictionary):
 	# Staggered Growth Effect (The "Pop")
-	# Random order for organic feel
 	var coords_list = updates.keys()
 	coords_list.shuffle()
 	
@@ -342,14 +300,11 @@ func _on_daily_growth_tick(updates: Dictionary):
 			return
 			
 		var data = updates[coords]
-		# Random delay between 0.0 and 1.5 seconds distributed across updates
 		await get_tree().create_timer(randf_range(0.05, 0.2)).timeout
 		_update_tile_visual(coords, data)
 
 
 func _update_tile_visual(coords: Vector2i, data: Dictionary):
-	# source_id 1 is Crops (CROP_SOURCE_ID constant is used implicitly here or we can use the literal 1 to be safe until constant scope is fixed if needed, but we defined CROP_SOURCE_ID in script scope)
-	# atlas_coords are now calculated by FarmManager to support randomization and growth
 	var atlas_coords = data.get("atlas_coords", Vector2i(0, 0))
 	crop_tile_map.set_cell(coords, CROP_SOURCE_ID, atlas_coords)
 
@@ -358,52 +313,27 @@ func _on_soil_updated(coords: Vector2i, data: Dictionary):
 	if not fertilizer_tile_map:
 		return
 		
-	# Clear visuals first (both layers if we had them)
+	# Clear visuals first
 	fertilizer_tile_map.erase_cell(coords)
-	# SpeedGroTileMap.erase_cell(coords) # TODO: Add this when user creates the node
 	
 	# 1. Base Soil State (Tilled / Watered)
-	# Default to clearing custom soil state if not tilled (Assumes base terrain is Layer 0 default)
-	# Actually, we shouldn't erase if we want to keep base terrain.
-	# But "Tilled" overrides base terrain? 
-	# Strategy: If tilled, Set Cell. If not tilled, Erase Cell (Restore Base)? or Set to Base?
-	# Using "Erase" on Layer 0 might remove the background grass!
-	# We likely want to set it to TILLED or WET.
-	
 	if data.get("tilled", false):
 		var target_source_id = SOIL_SOURCE_ID
 		var target_coords = TILLED_SOIL_ATLAS_COORDS
 		
-		# If watered, switch to Wet Source & Coords
 		if data.get("watered", false):
 			target_source_id = WET_SOIL_SOURCE_ID
 			target_coords = WET_SOIL_ATLAS_COORDS
 		
-		# Update Soil Map
 		soil_tile_map.set_cell(coords, target_source_id, target_coords)
 	else:
-		# If untilled, we might want to revert? 
-		# If we don't know the original tile, this is tricky.
-		# For now, we assume "Untilled" means "Do Nothing" or generic grass?
-		# But since we use set_cell on soil_tile_map (which might be the Main Ground Layer), erase might be bad.
-		# If SoilTileMap is a dedicated layer ABOVE ground, then erase is fine.
-		# Based on var soil_tile_map = $SoilTileMap, it sounds dedicated.
-		# Let's simple check: Is it Layer 0 of a specific Node? Yes.
-		# If it was THE ground, we'd see grass.
-		# Let's assume SoilTileMap is for Farming Soil Overlays.
-		# If so, untill = erase.
 		pass
-		# We won't auto-erase here unless we know it's safe. 
-		# FarmManager usually keeps tilled=true.
-	
 	
 	# 2. Fertilizer Visuals
-	# Iterate all applied nutrients
 	var nutrients = data.get("nutrients", {})
 	for type_key in nutrients:
 		var fert = nutrients[type_key]
 		var source_id = 3
-		
 		var type_col_base = 0
 		var target_layer = fertilizer_tile_map # Default
 		
@@ -413,12 +343,10 @@ func _on_soil_updated(coords: Vector2i, data: Dictionary):
 				target_layer = fertilizer_tile_map
 			FertilizerData.FertilizerType.SPEED:
 				type_col_base = 3
-				# TODO: Switch to SpeedGroTileMap if user added it
 				var speed_layer = get_node_or_null("SpeedGroTileMap")
 				if speed_layer:
 					target_layer = speed_layer
 				else:
-					# Fallback
 					pass
 			_:
 				continue
@@ -430,18 +358,3 @@ func _on_soil_updated(coords: Vector2i, data: Dictionary):
 		var atlas_coords = Vector2i(type_col_base + variation, tier_row)
 				
 		target_layer.set_cell(coords, source_id, atlas_coords)
-
-func _open_container_ui(data: InventoryData):
-	if not chest_ui_scene:
-		print("Town: Chest UI Scene not assigned!")
-		return
-		
-	var chest_ui = chest_ui_scene.instantiate()
-	town_ui.add_child(chest_ui)
-	chest_ui.open(data)
-	
-	# Open Player Inventory too -> REMOVED (Handled by ChestUI internal layout now)
-	# var player_inv = inventory_scene.instantiate()
-	# town_ui.add_child(player_inv)
-	
-	get_tree().paused = true

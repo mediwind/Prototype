@@ -61,6 +61,11 @@ func change_scene(scene_path: String, spawn_tag: String = "", override_position:
 	await tween.finished
 	
 	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE # Unblock input
+	
+	# Show HUD if entering gameplay scenes (Not Title)
+	if "title_screen" not in scene_path:
+		if UIManager.has_method("set_hud_visible"):
+			UIManager.set_hud_visible(true)
 
 func _set_player_position(pos: Vector2):
 	var player = get_tree().get_first_node_in_group("player")

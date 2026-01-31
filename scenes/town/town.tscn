@@ -1,12 +1,8 @@
-[gd_scene load_steps=31 format=4 uid="uid://cmqvvth3hy45i"]
+[gd_scene load_steps=27 format=4 uid="uid://cmqvvth3hy45i"]
 
 [ext_resource type="Script" uid="uid://3suo00p3gg" path="res://scenes/town/town.gd" id="1_i0lau"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
-[ext_resource type="PackedScene" uid="uid://7jtkmlqaood0" path="res://scenes/ui/skill/tabbed_skill_tree_ui.tscn" id="2_g3yvl"]
-[ext_resource type="PackedScene" uid="uid://bulnv1je8d0i3" path="res://scenes/ui/inventory/InventoryUI.tscn" id="3_6g2qn"]
-[ext_resource type="PackedScene" uid="uid://bhmc4t4dtf2u" path="res://scenes/ui/town_ui.tscn" id="4_53e74"]
 [ext_resource type="PackedScene" uid="uid://byadw4tmkg3sw" path="res://scenes/game_object/player/player_human.tscn" id="4_v00pm"]
-[ext_resource type="PackedScene" uid="uid://dwg2roo53xesr" path="res://scenes/ui/inventory/chest_ui.tscn" id="4_wpqog"]
 [ext_resource type="PackedScene" uid="uid://dr3pik6bvrlif" path="res://scenes/game_object/loot/collectable_object.tscn" id="6_5vpkg"]
 [ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/weapons/sword.tres" id="7_5vpkg"]
 [ext_resource type="Resource" uid="uid://de7xp2xf3671r" path="res://resources/item/tools/hoe.tres" id="7_svnup"]
@@ -33,9 +29,6 @@
 
 [node name="Town" type="Node"]
 script = ExtResource("1_i0lau")
-tabbed_skill_tree_scene = ExtResource("2_g3yvl")
-inventory_scene = ExtResource("3_6g2qn")
-chest_ui_scene = ExtResource("4_wpqog")
 
 [node name="GameCamera" parent="." instance=ExtResource("1_kmwi7")]
 
@@ -141,5 +134,3 @@ crafting_ui_scene = ExtResource("11_g3yvl")
 position = Vector2(147, 337)
 item_data = ExtResource("25_chest")
 amount = 5
-
-[node name="TownUI" parent="." instance=ExtResource("4_53e74")]

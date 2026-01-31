@@ -74,6 +74,11 @@ trigger: always_on
 - **플러그인 활용:** `DialogueManager` 플러그인과 호환되는 구조를 유지한다.
 - **데이터 연동:** 대화 내에서 호감도 및 전역 변수 상태를 체크하여 분기를 생성한다.
 
+### 5. UI 아키텍처 (Persistent UI)
+- **Persistent Layer:** 모든 HUD(Action Bar, 상태창)와 시스템 메뉴는 씬(Scene) 종속적이지 않은 `GameUI`(CanvasLayer)에 존재한다.
+- **UIManager:** UI의 생성, 표시(Visible), 입력 제어는 오직 `UIManager`를 통해서만 수행한다. 개별 씬에서 로컬 UI(`TownUI` 등)를 생성하지 않는다.
+- **Interaction:** 상호작용 객체(Chest 등)는 UI를 직접 인스턴스화하지 않고, `UIManager.open_container_ui(data)`와 같이 데이터만 전달한다.
+
 ### 5. 데이터 영속성 (Persistence Strategy)
 - **Loose Coupling:** 각 Manager(System)는 `SaveManager`를 직접 참조하지 않는다.
 - **Protocol:** 대신 모든 상태 관리 주체는 `get_save_data() -> Dictionary`와 `load_save_data(data: Dictionary)` 메서드를 구현한다.

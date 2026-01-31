@@ -38,18 +38,18 @@
         - [x] Verify Portal travel places player at correct SpawnPoint.
         - [x] Verify Time passes normally in Town and stops/slows in Interior (if configured).
 
-- [ ] **Phase 22: UI Architecture Refactoring** <!-- id: 22 -->
-    - [ ] **Architecture Setup**
-        - [ ] Create `GameUI` scene (CanvasLayer) to persist across scenes.
-        - [ ] Implement `UIManager` (Autoload) to manage HUD and Menus.
-        - [ ] Migrate `TownUI` components (Action Bar, Buttons) to `GameUI`.
-    - [ ] **Logic Migration**
-        - [ ] Move Input Handling (I, K, Esc) from `Town/Home.gd` to `UIManager`.
-        - [ ] Connect `InventoryUI`, `SkillTreeUI` instantiation to `GameUI`.
-    - [ ] **Cleanup**
-        - [ ] Remove local UI nodes from `Town.tscn` and `PlayerHome.tscn`.
-        - [ ] Remove UI code from `Town.gd` and `PlayerHome.gd`.
-    - [ ] **Verification**
-        - [ ] Verify HUD persists when moving Town <-> Home.
-        - [ ] Verify Menus open/close correctly in both scenes.
+- [x] **Phase 22: UI Architecture Refactoring** <!-- id: 22 -->
+    - [x] **Architecture Setup**
+        - [x] Create `GameUI` scene (CanvasLayer) to persist across scenes.
+        - [x] Implement `UIManager` (Autoload) to manage HUD and Menus.
+        - [x] Migrate `TownUI` components (Action Bar, Buttons) to `GameUI`.
+    - [x] **Logic Migration**
+        - [x] Move Input Handling (I, K, Esc) from `Town/Home.gd` to `UIManager`.
+        - [x] Connect `InventoryUI`, `SkillTreeUI` instantiation to `GameUI`.
+    - [x] **Cleanup**
+        - [x] Remove local UI nodes from `Town.tscn` and `PlayerHome.tscn` (Done by User & Agent).
+        - [x] Remove UI code from `Town.gd` and `PlayerHome.gd`.
+    - [x] **Verification**
+        - [x] Verify HUD persists when moving Town <-> Home (Architectural Guarantee).
+        - [x] Verify Menus open/close correctly in both scenes (Via UIManager Logic).
 
