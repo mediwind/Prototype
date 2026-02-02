@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=4 uid="uid://cmqvvth3hy45i"]
+[gd_scene load_steps=28 format=4 uid="uid://cmqvvth3hy45i"]
 
 [ext_resource type="Script" uid="uid://3suo00p3gg" path="res://scenes/town/town.gd" id="1_i0lau"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
@@ -26,6 +26,7 @@
 [ext_resource type="PackedScene" uid="uid://c4mkieib51cko" path="res://scenes/game_object/gatherable/tree.tscn" id="22_tree"]
 [ext_resource type="PackedScene" uid="uid://bp6vf6utofva5" path="res://scenes/game_object/gatherable/rock.tscn" id="23_rock"]
 [ext_resource type="Resource" uid="uid://bkpwxk1df3dta" path="res://resources/item/furniture/chest.tres" id="25_chest"]
+[ext_resource type="PackedScene" uid="uid://b1d404pvfujsg" path="res://scenes/npc/talula.tscn" id="27_iu42p"]
 
 [node name="Town" type="Node"]
 script = ExtResource("1_i0lau")
@@ -134,3 +135,6 @@ crafting_ui_scene = ExtResource("11_g3yvl")
 position = Vector2(147, 337)
 item_data = ExtResource("25_chest")
 amount = 5
+
+[node name="Talula" parent="Entities" instance=ExtResource("27_iu42p")]
+position = Vector2(272, 88)

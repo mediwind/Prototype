@@ -230,3 +230,16 @@ This file contains completed tasks moved from `task.md` to maintain readability.
     - [x] **Verification**
         - [x] Verify HUD persists when moving Town <-> Home (Architectural Guarantee).
         - [x] Verify Menus open/close correctly in both scenes (Via UIManager Logic).
+
+- [x] **Phase 23: Building System Architecture Refactor** <!-- id: 23 -->
+    - [x] **Data & Logic Refactoring**
+        - [x] Extract "Ghost" logic from `BuildManager` (Pure Visuals).
+        - [x] Implement `start_placement(item_data, callbacks)` interface.
+        - [x] Removed hardcoded inventory dependencies.
+    - [x] **Prototype Implementation**
+        - [x] Verify placing a Chest using the new logic.
+        - [x] Implement debug "Magic Construction" (Key T) to verify context-independence.
+    - [x] **Verification**
+        - [x] Architecture: Ensure `BuildManager` does not know about Inventory/Skills.
+        - [x] Fixed `InventoryUI` drag-and-drop bug (CanvasLayer removal).
+        - [x] Fixed `BuildManager` scene transition crash.

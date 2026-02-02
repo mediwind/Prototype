@@ -1,0 +1,11 @@
+~ start
+
+Talula: 안녕! 이사 왔니?
+- 네, 반가워요.
+	Talula: 나도 반가워! 우리 마을은 정말 평화로워.
+- (선물 주기: 나무 1개) [if InventoryManager.has_item(ItemDatabase.get_item("wood"), 1)]
+	Talula: 나한테 주는 거야? 정말 고마워!
+	do InventoryManager.consume_item(ItemDatabase.get_item("wood"), 1)
+	do NPCManager.change_affection("Talula", 10)
+	=> start
+- 안녕히 계세요. => END

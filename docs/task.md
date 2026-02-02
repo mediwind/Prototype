@@ -1,8 +1,15 @@
-- [ ] **Phase 23: Building System Architecture** <!-- id: 23 -->
-    - [x] **Data & Logic Refactoring**
-        - [x] Extract "Ghost" logic from `BuildManager` (Pure Visuals).
-        - [x] Implement `start_placement(item_data, callbacks)` interface.
-    - [x] **Prototype Implementation**
-        - [x] Verify placing a Chest using the new logic.
-        - [x] Implement debug "Magic Construction" (Key T) to verify context-independence.
-    - [x] Verification <!-- id: 4 --> [x] Architecture: Ensure `BuildManager` does not know about Inventory/Skills.
+# Tasks
+
+- [x] **Phase 24: NPC & Dialogue System** <!-- id: 24 -->
+    - [x] **System Architecture**
+        - [x] Install `Dialogue Manager` plugin (Done).
+        - [x] Create `CustomBalloon` UI (Scene & Script).
+        - [x] Create `NPCResource` datas (Static/Dynamic).
+    - [x] **Content: Talula (Prototype)**
+        - [x] Create `talula.dialogue` script.
+        - [x] Create `Talula` NPC scene.
+        - [x] Integrate interaction logic in `Town.gd`.
+    - [x] **Verification**
+        - [x] Speak to Talula -> UI opens.
+        - [x] Portrait updates based on tags.
+        - [x] Choices work and affect variables.

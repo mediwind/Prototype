@@ -407,9 +407,38 @@ This phase refactored the legacy `BuildManager` to be a pure "Placement Agent", 
 ## 4. Documentation
 - **Manual**: Created `docs/building_system_manual.md` as a definitive guide for future agents on how to use the new system.
 
+
+# Walkthrough - Phase 24: NPC & Dialogue System
+
+## Overview
+Implemented the **Dialogue Manager** plugin (Nathan Hoad) to power the "Social Metroidvania" aspect. Created a custom "Bottom Rectangle + Portrait" UI (`CustomBalloon`) and the first NPC, **Talula**. interactions allow conditional branching (Item Check) and state mutation (Affection).
+
+## 1. System Architecture
+- **Dialogue Manager**: Installed v3.3.0 to `addons/`, enabled in settings. Fixed Godot 4.4 API compatibility in `editor_translation_parser_plugin.gd`.
+- **NPCManager**: Created (`scenes/manager/npc_manager.gd`) and registered as Autoload. Handles global NPC state (Affection).
+- **Custom UI**: Built `custom_balloon.tscn` using `CanvasLayer`.
+    - Supports Portraits via Tags (`Talula (happy): ...`).
+    - Uses `RichTextLabel` with Typewriter effect.
+    - Handled Input ('Space' / Click) to skip or advance.
+
+## 2. Content: Talula
+- **Dialogue**: `resources/dialogue/talula.dialogue`
+    - Logic: Checks if player has "Wood". If so, offers a "Gift" option.
+    - Effect: Consumes wood, increases Affection (+10).
+- **Scene**: `scenes/npc/talula.tscn` (Area2D).
+    - Detects player vicinity.
+    - Listens for new "interact" Action (Key E).
+
+## 3. Integration
+- **Input Map**: Added `interact` (E) to Project Settings.
+- **Town**: Spawned Talula instance at `(300, 200)` via code in `_ready()` for immediate testing.
+
 ## Verification
-- [x] **Regression**: Standard building consumes items correctly.
-- [x] **Architecture**: Magic Key (T) allows free building.
-- [x] **Stability**: Build mode cancels gracefully when switching scenes.
-- [x] **Input**: Inventory drag-and-drop works correctly on Layer 100.
+
+### UI Polish (Post-Verification)
+- **Dialogue Pacing**: Added mandatory Input Cooldown (0.1s) and removed auto-advance to ensure players don't accidental skip text.
+- **HUD Visibility**: 
+    - Fixed `Town` scene to explicitly show HUD on load (robust F6 testing).
+    - Fixed `TitleScreen` to explicitly hide HUD.
+    - Implemented "Cinematic Mode": HUD automatically hides when **Dialogue** or **System Menu** (ESC) is active to prevent overlap.
 

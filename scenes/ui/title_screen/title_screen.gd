@@ -10,6 +10,11 @@ extends Control
 const FIRST_SCENE_PATH = "res://scenes/town/town.tscn"
 
 func _ready():
+	# Ensure HUD is hidden
+	if UIManager:
+		UIManager.set_hud_visible(false)
+	
+	# Connect buttons
 	new_game_button.pressed.connect(on_new_game_pressed)
 	continue_button.pressed.connect(on_continue_pressed)
 	quit_button.pressed.connect(on_quit_pressed)

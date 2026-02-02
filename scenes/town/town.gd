@@ -11,6 +11,12 @@ func _ready():
 	if TimeManager:
 		TimeManager.set_calendar_time_multiplier(1.0)
 	
+	# Show HUD (for F6 testing or Scene Switching)
+	# Wait for UIManager to initialize its deferred UI
+	if UIManager:
+		await get_tree().process_frame
+		UIManager.set_hud_visible(true)
+	
 	# Connect Farming Signals
 	FarmManager.crop_updated.connect(_on_crop_updated)
 	FarmManager.crop_removed.connect(_on_crop_removed)
