@@ -1,15 +1,35 @@
-extends Area2D
+extends CharacterBody2D
 class_name NPC
 
-# Simple dialogue resource export
+# --- Configuration ---
+@export_group("Identity")
+@export var identity: NPCIdentity
+
+@export_group("Dialogue")
 @export var dialogue_resource: DialogueResource
 @export var dialogue_start: String = "start"
 
+@export_group("Components")
+@onready var movement_component: NPCMovementComponent = $NPCMovementComponent
+@onready var scheduler_component: NPCSchedulerComponent = $NPCSchedulerComponent
+@onready var interaction_area: Area2D = $InteractionArea
+
+# --- State ---
 var player_nearby: bool = false
+# Destinations for this scene can be assigned in editor or found dynamically
+# Key: Activity ID, Value: Marker2D or Position node
+@export var schedule_destinations: Dictionary = {}
 
 func _ready() -> void:
-	body_entered.connect(_on_body_entered)
-	body_exited.connect(_on_body_exited)
+	if interaction_area:
+		interaction_area.body_entered.connect(_on_body_entered)
+		interaction_area.body_exited.connect(_on_body_exited)
+	else:
+		push_warning("NPC %s missing InteractionArea!" % name)
+		
+	if scheduler_component and identity and identity.schedule:
+		# Initialize scheduler with identity's schedule and local destinations
+		scheduler_component.initialize(identity.schedule, schedule_destinations)
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is PlayerHuman:
@@ -25,12 +45,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func interact() -> void:
-	print("Interacting with Talula")
+	var char_name = name
+	if identity:
+		char_name = identity.display_name
+		
+	print("Interacting with %s" % char_name)
+	
+	if movement_component:
+		movement_component.stop()
 	
 	# Load Custom Balloon
 	var balloon = load("res://scenes/ui/dialogue/custom_balloon.tscn").instantiate()
 	get_tree().root.add_child(balloon)
 	
 	# Start Dialogue
-	# We pass 'self' as an extra game state, so we can access Talula's properties in dialogue if needed
 	balloon.start(dialogue_resource, dialogue_start, [self])

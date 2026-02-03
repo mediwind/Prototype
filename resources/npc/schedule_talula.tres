@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ScheduleDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/npc/schedule_def.gd" id="1_schedule_def"]
+
+[resource]
+script = ExtResource("1_schedule_def")
+entries = {
+6: "plaza",
+18: "home"
+}
+default_activity = "home"

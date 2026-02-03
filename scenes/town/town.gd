@@ -33,6 +33,23 @@ func _ready():
 	
 	# Restore Placed Objects (Chest, Furniture)
 	BuildManager.restore_placed_objects(soil_tile_map, $Entities)
+	
+	_setup_npc_scheduling()
+
+func _setup_npc_scheduling() -> void:
+	var entities = $Entities
+	var plaza_marker = entities.get_node("MarkerPlaza")
+	var home_marker = entities.get_node("MarkerHome")
+	
+	# Assign to Talula
+	var talula = entities.get_node_or_null("Talula")
+	if talula:
+		talula.schedule_destinations["plaza"] = plaza_marker
+		talula.schedule_destinations["home"] = home_marker
+		
+		# Force update for testing if TimeManager is ready
+		if talula.scheduler_component:
+			talula.scheduler_component.check_schedule(TimeManager.current_hour)
 
 
 func _refresh_all_visuals():

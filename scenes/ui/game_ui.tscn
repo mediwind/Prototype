@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://gameui000001"]
+[gd_scene load_steps=4 format=3 uid="uid://gameui000001"]
 
-[ext_resource type="Script" uid="uid://gameuiscript" path="res://scenes/ui/game_ui.gd" id="1_root"]
+[ext_resource type="Script" uid="uid://hun2n1j8jbse" path="res://scenes/ui/game_ui.gd" id="1_root"]
 [ext_resource type="PackedScene" uid="uid://2yog34xmngmr" path="res://scenes/ui/currency/currency_display.tscn" id="2_currency"]
 [ext_resource type="PackedScene" uid="uid://ctionbar001" path="res://scenes/ui/action_bar/action_bar.tscn" id="3_actionbar"]
 
@@ -17,6 +17,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="TimeDisplay" type="Label" parent="HUD"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 39.0
+grow_horizontal = 0
+text = "Y1 Spring 01 06:00"
+horizontal_alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HUD"]
 layout_mode = 1
@@ -41,6 +54,18 @@ layout_mode = 2
 text = "Inventory (I)"
 
 [node name="ActionBar" parent="HUD" instance=ExtResource("3_actionbar")]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 400.0
+offset_bottom = 40.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="CurrencyDisplay" parent="HUD" instance=ExtResource("2_currency")]
 layout_mode = 1

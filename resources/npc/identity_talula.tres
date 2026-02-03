@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="NPCIdentity" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/npc/npc_identity.gd" id="1_identity"]
+[ext_resource type="Resource" path="res://resources/npc/schedule_talula.tres" id="2_schedule"]
+
+[resource]
+script = ExtResource("1_identity")
+id = "talula"
+display_name = "Talula"
+schedule = ExtResource("2_schedule")

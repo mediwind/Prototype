@@ -442,3 +442,48 @@ Implemented the **Dialogue Manager** plugin (Nathan Hoad) to power the "Social M
     - Fixed `TitleScreen` to explicitly hide HUD.
     - Implemented "Cinematic Mode": HUD automatically hides when **Dialogue** or **System Menu** (ESC) is active to prevent overlap.
 
+## Phase 25: Save/Load Integration (Social)
+**Goal**: Integrate `NPCManager` with the persistence system to ensure social progress is saved.
+
+### Implementation
+- **Data Architecture**: Added `npc_save_data` dictionary to `GameData` resource.
+- **Save Flow**: `SaveManager` now pulls data from `NPCManager.get_save_data()` during save.
+- **Load Flow**: `SaveManager` pushes data to `NPCManager.load_save_data()` during load.
+- **Robustness**: Added specific logic to reset NPC state on `New Game`.
+
+### Verification (QA Passed)
+- **Session Persistence**: Confirmed Affection (10 -> 20) persists after restart.
+- **Clean New Game**: Confirmed Affection resets to 0 on New Game.
+- **Phantom Data**: Confirmed unsaved progress (10 -> 20) is correctly rolled back to 10 if quit without saving.
+- **Bug Fix**: Fixed a regression where closing the System Menu (ESC) would accidentally force-show the HUD even if Dialogue was active. Implemented `is_dialogue_active` state in `UIManager` to solve this.
+
+
+# Walkthrough - Phase 26: NPC Scheduling & Time Integration
+
+## Overview
+Implemented the **Daily Schedule System** for NPCs, allowing them to move between different locations (Plaza, Home) based on the in-game clock. This phase moved from static NPCs to living actors.
+
+## 1. Core Architecture
+- **TimeManager (Integration)**:
+    - Connected `NPCSchedulerComponent` to the `hour_passed` signal.
+    - Verified `TimeManager` works correctly outdoors (1.0x scale).
+- **NPC Components**:
+    - `NPCIdentity` (Resource): Acts as a "Data Container" linking Name, Portrait, and Schedule.
+    - `ScheduleDef` (Resource): Maps `hour (int)` -> `activity_id (string)`.
+    - `NPCSchedulerComponent`: Decides *where* to go.
+    - `NPCMovementComponent`: Decides *how* to get there (currently `move_toward` linear movement).
+
+## 2. Town Scene Refactor
+- **Initial Setup**: Initially tested with dynamic code generation in `Town.gd`.
+- **Refactor**: Replaced hardcoded logic with a **Scene-Based Marker System**.
+    - Added `MarkerPlaza` and `MarkerHome` nodes directly to `Town.tscn`.
+    - `Town.gd` now simply assigns these existing nodes to the NPC.
+
+## 3. Polish & UX
+- **GameUI**: Added a **Time Display** (Clock) to the top-right HUD (`Y1 Spring 01 06:00`).
+- **Manual**: Created `docs/manual_npc_scheduling_kr.md` to guide future content creation.
+
+## Verification
+- [x] **Scheduling**: Talula moves to Plaza at 06:00 and Home at 18:00.
+- [x] **Persistence**: Schedule resumes correctly after save/load.
+- [x] **Collision**: NPC moves linearly but respects physics (stops at rocks), which is acceptable for now.
