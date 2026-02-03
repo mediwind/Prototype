@@ -53,6 +53,8 @@ func save_game_data():
 		game_data.placed_objects_data = BuildManager.get_save_data()
 	if TimeManager:
 		game_data.time_save_data = TimeManager.get_save_data()
+	if NPCManager:
+		game_data.npc_save_data = NPCManager.get_save_data()
 
 	# Capture Scene & Position
 	var current_scene = get_tree().current_scene
@@ -115,6 +117,9 @@ func _propagate_data_to_managers():
 
 	if TimeManager:
 		TimeManager.load_save_data(game_data.time_save_data)
+		
+	if NPCManager:
+		NPCManager.load_save_data(game_data.npc_save_data)
 
 
 func initialize_default_values():

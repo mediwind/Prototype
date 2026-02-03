@@ -73,11 +73,15 @@ trigger: always_on
 ### 4. 대화 및 퀘스트 (Social)
 - **플러그인 활용:** `DialogueManager` 플러그인과 호환되는 구조를 유지한다.
 - **데이터 연동:** 대화 내에서 호감도 및 전역 변수 상태를 체크하여 분기를 생성한다.
+- **Rule [NEW]: Pagination Strategy:** 대화의 페이지네이션은 '자동(Code-based)'이 아닌 '수동(Manual)' 방식을 사용한다. 긴 문장은 번역 단계에서 문맥에 맞게 줄바꿈하거나, `.dialogue` 파일 내에서 다중 ID로 분할한다.
+- **Rule [NEW]: Pacing Control:** 대화 넘김은 절대 시간제(Timer)로 자동 스킵하지 않는다. 반드시 유저의 입력(클릭)이 있어야만 다음 대사로 넘어간다. (Input Cooldown 0.1~0.5s 적용)
 
 ### 5. UI 아키텍처 (Persistent UI)
 - **Persistent Layer:** 모든 HUD(Action Bar, 상태창)와 시스템 메뉴는 씬(Scene) 종속적이지 않은 `GameUI`(CanvasLayer)에 존재한다.
 - **UIManager:** UI의 생성, 표시(Visible), 입력 제어는 오직 `UIManager`를 통해서만 수행한다. 개별 씬에서 로컬 UI(`TownUI` 등)를 생성하지 않는다.
 - **Interaction:** 상호작용 객체(Chest 등)는 UI를 직접 인스턴스화하지 않고, `UIManager.open_container_ui(data)`와 같이 데이터만 전달한다.
+- **Rule [NEW]: Cinematic Mode:** 대화(Dialogue)나 시스템 메뉴(ESC) 활성화 시 `UIManager.set_hud_visible(false)`를 호출하여 HUD를 숨긴다.
+- **Rule [NEW]: Robust Visibility:** `Town` 등 메인 씬은 `_ready()`에서 `UIManager.set_hud_visible(true)`를 명시적으로 호출하여, 디버그 실행(F6) 시에도 UI가 보장되도록 한다.
 
 ### 5. 데이터 영속성 (Persistence Strategy)
 - **Loose Coupling:** 각 Manager(System)는 `SaveManager`를 직접 참조하지 않는다.

@@ -97,6 +97,7 @@ func _ready() -> void:
 	
 	# Hide HUD for cinematic look
 	if UIManager:
+		UIManager.set_dialogue_active(true)
 		UIManager.set_hud_visible(false)
 	
 	balloon.hide()
@@ -107,6 +108,7 @@ func _end_dialogue() -> void:
 	
 	# Restore HUD
 	if UIManager:
+		UIManager.set_dialogue_active(false)
 		UIManager.set_hud_visible(true)
 		
 	queue_free()

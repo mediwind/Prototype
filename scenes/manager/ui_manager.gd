@@ -9,7 +9,9 @@ const SKILL_UI_SCENE = preload("res://scenes/ui/skill/tabbed_skill_tree_ui.tscn"
 var game_ui_instance: CanvasLayer = null
 
 # Input Lock
+# Input Lock
 var is_ui_open: bool = false
+var is_dialogue_active: bool = false # Tracks cinematic mode
 
 func _ready():
 	# Allow UIManager to work when paused
@@ -29,6 +31,11 @@ func _setup_game_ui():
 func set_hud_visible(visible: bool):
 	if game_ui_instance:
 		game_ui_instance.hud.visible = visible
+
+func set_dialogue_active(active: bool):
+	is_dialogue_active = active
+	# We could auto-hide HUD here, but let's keep it explicit in balloon for now
+	# or move specific logic here. For now, just tracking state.
 
 func _unhandled_input(event: InputEvent):
 	if InputMap.has_action("toggle_inventory") and event.is_action_pressed("toggle_inventory"): # I
