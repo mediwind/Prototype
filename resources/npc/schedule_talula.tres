@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="ScheduleDef" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ScheduleDef" load_steps=2 format=3 uid="uid://cc7kmcj8cynnv"]
 
-[ext_resource type="Script" path="res://resources/npc/schedule_def.gd" id="1_schedule_def"]
+[ext_resource type="Script" uid="uid://bf70hbkccvt15" path="res://resources/npc/schedule_def.gd" id="1_schedule_def"]
 
 [resource]
 script = ExtResource("1_schedule_def")

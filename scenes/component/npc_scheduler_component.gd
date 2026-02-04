@@ -29,13 +29,13 @@ func _on_time_updated(_time_dict: Dictionary) -> void:
 func _on_hour_passed() -> void:
 	check_schedule(TimeManager.current_hour)
 
-func check_schedule(current_hour: int) -> void:
+func check_schedule(current_hour: int, force: bool = false) -> void:
 	if not _schedule:
 		return
 		
 	var new_activity = _get_activity_for_hour(current_hour)
 	
-	if new_activity != _current_activity_id:
+	if new_activity != _current_activity_id or force:
 		_change_activity(new_activity)
 
 func _get_activity_for_hour(hour: int) -> String:

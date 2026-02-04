@@ -487,3 +487,29 @@ Implemented the **Daily Schedule System** for NPCs, allowing them to move betwee
 - [x] **Scheduling**: Talula moves to Plaza at 06:00 and Home at 18:00.
 - [x] **Persistence**: Schedule resumes correctly after save/load.
 - [x] **Collision**: NPC moves linearly but respects physics (stops at rocks), which is acceptable for now.
+
+# Walkthrough - Phase 27: Scalability & Interaction Polish
+
+## Overview
+This phase focused on "Scalability" (handling multiple NPCs) and "Polishing Interaction" (robustness against missing data). We moved from a hardcoded NPC setup to a dynamic discovery system.
+
+## 1. Scalability: Location Registration System
+- **Problem**: `Town.gd` required hardcoded lines for every new NPC (`talula.schedule=...`).
+- **Solution**:
+    - **Auto-Discovery**: `Town.gd` now scans for markers starting with `Marker` (e.g., `MarkerPlaza`) and creates a location map.
+    - **Auto-Distribution**: Iterate all children, find NPCs, and inject the location map.
+    - **Result**: New NPCs work instantly by just placing them in the scene.
+
+## 2. Interaction Polish
+- **Resume Movement**: Connected `DialogueManager.dialogue_ended` to `force_update_schedule`. NPCs now resume walking after chatting.
+- **Safety Guard**: `interact()` now checks if `dialogue_resource` exists. Prevents crashes for "Ambient NPCs" (like Gobo).
+- **Editor UX**: Added explicit typing to `ScheduleDef` Dictionary (`Dictionary[int, String]`) to fix Godot Inspector "Null Key" issues.
+
+## 3. Bug Fixes
+- **Reference Bug**: Fixed issue where `Town.gd` replaced the NPC's destination dictionary, but the `NPCSchedulerComponent` held a stale reference to the old one.
+- **Refactor**: Renamed `Talula.gd` to `NPC.gd` to officialize it as the generic script.
+
+## Verification
+- [x] **Gobo**: New NPC created by user works perfectly without code changes.
+- [x] **Resume**: Dialogue pauses NPC; closing checks schedule and resumes movement.
+- [x] **Safety**: Clicking Gobo (no dialogue) logs message but does not crash.

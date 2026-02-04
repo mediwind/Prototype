@@ -1,10 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://b1d404pvfujsg"]
+[gd_scene load_steps=7 format=3 uid="uid://buiidwcnof1xm"]
 
-[ext_resource type="Script" uid="uid://baw3qem4dgb6e" path="res://scenes/npc/npc.gd" id="1_script"]
-[ext_resource type="Resource" uid="uid://cute1j3jau2mi" path="res://resources/dialogue/talula.dialogue" id="2_dialogue"]
-[ext_resource type="Resource" path="res://resources/npc/identity_talula.tres" id="2_ftg76"]
-[ext_resource type="Script" uid="uid://dv6y1e873bx5w" path="res://scenes/component/npc_movement_component.gd" id="3_movement"]
-[ext_resource type="Script" uid="uid://ce6ccarjuwb47" path="res://scenes/component/npc_scheduler_component.gd" id="4_scheduler"]
+[ext_resource type="Script" uid="uid://baw3qem4dgb6e" path="res://scenes/npc/npc.gd" id="1_idxlm"]
+[ext_resource type="Resource" uid="uid://cdn5bo73m5o8m" path="res://resources/npc/identity_gobo.tres" id="2_lft6p"]
+[ext_resource type="Script" uid="uid://dv6y1e873bx5w" path="res://scenes/component/npc_movement_component.gd" id="4_mautx"]
+[ext_resource type="Script" uid="uid://ce6ccarjuwb47" path="res://scenes/component/npc_scheduler_component.gd" id="5_tdijv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(16, 24)
@@ -12,11 +11,10 @@ size = Vector2(16, 24)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_interaction"]
 size = Vector2(24, 32)
 
-[node name="Talula" type="CharacterBody2D"]
+[node name="Gobo" type="CharacterBody2D"]
 collision_layer = 0
-script = ExtResource("1_script")
-identity = ExtResource("2_ftg76")
-dialogue_resource = ExtResource("2_dialogue")
+script = ExtResource("1_idxlm")
+identity = ExtResource("2_lft6p")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -12)
@@ -26,7 +24,7 @@ shape = SubResource("RectangleShape2D_body")
 offset_left = -8.0
 offset_top = -24.0
 offset_right = 8.0
-color = Color(0.960784, 0.611765, 0.980392, 1)
+color = Color(0.232, 0.8, 0.355067, 1)
 
 [node name="Label" type="Label" parent="Sprite2D"]
 layout_mode = 0
@@ -39,10 +37,10 @@ text = "NPC"
 horizontal_alignment = 1
 
 [node name="NPCMovementComponent" type="Node" parent="."]
-script = ExtResource("3_movement")
+script = ExtResource("4_mautx")
 
 [node name="NPCSchedulerComponent" type="Node" parent="." node_paths=PackedStringArray("movement_component")]
-script = ExtResource("4_scheduler")
+script = ExtResource("5_tdijv")
 movement_component = NodePath("../NPCMovementComponent")
 
 [node name="InteractionArea" type="Area2D" parent="."]

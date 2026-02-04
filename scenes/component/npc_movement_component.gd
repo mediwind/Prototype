@@ -26,7 +26,7 @@ func _physics_process(_delta: float) -> void:
 		stop()
 		return
 	
-	var direction = (current_target_position - current_pos).normalized()
+	var direction = (_target_position - current_pos).normalized()
 	_body.velocity = direction * move_speed
 	_body.move_and_slide()
 

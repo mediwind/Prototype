@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=4 uid="uid://cmqvvth3hy45i"]
+[gd_scene load_steps=29 format=4 uid="uid://cmqvvth3hy45i"]
 
 [ext_resource type="Script" uid="uid://3suo00p3gg" path="res://scenes/town/town.gd" id="1_i0lau"]
 [ext_resource type="PackedScene" uid="uid://cmtruge86l45t" path="res://scenes/game_camera/game_camera.tscn" id="1_kmwi7"]
@@ -27,6 +27,7 @@
 [ext_resource type="PackedScene" uid="uid://bp6vf6utofva5" path="res://scenes/game_object/gatherable/rock.tscn" id="23_rock"]
 [ext_resource type="Resource" uid="uid://bkpwxk1df3dta" path="res://resources/item/furniture/chest.tres" id="25_chest"]
 [ext_resource type="PackedScene" uid="uid://b1d404pvfujsg" path="res://scenes/npc/talula.tscn" id="27_iu42p"]
+[ext_resource type="PackedScene" uid="uid://buiidwcnof1xm" path="res://scenes/npc/gobo.tscn" id="28_wpqog"]
 
 [node name="Town" type="Node"]
 script = ExtResource("1_i0lau")
@@ -64,6 +65,12 @@ position = Vector2(272, 88)
 
 [node name="MarkerHome" type="Marker2D" parent="Entities"]
 position = Vector2(16, 48)
+
+[node name="MarkerFarming" type="Marker2D" parent="Entities"]
+position = Vector2(240, 160)
+
+[node name="MarkerSleep" type="Marker2D" parent="Entities"]
+position = Vector2(32, 160)
 
 [node name="Hoe" parent="Entities" instance=ExtResource("6_5vpkg")]
 position = Vector2(336, -216)
@@ -125,10 +132,10 @@ position = Vector2(221, -117)
 item_data = ExtResource("21_pickaxe")
 
 [node name="TestTree" parent="Entities" instance=ExtResource("22_tree")]
-position = Vector2(100, 80)
+position = Vector2(100, 16)
 
 [node name="TestRock" parent="Entities" instance=ExtResource("23_rock")]
-position = Vector2(180, 80)
+position = Vector2(180, 16)
 
 [node name="BattleEntrance" parent="Entities" instance=ExtResource("9_jil70")]
 position = Vector2(549, 141)
@@ -144,3 +151,6 @@ amount = 5
 
 [node name="Talula" parent="Entities" instance=ExtResource("27_iu42p")]
 position = Vector2(272, 88)
+
+[node name="Gobo" parent="Entities" instance=ExtResource("28_wpqog")]
+position = Vector2(240, 165)

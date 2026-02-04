@@ -37,19 +37,35 @@ func _ready():
 	_setup_npc_scheduling()
 
 func _setup_npc_scheduling() -> void:
+	# 1. Gather all Markers in Entities
+	var location_map: Dictionary = {}
 	var entities = $Entities
-	var plaza_marker = entities.get_node("MarkerPlaza")
-	var home_marker = entities.get_node("MarkerHome")
 	
-	# Assign to Talula
-	var talula = entities.get_node_or_null("Talula")
-	if talula:
-		talula.schedule_destinations["plaza"] = plaza_marker
-		talula.schedule_destinations["home"] = home_marker
-		
-		# Force update for testing if TimeManager is ready
-		if talula.scheduler_component:
-			talula.scheduler_component.check_schedule(TimeManager.current_hour)
+	for child in entities.get_children():
+		if child is Marker2D:
+			# Convert "MarkerPlaza" -> "plaza", "MarkerHome" -> "home"
+			# Case insensitive for robustness
+			var key = child.name.replace("Marker", "").to_lower()
+			location_map[key] = child
+	
+	print("Town: Discovered Locations -> ", location_map.keys())
+	
+	# 2. Distribute Map to all NPCs
+	for child in entities.get_children():
+		# Check if it's an NPC (Using duck typing or class check if generic)
+		if child is CharacterBody2D and child.get("schedule_destinations") != null:
+			child.schedule_destinations = location_map.duplicate()
+			
+			# Force update schedule if component exists
+			if child.has_node("NPCSchedulerComponent"):
+				var scheduler = child.get_node("NPCSchedulerComponent")
+				# CRITICAL FIX: Update the component's dictionary reference because the NPC's reference just changed!
+				scheduler.destinations = child.schedule_destinations
+				
+				# Use force=true to ensure movement triggers even if activity id hasn't changed
+				scheduler.check_schedule(TimeManager.current_hour, true)
+				
+	print("Town: Distributed location map to NPCs")
 
 
 func _refresh_all_visuals():

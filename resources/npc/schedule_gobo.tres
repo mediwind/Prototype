@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ScheduleDef" load_steps=2 format=3 uid="uid://dmj8q5x7v2k1"]
+
+[ext_resource type="Script" uid="uid://bf70hbkccvt15" path="res://resources/npc/schedule_def.gd" id="1_schedule"]
+
+[resource]
+script = ExtResource("1_schedule")
+entries = {
+6: "farming",
+20: "sleep"
+}
+default_activity = "farming"
+metadata/_custom_type_script = "uid://bf70hbkccvt15"

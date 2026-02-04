@@ -51,6 +51,11 @@ func interact() -> void:
 		
 	print("Interacting with %s" % char_name)
 	
+	# Guard: If no dialogue resource, just return (Ambient NPC)
+	if not dialogue_resource:
+		print("%s has nothing to say." % char_name)
+		return
+	
 	if movement_component:
 		movement_component.stop()
 	
@@ -60,3 +65,12 @@ func interact() -> void:
 	
 	# Start Dialogue
 	balloon.start(dialogue_resource, dialogue_start, [self])
+	
+	# Resume movement after dialogue ends
+	# We use the global signal from DialogueManager
+	DialogueManager.dialogue_ended.connect(_on_dialogue_ended, CONNECT_ONE_SHOT)
+
+func _on_dialogue_ended(_resource: DialogueResource) -> void:
+	# Resume schedule (force move to current target)
+	if scheduler_component and TimeManager:
+		scheduler_component.check_schedule(TimeManager.current_hour, true)
