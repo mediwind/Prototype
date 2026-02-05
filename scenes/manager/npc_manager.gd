@@ -2,7 +2,7 @@ extends Node
 
 # Dictionary to store dynamic NPC data
 # Key: NPC ID (String)
-# Value: Dictionary { "affection": int, "talked_today": bool, ... }
+# Value: Dictionary { "affection": int, "talked_today": bool, "flags": Dictionary }
 var npc_data: Dictionary = {}
 
 # Additional state tracking (Position, Scene)
@@ -21,6 +21,35 @@ func unregister_active_npc(npc_node: Node) -> void:
 	if active_npcs.has(npc_node):
 		active_npcs.erase(npc_node)
 
+# --- Generic Flag System (Memory) ---
+
+func set_flag(npc_id: String, key: String, value: Variant) -> void:
+	if not npc_data.has(npc_id):
+		npc_data[npc_id] = {}
+	
+	if not npc_data[npc_id].has("flags"):
+		npc_data[npc_id]["flags"] = {}
+		
+	npc_data[npc_id]["flags"][key] = value
+	# print("NPCManager: Set flag [%s] for %s to %s" % [key, npc_id, value])
+
+func get_flag(npc_id: String, key: String, default: Variant = null) -> Variant:
+	if not npc_data.has(npc_id):
+		return default
+	if not npc_data[npc_id].has("flags"):
+		return default
+	return npc_data[npc_id]["flags"].get(key, default)
+
+# --- High-Level Helpers ---
+
+func has_met(npc_id: String) -> bool:
+	return get_flag(npc_id, "met", false)
+
+func set_met(npc_id: String) -> void:
+	set_flag(npc_id, "met", true)
+
+# --- Affection System ---
+
 func get_affection(npc_id: String) -> int:
 	if not npc_data.has(npc_id):
 		return 0
@@ -28,7 +57,7 @@ func get_affection(npc_id: String) -> int:
 
 func change_affection(npc_id: String, amount: int) -> void:
 	if not npc_data.has(npc_id):
-		npc_data[npc_id] = {"affection": 0}
+		npc_data[npc_id] = {} # Initialize empty dict first
 	
 	var current = npc_data[npc_id].get("affection", 0)
 	npc_data[npc_id]["affection"] = current + amount

@@ -310,3 +310,20 @@ func can_add_item(item_data: ItemData, amount: int) -> bool:
 			if remaining <= 0: return true
 			
 	return remaining <= 0
+
+
+# --- Helpers for Dialogue System (ID-based) ---
+
+func has_item_by_id(item_id: String, amount: int) -> bool:
+	var item = ItemDatabase.get_item(item_id)
+	if not item:
+		push_warning("InventoryManager: Item ID '%s' not found in database for has_item check." % item_id)
+		return false
+	return has_item(item, amount)
+
+func consume_item_by_id(item_id: String, amount: int) -> bool:
+	var item = ItemDatabase.get_item(item_id)
+	if not item:
+		push_warning("InventoryManager: Item ID '%s' not found in database for consume_item check." % item_id)
+		return false
+	return consume_item(item, amount)
