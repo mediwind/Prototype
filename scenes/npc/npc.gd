@@ -21,6 +21,13 @@ var player_nearby: bool = false
 @export var schedule_destinations: Dictionary = {}
 
 func _ready() -> void:
+	# Determine Identity (Override if resource is missing but exported variable is used)
+	if not identity:
+		# Fallback or error? For generic NPC, identity is required for persistence.
+		pass
+	else:
+		NPCManager.register_active_npc(self)
+
 	if interaction_area:
 		interaction_area.body_entered.connect(_on_body_entered)
 		interaction_area.body_exited.connect(_on_body_exited)
@@ -30,6 +37,27 @@ func _ready() -> void:
 	if scheduler_component and identity and identity.schedule:
 		# Initialize scheduler with identity's schedule and local destinations
 		scheduler_component.initialize(identity.schedule, schedule_destinations)
+
+	# Restore Position from Persistence
+	if identity:
+		var state = NPCManager.get_npc_state(identity.id)
+		if not state.is_empty():
+			# Check if stored scene matches current scene
+			# (In future we might want cross-scene follow, but for now simple check)
+			var current_scene = get_tree().current_scene.scene_file_path if get_tree().current_scene else ""
+			if state.get("scene_path") == current_scene:
+				global_position = state.get("position")
+				print("NPC %s: Restored position %s" % [identity.id, global_position])
+
+func _exit_tree() -> void:
+	if identity:
+		NPCManager.unregister_active_npc(self)
+		
+		# Save state before despawning (Scene Change), BUT ONLY if we are not loading a save!
+		# If we are loading, we don't want to overwrite the just-loaded data with our current (old) position.
+		if SaveManager and not SaveManager.is_loading_state:
+			var current_scene = get_tree().current_scene.scene_file_path if get_tree().current_scene else ""
+			NPCManager.update_npc_state(identity.id, current_scene, global_position)
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is PlayerHuman:

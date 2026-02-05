@@ -64,6 +64,7 @@ func on_save_pressed():
 
 
 func on_load_pressed():
+	SaveManager.is_loading_state = true
 	SaveManager.load_game()
 	close_menu()
 	
@@ -74,8 +75,10 @@ func on_load_pressed():
 		target_scene = SaveManager.game_data.current_scene_path
 		target_pos = SaveManager.game_data.player_position
 	
-	# Reload Scene with Position Override (Prevents visual pop)
+	# Reload Scene with Position Override
 	await SceneManager.change_scene(target_scene, "", target_pos)
+	
+	SaveManager.is_loading_state = false
 
 
 func on_main_menu_pressed():

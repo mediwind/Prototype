@@ -3,7 +3,7 @@ extends Node
 const SAVE_FILE_PATH = "user://game_data.tres"
 
 var game_data: GameData
-
+var is_loading_state: bool = false
 
 func _ready():
 	load_game_data()

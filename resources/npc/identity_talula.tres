@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="NPCIdentity" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="NPCIdentity" load_steps=3 format=3 uid="uid://vg7y6twui1c2"]
 
-[ext_resource type="Script" path="res://resources/npc/npc_identity.gd" id="1_identity"]
-[ext_resource type="Resource" path="res://resources/npc/schedule_talula.tres" id="2_schedule"]
+[ext_resource type="Script" uid="uid://ija1xraa34lk" path="res://resources/npc/npc_identity.gd" id="1_identity"]
+[ext_resource type="Resource" uid="uid://cc7kmcj8cynnv" path="res://resources/npc/schedule_talula.tres" id="2_schedule"]
 
 [resource]
 script = ExtResource("1_identity")

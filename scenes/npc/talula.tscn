@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://baw3qem4dgb6e" path="res://scenes/npc/npc.gd" id="1_script"]
 [ext_resource type="Resource" uid="uid://cute1j3jau2mi" path="res://resources/dialogue/talula.dialogue" id="2_dialogue"]
-[ext_resource type="Resource" path="res://resources/npc/identity_talula.tres" id="2_ftg76"]
+[ext_resource type="Resource" uid="uid://vg7y6twui1c2" path="res://resources/npc/identity_talula.tres" id="2_ftg76"]
 [ext_resource type="Script" uid="uid://dv6y1e873bx5w" path="res://scenes/component/npc_movement_component.gd" id="3_movement"]
 [ext_resource type="Script" uid="uid://ce6ccarjuwb47" path="res://scenes/component/npc_scheduler_component.gd" id="4_scheduler"]
 

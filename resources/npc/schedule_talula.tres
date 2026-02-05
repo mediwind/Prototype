@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_schedule_def")
-entries = {
+entries = Dictionary[int, String]({
 6: "plaza",
 18: "home"
-}
+})
 default_activity = "home"

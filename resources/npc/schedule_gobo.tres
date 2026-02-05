@@ -4,9 +4,9 @@
 
 [resource]
 script = ExtResource("1_schedule")
-entries = {
+entries = Dictionary[int, String]({
 6: "farming",
 20: "sleep"
-}
+})
 default_activity = "farming"
 metadata/_custom_type_script = "uid://bf70hbkccvt15"

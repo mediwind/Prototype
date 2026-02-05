@@ -512,4 +512,26 @@ This phase focused on "Scalability" (handling multiple NPCs) and "Polishing Inte
 ## Verification
 - [x] **Gobo**: New NPC created by user works perfectly without code changes.
 - [x] **Resume**: Dialogue pauses NPC; closing checks schedule and resumes movement.
+- [x] **Resume**: Dialogue pauses NPC; closing checks schedule and resumes movement.
 - [x] **Safety**: Clicking Gobo (no dialogue) logs message but does not crash.
+
+# Walkthrough - Phase 28: NPC Persistence & Consistency
+
+## Overview
+This phase solved the "Teleporting NPC" immersion breaker. We implemented a system to save the exact location of every NPC, ensuring that when you load the game, everyone is exactly where you left them—even if they were in the middle of a field.
+
+## 1. State Tracking (NPCManager)
+- **New Data**: `npc_states` dictionary stores `{ scene_path, position }` for each NPC ID.
+- **Live Tracking**: `NPCManager` now maintains an `active_npcs` list to query positions in real-time during `save_game()`, rather than relying on stale data.
+
+## 2. Save/Load Logic
+- **Exit Logic**: When an NPC is removed (scene change), it reports its final position to `NPCManager`.
+- **Spawn Logic**: When an NPC is created (`_ready`), it asks `NPCManager` for its last known position and teleports there.
+- **The "Pause Menu" Bug Fix**:
+    - *Problem*: Loading a game while playing caused the *current* NPC position (dying scene) to overwrite the *loaded* data (safe file).
+    - *Solution*: Added `SaveManager.is_loading_state` flag. NPCs are forbidden from saving their state if the game is currently in "Loading Mode".
+
+## Verification
+- [x] **Roadside Save**: Saved while Talula was walking. Loaded game. Talula resumed walking from that exact spot.
+- [x] **Inventory Sync**: Verified that NPC positions and Player Inventory are consistently saved/loaded together.
+- [x] **Pause Menu Load**: Loading from ESC menu correctly resets the world state without data contamination.
