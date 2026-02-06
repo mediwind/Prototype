@@ -204,8 +204,11 @@ func remove_item_from_slot(item_data_to_remove: ItemData, amount_to_remove: int,
 
 # Checks if the player has enough of a specific item across ALL inventory slots (Inventory + Hotbar)
 func has_item(item_data: ItemData, required_amount: int) -> bool:
+	return get_item_count(item_data) >= required_amount
+
+func get_item_count(item_data: ItemData) -> int:
 	if item_data == null:
-		return true
+		return 0
 		
 	var total_count = 0
 	
@@ -219,7 +222,7 @@ func has_item(item_data: ItemData, required_amount: int) -> bool:
 		if slot.item_data and _is_same_item(slot.item_data, item_data):
 			total_count += slot.amount
 			
-	return total_count >= required_amount
+	return total_count
 
 # Consumes a specific amount of an item from Inventory and Hotbar.
 # Prioritizes Inventory slots first, then Hotbar.

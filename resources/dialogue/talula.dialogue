@@ -1,5 +1,18 @@
 ~ start
 
+if QuestManager.is_quest_completed("quest_intro_wood"):
+	Talula: 나무 정말 고마웠어! 덕분에 울타리를 잘 고쳤어.
+	Talula: (Talula가 활짝 웃습니다.)
+	=> END
+elif QuestManager.is_quest_active("quest_intro_wood"):
+	if QuestManager.can_complete_quest("quest_intro_wood"):
+		Talula: 와, 나무 5개를 다 구해왔구나!
+		Talula: 정말 고마워. 여기 이건 내 보답이야.
+		do QuestManager.complete_quest("quest_intro_wood")
+	else:
+		Talula: 나무 5개가 필요해. 숲에서 도끼로 나무를 베면 얻을 수 있어. 부탁할게!
+	=> END
+
 if NPCManager.has_met("Talula") == false:
 	Talula: 어머, 처음 뵙네요? 이사 오신 분 맞죠?
 	Talula: 반가워요! 저는 Talula(탈룰라)라고 해요. 앞으로 잘 부탁해요!
@@ -7,13 +20,13 @@ if NPCManager.has_met("Talula") == false:
 	=> END
 else:
 	Talula: 안녕하세요! 오늘도 좋은 하루네요.
-	- 마을에 대해 물어본다.
-		Talula: 우리 마을은 작지만 정이 넘치는 곳이에요. 농사도 짓고, 숲에서 채집도 할 수 있죠.
-		Talula: 아, 밤에는 위험할 수 있으니 조심하세요!
-	- (선물 주기: 나무 1개) [if InventoryManager.has_item_by_id("wood", 1)]
-		Talula: 저한테 주시는 거예요? 세상에, 정말 필요했던 건데!
-		do InventoryManager.consume_item_by_id("wood", 1)
-		do NPCManager.change_affection("Talula", 10)
-		Talula: (탈룰라가 기뻐하며 미소 짓습니다.)
+	- (퀘스트) 무슨 걱정 있어?
+		Talula: 아, 사실은 집 뒤 울타리가 부러졌는데 고칠 나무가 부족해서 고민이야.
+		Talula: 괜찮다면 나무 5개만 구해다 줄 수 있을까?
+		- 알겠어, 구해올게.
+			Talula: 정말? 고마워! 기다리고 있을게.
+			do QuestManager.start_quest("quest_intro_wood")
+		- 지금은 바빠.
+			Talula: 그렇구나. 시간 나면 언제든 들러줘.
 	- 안녕히 계세요. => END
 	=> start

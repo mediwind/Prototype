@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://gameui000001"]
+[gd_scene load_steps=5 format=3 uid="uid://gameui000001"]
 
 [ext_resource type="Script" uid="uid://hun2n1j8jbse" path="res://scenes/ui/game_ui.gd" id="1_root"]
 [ext_resource type="PackedScene" uid="uid://2yog34xmngmr" path="res://scenes/ui/currency/currency_display.tscn" id="2_currency"]
 [ext_resource type="PackedScene" uid="uid://ctionbar001" path="res://scenes/ui/action_bar/action_bar.tscn" id="3_actionbar"]
+[ext_resource type="PackedScene" uid="uid://d3owq8o3jncix" path="res://scenes/ui/quest_log/quest_log_ui.tscn" id="4_fct72"]
 
 [node name="GameUI" type="CanvasLayer"]
 process_mode = 3
@@ -82,6 +83,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="QuestLogUI" parent="Windows" instance=ExtResource("4_fct72")]
+visible = false
+layout_mode = 1
 
 [node name="SystemMenu" type="Control" parent="."]
 layout_mode = 3

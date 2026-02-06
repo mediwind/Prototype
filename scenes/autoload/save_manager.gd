@@ -37,6 +37,9 @@ func reset_game_data():
 		TimeManager.reset_time()
 
 	
+	if QuestManager:
+		QuestManager.reset_data()
+	
 	# 3. Propagate Reset to ALL Managers (Refresh References)
 	_propagate_data_to_managers()
 
@@ -55,6 +58,8 @@ func save_game_data():
 		game_data.time_save_data = TimeManager.get_save_data()
 	if NPCManager:
 		game_data.npc_save_data = NPCManager.get_save_data()
+	if QuestManager:
+		game_data.quest_save_data = QuestManager.get_save_data()
 
 	# Capture Scene & Position
 	var current_scene = get_tree().current_scene
@@ -120,6 +125,9 @@ func _propagate_data_to_managers():
 		
 	if NPCManager:
 		NPCManager.load_save_data(game_data.npc_save_data)
+		
+	if QuestManager:
+		QuestManager.load_save_data(game_data.quest_save_data)
 
 
 func initialize_default_values():

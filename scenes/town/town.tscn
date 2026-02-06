@@ -134,6 +134,9 @@ item_data = ExtResource("21_pickaxe")
 [node name="TestTree" parent="Entities" instance=ExtResource("22_tree")]
 position = Vector2(100, 16)
 
+[node name="TestTree2" parent="Entities" instance=ExtResource("22_tree")]
+position = Vector2(136, 16)
+
 [node name="TestRock" parent="Entities" instance=ExtResource("23_rock")]
 position = Vector2(180, 16)
 

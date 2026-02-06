@@ -4,6 +4,7 @@ extends Node
 const GAME_UI_SCENE = preload("res://scenes/ui/game_ui.tscn")
 const INVENTORY_UI_SCENE = preload("res://scenes/ui/inventory/InventoryUI.tscn")
 const SKILL_UI_SCENE = preload("res://scenes/ui/skill/tabbed_skill_tree_ui.tscn")
+const QUEST_LOG_SCENE = preload("res://scenes/ui/quest_log/quest_log_ui.tscn")
 # context: ChestUI is dynamic, passed in
 
 var game_ui_instance: CanvasLayer = null
@@ -44,6 +45,9 @@ func _unhandled_input(event: InputEvent):
 	elif InputMap.has_action("toggle_skill_tree") and event.is_action_pressed("toggle_skill_tree"): # K
 		toggle_skill_tree()
 		get_viewport().set_input_as_handled()
+	elif InputMap.has_action("toggle_quest_log") and event.is_action_pressed("toggle_quest_log"): # J
+		toggle_quest_log()
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_cancel"): # Esc
 		_handle_escape()
 		# Don't consume yet, might be needed for other things? 
@@ -66,6 +70,13 @@ func toggle_skill_tree():
 		
 	var skill_ui = SKILL_UI_SCENE.instantiate()
 	_open_window(skill_ui)
+
+func toggle_quest_log():
+	if _close_any_open_window("QuestLogUI"):
+		return
+		
+	var quest_ui = QUEST_LOG_SCENE.instantiate()
+	_open_window(quest_ui)
 
 func open_container_ui(data: InventoryData):
 	# Close generic windows first

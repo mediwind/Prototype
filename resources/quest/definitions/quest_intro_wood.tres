@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="QuestResource" load_steps=9 format=3 uid="uid://nec1h7svdxeh"]
+
+[ext_resource type="Script" uid="uid://dgae03r5k7xg3" path="res://resources/quest/quest_objective_resource.gd" id="1_aqoox"]
+[ext_resource type="Script" uid="uid://f1h5cmxk2lb8" path="res://resources/quest/quest_resource.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://drotxtxet5wxf" path="res://resources/quest/objectives/objective_item.gd" id="2_obj"]
+[ext_resource type="Script" uid="uid://dbyvrrhfsxu1k" path="res://resources/quest/rewards/reward_item.gd" id="3_rwd"]
+[ext_resource type="Script" uid="uid://c1hglb8856ljh" path="res://resources/quest/quest_reward_resource.gd" id="4_iftnl"]
+[ext_resource type="Resource" uid="uid://dp07t485dgy4d" path="res://resources/item/materials/wood.tres" id="4_wood"]
+
+[sub_resource type="Resource" id="SubResource_1"]
+script = ExtResource("2_obj")
+target_item = ExtResource("4_wood")
+target_amount = 5
+description = "Collect 5 Wood"
+
+[sub_resource type="Resource" id="SubResource_2"]
+script = ExtResource("3_rwd")
+item = ExtResource("4_wood")
+amount = 10
+description = "10 Wood Reward"
+
+[resource]
+script = ExtResource("1_script")
+id = "quest_intro_wood"
+title = "Wood for Talula"
+description = "Talula needs 5 pieces of wood."
+objectives = Array[ExtResource("1_aqoox")]([SubResource("SubResource_1")])
+rewards = Array[ExtResource("4_iftnl")]([SubResource("SubResource_2")])
+repeat_type = "once"
