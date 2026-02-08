@@ -59,6 +59,7 @@ text = "Character Name"
 layout_mode = 2
 size_flags_vertical = 3
 text = "This is some dialogue text..."
+autowrap_mode = 3
 script = ExtResource("2_label")
 
 [node name="Responses" type="VBoxContainer" parent="Balloon"]

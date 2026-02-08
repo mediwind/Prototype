@@ -12,10 +12,16 @@ var completed_quests: Array[String] = []
 # Key: Quest ID (String), Value: QuestResource
 var quest_database: Dictionary = {}
 
+var _quests_loaded: bool = false
+
 func _ready() -> void:
-	load_all_quests()
+	if not _quests_loaded:
+		load_all_quests()
 
 func load_all_quests() -> void:
+	if _quests_loaded:
+		return
+		
 	print("QuestManager: Loading quests...")
 	var path = "res://resources/quest/definitions"
 	var dir = DirAccess.open(path)
@@ -36,10 +42,14 @@ func load_all_quests() -> void:
 						# print("QuestManager: Loaded quest %s" % quest_res.id)
 			file_name = dir.get_next()
 		dir.list_dir_end()
+		_quests_loaded = true
 	else:
 		print("QuestManager: Quest definitions directory not found at %s" % path)
 
 func start_quest(quest_id: String) -> void:
+	if not _quests_loaded:
+		load_all_quests()
+		
 	if not quest_database.has(quest_id):
 		push_error("QuestManager: Quest ID %s not found in database." % quest_id)
 		return
@@ -125,6 +135,10 @@ func get_save_data() -> Dictionary:
 	}
 
 func load_save_data(data: Dictionary) -> void:
+	# Ensure DB is loaded before trying to resolve IDs
+	if not _quests_loaded:
+		load_all_quests()
+
 	# Safe casting from generic Array (Variant) to Array[String]
 	completed_quests.clear()
 	var loaded_completed = data.get("completed_quests", [])

@@ -111,9 +111,14 @@ trigger: always_on
 
 ### 1. 세션 시작 및 종료 루틴 (Start-End Routine)
 - **Start:** 세션 시작 시 반드시 `docs/task.md`를 읽어 프로젝트의 현재 진행 상황(Context)을 파악한다.
-- **End:** 작업 완료 후 `docs/task.md`에 진행 내역을 업데이트하고, 중요 변경 사항은 `docs/walkthrough.md`에 요약한다.
+- **End:** 작업 완료 후 `docs/task.md`에 진행 내역을 업데이트하고, 중요 변경 사항은 `docs/walkthrough.md`에 요약한다. 또한, 주요 기능(Major Feature)이 완성되었다면 `README.md`의 기능 목록을 최신화한다.
 - **Archiving:** `task.md` 내용이 비대해지면 완료된 Phase를 `docs/task_archive.md`로 이동하여 관리한다.
 - **역질문과 제안:** 기술부채가 빠르게 쌓이거나 비가역적 실수를 방지하기 위하여 현재의 시스템에 대해 파악하지 못한 점이 있거나 조금이라도 모순되거나 의문점이 있다면 언제나 주저말고 반드시 사용자에게 역질문이나 제안을 한다.
+
+### 2. 커뮤니케이션 표준 (Communication Standards)
+- **언어 및 어조:** 모든 대화는 **"친근하고 정중한 한국어 존댓말"**을 사용한다. (예: "~해요", "~했나요?")
+- **비유:** 딱딱한 기계적 답변보다는, 동료 개발자로서 대화하듯 자연스럽게 반응한다.
+- **적용:** 세션 시작(Start) 인사부터 종료(End)까지 일관되게 유지한다. 별도의 지시가 없어도 기본값(Default)으로 적용한다.
 
 ### 4. 폴더 구조 합의 (Directory Structure Consensus)
 - **사전 논의:** 새로운 시스템이나 콘텐츠 리소스(아이템, 스킬 등)를 대량으로 추가하기 전에, 반드시 폴더 구조와 파일 명명 규칙을 사용자와 상의하여 확정한다.
@@ -130,12 +135,20 @@ trigger: always_on
 - **Append Logic:** 기본적으로 `docs/task.md`와 `docs/walkthrough.md`는 하단에 내용을 누적(Append)한다. **임의로 완료된 상위 Phase를 삭제하거나 내용을 축약/덮어쓰지 않는다.**
 - **Archiving Policy:** 단, 파일이 비대해져 가독성을 해칠 경우(예: 500줄 이상, 1000줄 이상, ... 등 상황에 따라 유연하게), 완료된 오래된 Phase 항목들을 `docs/task_archive.md` 등으로 **이동(Cut & Paste)**하여 관리한다. 이는 '삭제'가 아닌 '보관' 프로세스이다.
 - **Rules:** 프로젝트의 중요한 규칙 변경 사항은 즉시 이 파일(`godot-rpg-game-dev-rules.md`)에 반영한다.
+- **README:** 프로젝트의 **"현재 상태(Current State)"**와 **"구현된 기능 목록(Feature List)"**을 요약한다. 새로운 에이전트가 프로젝트의 규모와 기능을 빠르게 파악할 수 있도록, Major Phase가 끝날 때마다 갱신한다.
 
 ### 3. 리소스 및 씬 파일 조작 가이드 (Resource & Scene Handling)
 - **Direct Edit Caution:** `.tres`나 `.tscn` 파일은 Godot 에디터가 관리하는 포맷으로, 텍스트 편집 시 UID나 내부 구조(Load Steps)가 미세하게 변경될 수 있다.
 - **Protocol:** `replace_file_content`로 `.tres` 파일의 참조 관계(ExtResource 변경 등)를 수정할 때 실패할 가능성이 높다고 판단되면, 무리하게 재시도하지 말고 **사용자에게 에디터 작업을 요청**한다.
 - **File System Operations:** 리소스 파일(`.tres`, `.tscn`, `.gd`)의 **이동(Move) 및 이름 변경(Rename)**은 절대로 터미널 명령(`mv`, `Rename-Item`)으로 수행하지 않는다. 이는 Godot의 내부 참조(Dependencies)를 깨뜨린다. 반드시 사용자에게 **"Godot 에디터의 FileSystem 탭에서 수행해달라"**고 요청해야 한다.
 - **Example:** "호미 아이템의 EquipmentData 필드를 `hoe_tool_data.tres`로 교체해 주세요."와 같이 구체적으로 에디터 작업을 지시한다.
+
+---
+
+### 4. 씬 파일 안전 수칙 (Scene File Safety) [CRITICAL]
+- **Flattening Alert:** 만약 에디터상의 노드 트리가 비정상적으로 평탄화(Flattened)되거나, 부모-자식 관계가 깨져 보인다면 **즉시 작업을 중단**하고 `.tscn` 파일의 텍스트 구조를 확인한다.
+- **Do Not Edit Manually:** `.tscn` (Scene) 파일은 웬만하면 텍스트 에디터로 직접 수정하지 않는다. 특히 `ExtResource` ID나 `SubResource` 구조, `parent="..."` 속성은 Godot 에디터가 관리하게 둔다.
+- **Recovery:** 만약 `.tscn` 파일이 손상되었다면, 텍스트 에디터에서 잘못된 부분을 찾으려 하지 말고 **백업본을 복구**하거나, 파일 내용을 **완전히 새로 작성(Rewrite)**하는 것이 더 빠르고 안전하다.
 
 ---
 

@@ -535,3 +535,85 @@ This phase solved the "Teleporting NPC" immersion breaker. We implemented a syst
 - [x] **Roadside Save**: Saved while Talula was walking. Loaded game. Talula resumed walking from that exact spot.
 - [x] **Inventory Sync**: Verified that NPC positions and Player Inventory are consistently saved/loaded together.
 - [x] **Pause Menu Load**: Loading from ESC menu correctly resets the world state without data contamination.
+
+# Walkthrough - Phase 29: Advanced Dialogue & Social Interaction
+
+## Overview
+Implemented the **Dialogue Manager** plugin to power conditional, branching conversations. This system allows NPCs to react to player inventory, quest state, and affection levels.
+
+## 1. Core Integrations
+- **Action Integration**: Added `is_dialogue_active` check to `ActionController` (via `UIManager`) to prevent attacking while talking.
+- **Cinematic Mode**: HUD automatically hides when dialogue begins.
+- **Safety**: Added checks to prevent interactions with NPCs who have no dialogue resource assigned.
+
+## 2. Content
+- **Talula**: Added "First Meeting" dialogue that triggers only once (`has_met_talula` memory).
+- **Conditional Logic**: Added syntax support for `if QuestManager.is_quest_active(...)` directly in dialogue files.
+
+## Verification
+- [x] **First Meeting**: Talula says "Hello Stranger" once, then "Welcome back" afterwards.
+- [x] **Conditions**: Dialogue changes properly based on Inventory items.
+
+# Walkthrough - Phase 30: Data-Driven Quest System
+
+## Overview
+Designed and implemented a scalable, inspector-based Quest System. Quests are now `.tres` resources, not hardcoded scripts.
+
+## 1. Architecture
+- **QuestResource**: Holds static data (ID, Title, Objectives, Rewards).
+- **QuestManager**: Autoload that manages runtime state (`active_quests`, `completed_quests`).
+- **QuestObjective**: Modular class for different objective types (Fetch, Talk).
+
+## 2. Integration
+- **NPCManager**: Connected quest completion to Affection gains.
+- **InventoryManager**: Connected `FetchObjective` to check and consume items.
+
+## Verification
+- [x] **Start**: Quest appears in `QuestManager.active_quests`.
+- [x] **Objective**: Collecting items updates the objective progress.
+- [x] **Complete**: Turning in quest moves it to `completed_quests` and grants rewards.
+
+# Walkthrough - Phase 31: Quest UI & UX Polish
+
+## Overview
+Refined the raw Quest Log UI into a polished, two-pane interface with responsive layout and proper categorization. Addressed critical stability issues involving scene corruption and initialization order.
+
+## 1. UI Layout & UX
+- **Two-Pane Design**:
+    - **Left**: Quest List (Active & Completed), unified scroll.
+    - **Right**: Details (Title, Desc, Objectives).
+- **Categorization**: Added "Miscellaneous" grouping to declutter the main list.
+- **Responsiveness**: Used percentage-based anchors (5% margins) for proper scaling.
+- **Polish**: Clean empty states, "Select a quest..." prompts, and improved font sizes.
+
+## 2. Localization Improvements
+- **Text Wrapping**: Enabled `autowrap_mode = 3 (Word Smart)` for better Korean text handling, though manual line breaks are still recommended for perfect formatting.
+
+## 3. Critical Bug Fixes (Stability)
+- **Scene Corruption**:
+    - *Issue*: `quest_log_ui.tscn` became flattened and lost `unique_name_in_owner` properties due to manual text editing.
+    - *Fix*: Completely rewrote the `.tscn` file structure and restored unique names. Added "Scene File Safety" rule to project constitution.
+- **Race Condition (Initialization)**:
+    - *Issue*: `SaveManager` loaded data before `QuestManager` scanned the quest database, causing "Quest ID not found" errors on startup.
+    - *Fix*: Implemented lazy-loading in `QuestManager.load_save_data()` to ensure the database is ready before applying save data.
+
+## Verification
+- [x] **Layout**: UI scales correctly; lists scroll properly.
+- [x] **Logic**: Active/Completed quests separate correctly; Misc quests group together.
+- [x] **Stability**: Game loads clean (F5) without red errors.
+- [x] **Persistence**: Quest state survives save/load and scene changes.
+
+# Walkthrough - Phase 32: System Documentation & Handover
+
+## Overview
+Formalized the project knowledge into comprehensive guides to facilitate future development.
+
+## 1. Created Documents
+- **Narrative & Quest Guide**: Combined manual for writing Dialogue (DSL) and creating Quests (Resources).
+- **README.md**: Updated project status and feature list.
+- **Rules Update**: Added "Friendly Communication" and "Scene File Safety" protocols.
+
+## 2. Handover Status
+- All core systems (Farming, Building, Combat, Social, Quests) are functional and documented.
+- Project is ready for Content Expansion phase.
+
