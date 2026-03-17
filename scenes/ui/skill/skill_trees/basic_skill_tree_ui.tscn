@@ -1,0 +1,107 @@
+[gd_scene load_steps=9 format=3 uid="uid://ddvqb30ex6dp3"]
+
+[ext_resource type="Script" uid="uid://b5pwc2b0mn0gh" path="res://scenes/ui/skill/skill_tree_ui.gd" id="1_0txi6"]
+[ext_resource type="PackedScene" uid="uid://ugmw2gl1gade" path="res://scenes/ui/skill/skill_button.tscn" id="2_ph2uk"]
+[ext_resource type="Resource" uid="uid://kytshjy0muna" path="res://resources/skill/icebolt_skill.tres" id="4_hea75"]
+[ext_resource type="Resource" uid="uid://c1acrdkxc1ajq" path="res://resources/skill/fire_rate.tres" id="4_ii44o"]
+[ext_resource type="Resource" uid="uid://b7o3eaxiwfipd" path="res://resources/skill/test2.tres" id="5_7cw3w"]
+[ext_resource type="Resource" uid="uid://celqm0t0dky0b" path="res://resources/skill/test3.tres" id="6_4vx66"]
+[ext_resource type="Resource" uid="uid://c48lkfrfglwft" path="res://resources/skill/test1.tres" id="7_f0ae8"]
+[ext_resource type="Resource" uid="uid://bktftfxwcd11k" path="res://resources/skill/test4.tres" id="8_h3o4r"]
+
+[node name="BasicSkillTreeUI" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 95.0
+offset_top = 95.0
+offset_right = -545.0
+offset_bottom = -265.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0txi6")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SkillButton" parent="." instance=ExtResource("2_ph2uk")]
+layout_mode = 0
+offset_left = 300.0
+offset_top = 100.0
+offset_right = 340.0
+offset_bottom = 140.0
+skill_template = ExtResource("4_hea75")
+
+[node name="SkillButton2" parent="SkillButton" instance=ExtResource("2_ph2uk")]
+layout_mode = 0
+offset_left = 88.0
+offset_top = -64.0
+offset_right = 128.0
+offset_bottom = -24.0
+disabled = true
+skill_template = ExtResource("4_ii44o")
+
+[node name="SkillButton4" parent="SkillButton/SkillButton2" instance=ExtResource("2_ph2uk")]
+layout_mode = 0
+offset_left = -64.0
+offset_top = -64.0
+offset_right = -24.0
+offset_bottom = -24.0
+disabled = true
+skill_template = ExtResource("5_7cw3w")
+
+[node name="SkillButton5" parent="SkillButton/SkillButton2" instance=ExtResource("2_ph2uk")]
+layout_mode = 0
+offset_left = 40.0
+offset_top = -64.0
+offset_right = 80.0
+offset_bottom = -24.0
+disabled = true
+skill_template = ExtResource("6_4vx66")
+
+[node name="SkillButton3" parent="SkillButton" instance=ExtResource("2_ph2uk")]
+layout_mode = 0
+offset_left = -104.0
+offset_top = -64.0
+offset_right = -64.0
+offset_bottom = -24.0
+disabled = true
+skill_template = ExtResource("7_f0ae8")
+
+[node name="SkillButton" parent="SkillButton/SkillButton3" instance=ExtResource("2_ph2uk")]
+layout_mode = 0
+offset_left = -64.0
+offset_right = -24.0
+disabled = true
+skill_template = ExtResource("8_h3o4r")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -195.0
+offset_bottom = 50.0
+grow_horizontal = 0
+
+[node name="SkillPointsLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Skill Points: 0"
+
+[node name="SkillResetLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Remaining Skill Resets: 0"
+
+[node name="SkillResetButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Reset Skill"

@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_14"
+type="Resource"
+uid="uid://cute1j3jau2mi"
+path="res://.godot/imported/talula.dialogue-acb10b790fcee2bed63f4e48c6b4bbf9.tres"
+
+[deps]
+
+source_file="res://resources/dialogue/talula.dialogue"
+dest_files=["res://.godot/imported/talula.dialogue-acb10b790fcee2bed63f4e48c6b4bbf9.tres"]
+
+[params]
+
+defaults=true

@@ -1,0 +1,80 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxqj8qj8qj8q"]
+
+[ext_resource type="Script" path="res://scenes/ui/dialogue/custom_balloon.gd" id="1_logic"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_label.gd" id="2_label"]
+
+[node name="CustomBalloon" type="CanvasLayer"]
+layer = 100
+script = ExtResource("1_logic")
+
+[node name="Balloon" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Balloon"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -120.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 1
+
+[node name="Content" type="HBoxContainer" parent="Balloon"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -110.0
+offset_right = -20.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="Portrait" type="TextureRect" parent="Balloon/Content"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBox" type="VBoxContainer" parent="Balloon/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CharacterLabel" type="Label" parent="Balloon/Content/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.2, 1)
+text = "Character Name"
+
+[node name="DialogueLabel" type="RichTextLabel" parent="Balloon/Content/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "This is some dialogue text..."
+autowrap_mode = 3
+script = ExtResource("2_label")
+
+[node name="Responses" type="VBoxContainer" parent="Balloon"]
+visible = false
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -250.0
+offset_right = -20.0
+offset_bottom = -130.0
+grow_horizontal = 0
+grow_vertical = 0
+alignment = 2
+
+[connection signal="gui_input" from="Balloon" to="." method="_on_balloon_gui_input"]

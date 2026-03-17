@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://6wp7em4op7us"]
+
+[ext_resource type="Script" uid="uid://dms3u5mtg3sxp" path="res://scenes/game_object/placeable/chest/chest.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://0tgak5714vq2" path="res://assets/tile/PC _ Computer - Stardew Valley - Tilesets - Craftables.png" id="2_kqv15"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3qx7x"]
+atlas = ExtResource("2_kqv15")
+region = Rect2(32, 512, 16, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_chest"]
+size = Vector2(16, 16)
+
+[node name="Chest" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_3qx7x")
+offset = Vector2(0, -8)
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 32)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_chest")

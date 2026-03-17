@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=5 format=3 uid="uid://ctjqlj024eln6"]
+
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/definitions/item_data.gd" id="1_1uvtr"]
+[ext_resource type="Texture2D" uid="uid://bodg5qgx5fhhs" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Tools.png" id="1_4m32h"]
+[ext_resource type="Resource" uid="uid://dnd3mcwivybej" path="res://resources/item/definitions/tool_data/scythe_tool_data.tres" id="1_ju80o"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ju80o"]
+atlas = ExtResource("1_4m32h")
+region = Rect2(112, 0, 16, 16)
+
+[resource]
+script = ExtResource("1_1uvtr")
+id = "scythe"
+name = "Scythe"
+icon = SubResource("AtlasTexture_ju80o")
+description = ""
+max_stack = 1
+equipment_data = ExtResource("1_ju80o")
+interaction_type = 1
+interaction_range = 1
+metadata/_custom_type_script = "uid://c5x21ww1vgp4q"

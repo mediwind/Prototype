@@ -1,0 +1,69 @@
+[gd_scene load_steps=5 format=3 uid="uid://sworrpgltrfw"]
+
+[ext_resource type="Script" uid="uid://b5pwc2b0mn0gh" path="res://scenes/ui/skill/skill_tree_ui.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://ugmw2gl1gade" path="res://scenes/ui/skill/skill_button.tscn" id="2_button"]
+[ext_resource type="Resource" uid="uid://bfexuprntk5aa" path="res://resources/skill/fast_grower.tres" id="4_fast"]
+[ext_resource type="Resource" uid="uid://d3mswg6i58cbg" path="res://resources/skill/master_farmer.tres" id="5_master"]
+
+[node name="FarmingSkillTreeUI" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SkillButton" parent="." instance=ExtResource("2_button")]
+layout_mode = 0
+offset_left = 300.0
+offset_top = 100.0
+offset_right = 340.0
+offset_bottom = 140.0
+skill_template = ExtResource("4_fast")
+
+[node name="SkillButton2" parent="SkillButton" instance=ExtResource("2_button")]
+layout_mode = 0
+offset_left = 88.0
+offset_top = -64.0
+offset_right = 128.0
+offset_bottom = -24.0
+disabled = true
+skill_template = ExtResource("5_master")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -195.0
+offset_bottom = 50.0
+grow_horizontal = 0
+
+[node name="SkillPointsLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Skill Points: 0"
+
+[node name="SkillResetLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Remaining Skill Resets: 0"
+
+[node name="SkillResetButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Reset Skill"

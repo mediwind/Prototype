@@ -1,0 +1,77 @@
+extends Node
+
+@onready var floor_tile_map = $TileMapLayer
+
+# UI is managed by UIManager
+
+func _ready():
+	# Indoors: Stop calendar time (0.0) so days don't pass while inside
+	if TimeManager:
+		TimeManager.set_calendar_time_multiplier(0.0)
+		
+	# Initialize Inventory Connection for Hotbar
+	InventoryManager.hand_equipped.connect(_on_hand_equipped)
+	_on_hand_equipped(InventoryManager.equipped_hand_item)
+	
+	# Restore Placed Objects
+	if floor_tile_map:
+		BuildManager.restore_placed_objects(floor_tile_map, $Entities)
+	else:
+		print("PlayerHome: 'TileMapLayer' node missing. Building disabled.")
+
+func _on_hand_equipped(item: ItemData):
+	if item and (item is PlaceableData or "placeable_scene" in item):
+		print("PlayerHome: Starting Placement for ", item.name)
+		if floor_tile_map:
+			# Define Success Callback
+			var callbacks = {
+				"on_success": func(_coords):
+					InventoryManager.consume_equipped_item(1)
+					if not InventoryManager.has_item(item, 1):
+						BuildManager.cancel_build()
+			}
+			
+			BuildManager.start_placing(item, floor_tile_map, $Entities, false, callbacks)
+	else:
+		BuildManager.cancel_build()
+
+func _unhandled_input(event):
+	if BuildManager.is_building:
+		return
+
+	if event is InputEventMouseButton and event.pressed:
+		var mouse_pos = floor_tile_map.get_global_mouse_position()
+		
+		# RIGHT CLICK: INTERACTION (Chest)
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			var space_state = floor_tile_map.get_world_2d().direct_space_state
+			var query = PhysicsPointQueryParameters2D.new()
+			
+			var local_pos = floor_tile_map.local_to_map(mouse_pos)
+			query.position = floor_tile_map.map_to_local(local_pos)
+			query.collide_with_areas = true
+			query.collide_with_bodies = true
+			
+			var results = space_state.intersect_point(query)
+			
+			for result in results:
+				var collider = result["collider"]
+				
+				# Try interact (Collider itself likely doesn't have it, checking parent)
+				var interact_result = null
+				if collider.has_method("interact"):
+					interact_result = collider.interact(player_node)
+				elif collider.get_parent().has_method("interact"):
+					interact_result = collider.get_parent().interact(player_node)
+					
+				# Handle Result - Open Inventory UI if valid
+				if interact_result is InventoryData:
+					if UIManager:
+						UIManager.open_container_ui(interact_result)
+					return
+				
+				# If we interacted but it wasn't a container (e.g. Dialogue), return
+				if interact_result != null:
+					return
+
+@onready var player_node = $Entities/PlayerHuman

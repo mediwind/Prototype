@@ -1,0 +1,61 @@
+[gd_scene load_steps=5 format=3 uid="uid://bulnv1je8d0i3"]
+
+[ext_resource type="Script" uid="uid://c4pu0qc8jh1pc" path="res://scenes/ui/inventory/inventory_ui.gd" id="1_2or24"]
+[ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="2_3udt2"]
+[ext_resource type="PackedScene" uid="uid://dr3pik6bvrlif" path="res://scenes/game_object/loot/collectable_object.tscn" id="3_j0bl0"]
+[ext_resource type="PackedScene" uid="uid://dafranjajk7tv" path="res://scenes/ui/inventory/equipment_ui.tscn" id="4_uuiao"]
+
+[node name="InventoryUI" type="Control" groups=["inventory_ui"]]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_2or24")
+slot_scene = ExtResource("2_3udt2")
+collectable_object_scene = ExtResource("3_j0bl0")
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -44.0
+offset_right = 20.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 5
+
+[node name="HotbarContainer" type="HBoxContainer" parent="."]
+z_index = -1
+layout_mode = 1
+custom_minimum_size = Vector2(20, 20)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="EquipmentUI" parent="." instance=ExtResource("4_uuiao")]
+z_index = -1
+layout_mode = 1
+anchors_preset = 0
+anchor_top = 0.0
+anchor_bottom = 0.0
+offset_left = 112.0
+offset_top = 64.0
+offset_right = 112.0
+offset_bottom = 64.0
+grow_vertical = 1

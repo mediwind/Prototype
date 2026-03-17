@@ -6,21 +6,21 @@ extends Node2D
 
 
 func _ready():
-    $GPUParticles2D.texture = sprite.texture
-    health_component.died.connect(on_died)
+	$GPUParticles2D.texture = sprite.texture
+	health_component.died.connect(on_died)
 
 
 func on_died():
-    if owner == null or not owner is Node2D:
-        return
+	if owner == null or not owner is Node2D:
+		return
 
-    LevelAndExpManager.add_experience(experience_to_player)
-    var spawn_position = owner.global_position
+	LevelAndExpManager.add_experience("Combat", experience_to_player)
+	var spawn_position = owner.global_position
 
-    var entities = get_tree().get_first_node_in_group("entities_layer")
-    get_parent().remove_child(self)
-    entities.add_child(self)
+	var entities = get_tree().get_first_node_in_group("entities_layer")
+	get_parent().remove_child(self)
+	entities.add_child(self)
 
-    global_position = spawn_position
-    $AnimationPlayer.play("default")
-    # $HitRandomAudioPlayerComponent.play_random()
+	global_position = spawn_position
+	$AnimationPlayer.play("default")
+	# $HitRandomAudioPlayerComponent.play_random()

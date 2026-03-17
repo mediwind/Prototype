@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="QuestResource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/quest/quest_resource.gd" id="1_script"]
+[ext_resource type="Resource" path="res://resources/quest/objectives/objective_misc_gold.tres" id="2_objective"]
+
+[resource]
+script = ExtResource("1_script")
+id = "quest_misc_gold"
+title = "Bring Gold"
+description = "A villager needs gold."
+is_miscellaneous = true
+objectives = Array[Resource]([ExtResource("2_objective")])
+rewards = Array[Resource]([])
+repeat_type = "always"

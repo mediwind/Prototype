@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=3 format=3]
+
+[ext_resource type="Script" uid="uid://dc8qnhoff8vm2" path="res://resources/farming/crop_data.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://bknqa1i8c5b3b" path="res://resources/item/produce/corn.tres" id="2_harvest_item"]
+
+
+[resource]
+script = ExtResource("1_script")
+id = "corn_seed"
+crop_name = "Corn"
+description = "A summer crop that keeps on giving."
+seed_coords = [Vector2i(8, 15), Vector2i(9, 15)]
+stage_coords = [Vector2i(10, 15), Vector2i(11, 15), Vector2i(12, 14), Vector2i(13, 14), Vector2i(14, 14), Vector2i(15, 14)]
+max_stage = 5
+growth_days_per_stage = 1
+harvest_item = ExtResource("2_harvest_item")
+regrow_stage = 4
+min_harvest = 1
+max_harvest = 3
+harvest_tool = "Hand"

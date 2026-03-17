@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://bcofbjoggjp61"]
+
+[ext_resource type="Texture2D" uid="uid://dakh3vtq4nc3k" path="res://assets/crafting_table/tile_0072.png" id="1_2jsvw"]
+[ext_resource type="Script" uid="uid://cor5vy0oeyrnh" path="res://scenes/town/crafting_table.gd" id="1_n642b"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2jsvw"]
+
+[node name="CraftingTable" type="Area2D"]
+collision_mask = 2
+script = ExtResource("1_n642b")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("1_2jsvw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(3, 3)
+shape = SubResource("CircleShape2D_2jsvw")

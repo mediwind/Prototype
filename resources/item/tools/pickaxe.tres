@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=5 format=3 uid="uid://73sun64gbv46"]
+
+[ext_resource type="Resource" uid="uid://dees03tmle87d" path="res://resources/item/definitions/tool_data/pickaxe_tool_data.tres" id="1_pa4qy"]
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/definitions/item_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bodg5qgx5fhhs" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Tools.png" id="2_pa4qy"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_67g3a"]
+atlas = ExtResource("2_pa4qy")
+region = Rect2(304, 96, 16, 16)
+
+[resource]
+script = ExtResource("1_script")
+id = "pickaxe"
+name = "Pickaxe"
+icon = SubResource("AtlasTexture_67g3a")
+description = "Used to break stones."
+max_stack = 1
+equipment_data = ExtResource("1_pa4qy")
+interaction_type = 0
+interaction_range = 1

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NPCIdentity" load_steps=3 format=3 uid="uid://cdn5bo73m5o8m"]
+
+[ext_resource type="Script" uid="uid://ija1xraa34lk" path="res://resources/npc/npc_identity.gd" id="1_72a1q"]
+[ext_resource type="Resource" uid="uid://dmj8q5x7v2k1" path="res://resources/npc/schedule_gobo.tres" id="1_117qj"]
+
+[resource]
+script = ExtResource("1_72a1q")
+id = "gobo"
+display_name = "Gobo"
+schedule = ExtResource("1_117qj")
+metadata/_custom_type_script = "uid://ija1xraa34lk"

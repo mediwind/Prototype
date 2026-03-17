@@ -1,0 +1,147 @@
+[gd_scene load_steps=25 format=3 uid="uid://df6r3kykdxlm6"]
+
+[ext_resource type="Script" uid="uid://mc45yti6dj16" path="res://scenes/game_object/player/player_tower.gd" id="1_4oj80"]
+[ext_resource type="PackedScene" uid="uid://d30imtcp3x1ra" path="res://scenes/component/controllable_component.tscn" id="2_0wkh1"]
+[ext_resource type="Texture2D" uid="uid://dkwudthn8d7q4" path="res://assets/turret/ground_shaker_asset/Blue/Bodies/body_tracks.png" id="2_pknkg"]
+[ext_resource type="PackedScene" uid="uid://csg26h1cays7o" path="res://scenes/component/shooter_component.tscn" id="2_rix40"]
+[ext_resource type="Texture2D" uid="uid://chf2qoo7ltb7" path="res://assets/turret/ground_shaker_asset/Blue/Weapons/turret_01_mk1.png" id="2_tj6oj"]
+[ext_resource type="PackedScene" uid="uid://c8esnr6wiyyjb" path="res://scenes/game_object/projectile/bullet/basic_bullet.tscn" id="3_gqr5v"]
+[ext_resource type="AudioStream" uid="uid://cl3trf7u84x58" path="res://assets/sound/072807_heavy-machine-gun-50-caliber-39765.mp3" id="3_s3670"]
+[ext_resource type="PackedScene" uid="uid://6xnv6v7dxe43" path="res://scenes/component/auto_attack_component.tscn" id="3_uw07t"]
+[ext_resource type="Script" uid="uid://dxdxhyyeptl8a" path="res://resources/bullet/bullet_data.gd" id="4_28lpv"]
+[ext_resource type="PackedScene" uid="uid://bnds2makfe4rf" path="res://scenes/game_object/projectile/trail_effect.tscn" id="4_ss5pk"]
+[ext_resource type="Script" uid="uid://b1bfmkn380omm" path="res://scenes/game_object/projectile/object_trail_effect.gd" id="5_tj6oj"]
+
+[sub_resource type="Resource" id="Resource_gqr5v"]
+script = ExtResource("4_28lpv")
+speed = 500
+max_distance = 700.0
+damage = 10
+penetration = 1
+bullet_scene = ExtResource("3_gqr5v")
+metadata/_custom_type_script = "uid://dxdxhyyeptl8a"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pknkg"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rix40"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dy4tu"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gqr5v"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 384, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_28lpv"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 512, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gbew5"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 640, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oxhc3"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 768, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mxgtx"]
+atlas = ExtResource("2_tj6oj")
+region = Rect2(0, 896, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l1g56"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pknkg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rix40")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dy4tu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gqr5v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_28lpv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gbew5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oxhc3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mxgtx")
+}],
+"loop": false,
+"name": &"fire",
+"speed": 60.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uw07t"]
+radius = 500.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gqr5v"]
+radius = 45.0
+
+[sub_resource type="Gradient" id="Gradient_tj6oj"]
+offsets = PackedFloat32Array(0, 0.915323)
+colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 1)
+
+[node name="PlayerTower" type="CharacterBody2D" groups=["player"]]
+script = ExtResource("1_4oj80")
+
+[node name="ControllableComponent" parent="." instance=ExtResource("2_0wkh1")]
+
+[node name="AutoAttackComponent" parent="." instance=ExtResource("3_uw07t")]
+attack_range_path = NodePath("../AttackRange")
+shooter_component_path = NodePath("../ShooterComponent")
+shoot_cool_time_path = NodePath("../ShootCooltime")
+turret_sprite_path = NodePath("../TurretSprite")
+audio_stream_player_path = NodePath("../AudioStreamPlayer")
+
+[node name="ShooterComponent" parent="." node_paths=PackedStringArray("muzzle") instance=ExtResource("2_rix40")]
+bullet_data = SubResource("Resource_gqr5v")
+muzzle = NodePath("../TurretSprite/Muzzle")
+
+[node name="BaseSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_pknkg")
+
+[node name="TurretSprite" type="AnimatedSprite2D" parent="."]
+rotation = 7.01826e-05
+sprite_frames = SubResource("SpriteFrames_l1g56")
+animation = &"fire"
+
+[node name="Muzzle" type="Marker2D" parent="TurretSprite"]
+unique_name_in_owner = true
+position = Vector2(51, 0)
+
+[node name="AttackRange" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackRange"]
+shape = SubResource("CircleShape2D_uw07t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 0)
+shape = SubResource("CircleShape2D_gqr5v")
+
+[node name="ShootCooltime" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_s3670")
+volume_db = -20.0
+
+[node name="TrailEffect" parent="." instance=ExtResource("4_ss5pk")]
+gradient = SubResource("Gradient_tj6oj")
+script = ExtResource("5_tj6oj")
+MAX_LENGTH = 10

@@ -1,0 +1,43 @@
+[gd_scene load_steps=7 format=3 uid="uid://byadw4tmkg3sw"]
+
+[ext_resource type="Script" uid="uid://cp8g43m8rbel1" path="res://scenes/game_object/player/player_human.gd" id="1_bxp25"]
+[ext_resource type="Texture2D" uid="uid://dpiinft7yc3n" path="res://scenes/game_object/player/player_human.png" id="2_hhsk8"]
+[ext_resource type="PackedScene" uid="uid://d30imtcp3x1ra" path="res://scenes/component/controllable_component.tscn" id="2_xujf7"]
+[ext_resource type="Script" uid="uid://kavby6jq84kt" path="res://scenes/component/equipment_action_handler.gd" id="5_act_ctrl"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hhsk8"]
+radius = 50.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xujf7"]
+radius = 6.0
+
+[node name="PlayerHuman" type="CharacterBody2D" groups=["player"]]
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_bxp25")
+
+[node name="ControllableComponent" parent="." instance=ExtResource("2_xujf7")]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_hhsk8")
+
+[node name="HandAnchor" type="Marker2D" parent="."]
+position = Vector2(12, 10)
+
+[node name="ToolSprite" type="Sprite2D" parent="HandAnchor"]
+rotation = -1.5708
+scale = Vector2(0.5, 0.5)
+
+[node name="PickupArea2D" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea2D"]
+shape = SubResource("CircleShape2D_hhsk8")
+
+[node name="EquipmentActionHandler" type="Node2D" parent="."]
+script = ExtResource("5_act_ctrl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("CircleShape2D_xujf7")

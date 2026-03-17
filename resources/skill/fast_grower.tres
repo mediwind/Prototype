@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SkillTemplate" load_steps=4 format=3 uid="uid://bfexuprntk5aa"]
+
+[ext_resource type="Texture2D" uid="uid://dtmg8fuwtfuey" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Harvested Crops, Seed Packets, Minerals, Food, Equipment, & Miscellaneous Objects.png" id="1_xrs0w"]
+[ext_resource type="Script" uid="uid://cqk4ufmwwyse2" path="res://resources/skill/skill_template.gd" id="2_skill"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uxxfa"]
+atlas = ExtResource("1_xrs0w")
+region = Rect2(0, 240, 16, 16)
+
+[resource]
+script = ExtResource("2_skill")
+id = "fast_grower"
+max_level = 1
+skill_point_cost = 1
+title = "Fast Grower"
+description = "Passive: Crops grow massively faster (+200% Speed)."
+skill_type = "passive"
+cooldown = 0.0
+base_value = 0.0
+damage_type = "physical"
+icon = SubResource("AtlasTexture_uxxfa")
+cost = 0

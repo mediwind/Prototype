@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3 uid="uid://b8x7x5x5x5x5"]
+
+[ext_resource type="Script" uid="uid://cs066dc2q80ct" path="res://resources/item/definitions/weapon_data.gd" id="1_wpn33"]
+
+[resource]
+script = ExtResource("1_wpn33")
+attack_type = 0
+damage = 3.0
+cooldown = 0.5
+knockback_force = 150.0
+stun_duration = 0.2
+is_procedural_visual = true
+visual_color = Color(0.8, 0.2, 0.2, 0.6)
+attack_range = 1.5
+arc_angle = 120.0
+projectile_speed = 500.0
+slot_type = 5
+stats = {}
+metadata/_custom_type_script = "uid://bh75s0015pt81"

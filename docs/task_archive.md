@@ -1,0 +1,305 @@
+# Task Archive
+
+This file contains completed tasks moved from `task.md` to maintain readability.
+
+- [x] **Phase 8: Refactoring & Scalability**
+        - [/] **FarmManager: Growth Logic Update** <!-- id: 1 -->
+            - [x] Change growth tracking from `days_grown` (int) to `accumulated_growth_points` (float).
+- [x] **Phase 13: Farming System Expansion** <!-- id: 13 -->
+    - [x] **Data & Resources**
+        - [x] Create `ToolData` resource (extends `EquipmentData`).
+        - [x] Create `hoe_tool.tres` and `watering_can_tool.tres`.
+        - [x] Assign `ToolData` to `Hoe` and `Watering Can` ItemData.
+    - [x] **FarmManager Expansion**
+        - [x] Refactor `soil_data` to track `tilled` and `watered` states.
+        - [x] Implement `till_soil(coords)` and `water_soil(coords)`.
+        - [x] Update `_on_day_passed` to dry out soil.
+    - [x] **EquipmentActionHandler**
+        - [x] Add `_execute_tool` logic.
+        - [x] Integrate with `FarmManager` for Tilling/Watering.
+    - [x] **Refactoring Town.gd**
+        - [x] Remove hardcoded tool logic from `_unhandled_input`.
+        - [x] Update `_on_soil_updated` to handle visual updates for Tilled/Watered/Fertilizer.
+    - [x] **Phase 13.5: Tool & Weapon Refinement** <!-- id: 14 -->
+        - [x] **Scythe Migration**: Convert `Scythe` from `WeaponData` to `ToolData` (or hybrid).
+        - [x] **Combat Penalty**: Ensure Tools deal 1 damage and 0 knockback to enemies.
+        - [x] **Harvest Restriction**: Prevent `Sword` (or non-Scythe weapons) from harvesting.
+    - [x] **Phase 14: System Analysis & Documentation** <!-- id: 15 -->
+        - [x] **Crafting System Audit**: Analyzed `crafting_table.tscn`, `RecipeData`, and `InventoryManager`.
+        - [x] **Documentation**: Created `docs/crafting_system_architecture.md`.
+        - [x] **Project Overview**: Organize existing systems into a high-level map if needed.
+    - [x] **Gap Analysis Findings**
+        - [x] **Farming Persistence**: `FarmManager` does not save/load `farm_data` or `soil_data`.
+        - [x] **Crafting Logic**: UI exists but no actual crafting logic (consume/produce) is implemented.
+
+    - [x] **Phase 15: System Stabilization (Crafting & Persistence)** <!-- id: 16 -->
+        - [x] **Farming Persistence**: Implement `get_save_data()` and `load_save_data()` in `FarmManager`.
+        - [x] **UI Refactor**: Create `display_slot.tscn` for non-interactive item display (Crafting UI).
+        - [x] **Inventory Expansion**: Add `has_items()` and `consume_items()` to `InventoryManager` (RecipeIngredient support).
+        - [x] **Crafting Logic**: Implement `_on_craft_button_pressed` in `CraftingUI` to consume ingredients and produce output.
+            - [x] Update SpeedGro/Fertilizer logic to apply multipliers to daily points.
+            - [x] Verify point accumulation and stage transitions.
+        - [/] **LevelAndExpManager: Category Support** <!-- id: 2 -->
+            - [x] Refactor `LevelAndExpData` to support multiple categories (Farming, Combat, etc.).
+            - [x] Update `LevelAndExpManager` methods (`add_experience`, `get_level`) to accept `category` parameter.
+            - [x] Define default categories (Farming, Combat, Mining, Fishing, Foraging).
+            - [x] Update `SaveManager` to handle new data structure (migration or reset).
+    - [x] **UI Updates** <!-- id: 3 -->
+        - [x] Implement `get_main_level()` calculation logic.
+        - [x] Create `DebugLevelHUD` to visualize/test levels.
+        - [x] Update debug UI or HUD to show specific category levels.
+    - [x] Update debug UI or HUD to show specific category levels.
+
+- [x] **Phase 9: Farming Skills & Passive System**
+    - [x] **Data & Resources** <!-- id: 5 -->
+        - [x] Create `fast_grower.tres` (Passive, Growth Speed).
+        - [x] Create `master_farmer.tres` (Passive, Quality Chance).
+    - [x] **System Logic** <!-- id: 6 -->
+        - [x] Update `SkillManager` with `has_skill(id)` helper.
+        - [x] Update `FarmManager` to check for skills and apply bonuses.
+    - [x] **UI Implementation** <!-- id: 7 -->
+        - [x] Create `FarmingSkillTreeUI` scene.
+        - [x] Add Farming Tab to `TabbedSkillTreeUI`.
+    - [x] **Verification** <!-- id: 8 -->
+        - [x] Test skill acquisition and effect on crop growth (Fast Grower confirmed).
+        - [x] Implement `Master Farmer` quality logic.
+        - [x] **UI QoL**: Auto-set SkillButton icon from Template.
+
+- [x] **Phase 10: Tools & Interaction Range**
+    - [x] **Interaction Logic**
+        - [x] Implement Directional/Area interaction for Scythe (Mouse Facing).
+        - [x] Refactor Physics Layers for Combat/Farming unification.
+    - [x] **Scythe Implementation**
+        - [x] Implement `InteractionType` (POINT/DIRECTIONAL) in `ItemData`.
+        - [x] Implement generic area harvest logic in `Town.gd`.
+        - [x] Decouple `HitboxComponent` for reuse.
+    - [x] **Visual Feedback**
+        - [x] Add temporary debug visual (Polygon2D Slash Effect).
+
+- [x] **Phase 11: Data-Driven Action System**
+    - [x] **Data Structures**
+        - [x] Create `WeaponData.gd` (extends `EquipmentData`).
+        - [x] Update `HitboxComponent` to support knockback/source position.
+    - [x] **Components**
+        - [x] Create `KnockbackComponent` (Impulse logic).
+        - [x] Create `ActionVisualEffect` (Hybrid Visuals).
+        - [x] Create `ActionController` (Player/Enemy Action Handler).
+    - [x] **Integration & Migration**
+        - [x] Create `ScytheWeaponData.tres`.
+        - [x] Refactor `Town.gd` to use `ActionController`.
+        - [/] Verify Scythe functionality (Regression Test).
+        - [/] Verify Knockback on Enemies.
+    - [x] **Troubleshooting**
+        - [x] Fix `scythe.tres` missing dependency error (Restore ExtResource header).
+        - [x] Resolve `town.tscn` and `main.tscn` load failures.
+        - [x] Restore missing nodes (`KnockbackComponent`, `ActionController`) deleted during debug.
+        - [x] Fix `Parse Error` in tscn files caused by invalid `ExtResource` syntax in previous step.
+        - [x] Fix `ActionController` error: `Can't add child ... already has a parent` (Removed duplicate add_child call).
+        - [x] Fix `Results: 0` in hit check: Set `collide_with_areas = true` (Hurtbox is Area2D).
+        - [x] Fix Floating Text for Melee: Use `handle_hit` in `HurtboxComponent` to unify damage+text logic.
+    - [x] **Universal Feedback System (Extra)**
+        - [x] Refactor `HealthComponent` to signal change amount.
+        - [x] Create `FloatingTextSpawner` (Auto-spawn text, Green for Heal).
+        - [x] Apply to `BasicEnemy` and `WizardEnemy` (Added Knockback to Wizard too).
+        - [x] Fix `ActionController` cyclic dependency (Duck Typing).
+        - [x] Fix `Parse Error: Used space...`: Ran python script to normalize indentation to Tabs.
+        - [x] Fix TSCN Syntax: Replaced invalid path-based script assignment with `ExtResource` ID in `WizardEnemy` and `BasicEnemy`.
+
+- [x] **Phase 12: Refactoring & Cleanup**
+    - [x] Rename `ActionController` -> `EquipmentActionHandler` (File, Class, Node).
+    - [x] Integrate Knockback to `WizardEnemy`.
+    - [x] Remove debug logs.
+    - [x] Fix Regression: Restore `PlayerHuman.tscn` script connection.
+    - [x] Cleanup: Delete `action_controller.gd.uid`.
+
+- [x] **Phase 11.5: Final Verification**
+    - [x] Verify `BasicEnemy` and `WizardEnemy` load correctly.
+    - [x] Verify Floating Text appears for Damage and Heal.
+    - [x] Verify Combat Collision (`ActionController`).
+
+- [x] **Phase 16: Gathering System (Trees & Rocks)**
+    - [x] **Data & Resources**
+        - [x] Create `wood.tres`, `stone.tres`, `copper_ore.tres` (ItemData).
+        - [x] Create `axe.tres` (Item) and `axe_tool_data.tres` (ToolData).
+        - [x] Create `pickaxe.tres` (Item) and `pickaxe_tool_data.tres` (ToolData).
+        - [x] Update `ToolData.gd` adding `efficiency` (resource damage).
+    - [x] **System Logic**
+        - [x] Create `GatherableObject.gd` (Health, Tool Requirement, Loot Drop).
+        - [x] Update `EquipmentActionHandler.gd` to handle `GatherableObject` interaction.
+        - [x] Implement `check_tool_match` logic (Axe->Tree, Pickaxe->Rock).
+    - [x] **Scenes**
+        - [x] Create `tree.tscn` (Sprite from `Outdoors (Spring).png`).
+        - [x] Create `rock.tscn` (Sprite from `Miscellaneous...png`).
+    - [x] **Verification**
+        - [x] Place Tree/Rock in Town.
+        - [x] Verify Axe harvests Tree (3 hits).
+        - [x] Verify Pickaxe harvests Rock (3 hits).
+        - [x] Verify incorrect tool matches fail.
+
+- [x] **Phase 17: Robust Persistence & Item Database**
+    - [x] **Data Architecture**
+        - [x] Update `ItemData.gd` to include `String id`.
+        - [x] Create `ItemDatabase` (Autoload) script.
+        - [x] Register `ItemDatabase` in `project.godot`.
+    - [x] **Migration & Registration**
+        - [x] Assign unique IDs to all existing Item Resources (Tools, Crops, Materials).
+        - [x] Implement automatic resource scanning (`load_all_items`) in `ItemDatabase`.
+    - [x] **System Refactoring**
+        - [x] Refactor `InventoryItem.gd` (SlotData) serialization (`serialize/deserialize`) to use IDs.
+        - [x] Refactor `SaveManager.gd` to rely on `ItemDatabase`.
+    - [/] **Verification**
+        - [x] Reset Save Data (`user://game_data.tres` deletion).
+        - [x] Verify Game Start (No errors).
+        - [x] Verify Inventory Save/Load (Persistence Check) - **(Fix Verified: Race Condition Resolved)**.
+
+- [x] **Phase 18: Workspace Cleanup (Manual)**
+    - [x] **Structure Reorganization**
+        - [x] Move items to `tools`, `weapons`, `consumables`, `materials`.
+        - [x] Split `farming` into `seeds` and `produce`.
+        - [x] Move base scripts to `definitions`.
+    - [x] **Verification**
+        - [x] Verify no missing resources or broken dependencies.
+
+- [x] **Phase 19: Housing & Storage System**
+    - [x] **Data Architecture**
+        - [x] Create `PlaceableObject` class (extends `Node2D`).
+        - [x] Create `PlaceableData` resource (extends `ItemData`).
+        - [x] Design Persistence for Placed Objects (Coordinate -> ID + Inventory).
+    - [x] **BuildManager Refactor**
+        - [x] Refactor `BuildManager` to handle generic `PlaceableObject`.
+        - [x] Implement `place_object(coords, data)` logic.
+    - [x] **Storage System (Chest)**
+        - [x] Create `Chest.tscn` (Interactable extends PlaceableObject).
+        - [x] Implement `InventoryComponent` integration for Chest.
+        - [x] Create `ChestUI` (Exchange Interface).
+    - [x] **Verification**
+        - [x] Build a Chest (Recipe Created).
+        - [x] Store items in Chest.
+        - [x] Save/Load -> Chest position and contents persist.
+    - [x] **Bug Fixes & Refinements**
+        - [x] Fixed Chest inventory persistence (Added _exit_tree sync).
+        - [x] Fixed "Ghost Item" glitch (Refreshed hand on inventory move/swap/add).
+        - [x] Fixed Transient Object saving (Turrets in combat don't save).
+
+- [x] **Phase 20: System Infrastructure & Scene Flow** <!-- id: 20 -->
+    - [x] **Scene Management**
+        - [x] Create `SceneManager` (Autoload) with `change_scene(file_path)` and fade transition.
+        - [x] Refactor `ArenaTimeManager` to use `SceneManager`.
+    - [x] **System UI (Pause & Persistence)**
+        - [x] Create `SystemMenu` (Pause/Settings/Save/Load).
+        - [x] Create `TitleScreen` (New Game/Continue/Exit).
+        - [x] Integrate `SaveManager` with UI buttons.
+    - [x] **Verification**
+        - [x] Verify scene transitions (Town <-> Battle) with Fade effect.
+        - [x] Verify Save/Load cycle purely through UI (Ensure New Game resets data).
+        - [x] Fix In-Game Load to correctly reload scene (Force reload to Town).
+        - [x] Implement Battle Save Restriction (Disable Save in Combat).
+
+- [x] **Phase 21: World Expansion & Interiors** <!-- id: 21 -->
+    - [x] **Core Systems**
+        - [x] Implement `TimeManager.set_calendar_time_multiplier` for variable time flow.
+        - [x] Create `SpawnPoint` component (Marker2D with ID).
+        - [x] Create `Portal` component (Area2D with target scene/spawn tag).
+        - [x] Update `SceneManager` to handle `spawn_tag` positioning.
+        - [x] Implement `GameData` persistence for Scene Path & Position (Bonus Integrity).
+    - [x] **World Content Expansion (Portals & Interiors)**
+        - [x] Create `PlayerHome` scene (Interior).
+        - [x] Create `HouseExterior` prefab.
+        - [x] Implement `Portal` system (Scene Transition).
+        - [x] Verify Time Dilation (Indoor Pause).
+    - [x] **QA & Bug Fixes**
+        - [x] Fix Title Screen Continue Logic (Load correct scene).
+        - [x] Fix Scene Transition Glitch (Move player during fade).
+        - [x] Fix Multi-Scene Persistence (Ghost Objects).
+        - [x] Fix Data Corruption on Save (Metadata overwrite).
+        - [x] Fix Indoor Interaction (Parent check logic).
+        - [x] Verify Portal travel places player at correct SpawnPoint.
+        - [x] Verify Time passes normally in Town and stops/slows in Interior (if configured).
+
+- [x] **Phase 22: UI Architecture Refactoring** <!-- id: 22 -->
+    - [x] **Architecture Setup**
+        - [x] Create `GameUI` scene (CanvasLayer) to persist across scenes.
+        - [x] Implement `UIManager` (Autoload) to manage HUD and Menus.
+        - [x] Migrate `TownUI` components (Action Bar, Buttons) to `GameUI`.
+    - [x] **Logic Migration**
+        - [x] Move Input Handling (I, K, Esc) from `Town/Home.gd` to `UIManager`.
+        - [x] Connect `InventoryUI`, `SkillTreeUI` instantiation to `GameUI`.
+    - [x] **Cleanup**
+        - [x] Remove local UI nodes from `Town.tscn` and `PlayerHome.tscn` (Done by User & Agent).
+        - [x] Remove UI code from `Town.gd` and `PlayerHome.gd`.
+    - [x] **Verification**
+        - [x] Verify HUD persists when moving Town <-> Home (Architectural Guarantee).
+        - [x] Verify Menus open/close correctly in both scenes (Via UIManager Logic).
+
+- [x] **Phase 23: Building System Architecture Refactor** <!-- id: 23 -->
+    - [x] **Data & Logic Refactoring**
+        - [x] Extract "Ghost" logic from `BuildManager` (Pure Visuals).
+        - [x] Implement `start_placement(item_data, callbacks)` interface.
+        - [x] Removed hardcoded inventory dependencies.
+    - [x] **Prototype Implementation**
+        - [x] Verify placing a Chest using the new logic.
+        - [x] Implement debug "Magic Construction" (Key T) to verify context-independence.
+    - [x] **Verification**
+        - [x] Architecture: Ensure `BuildManager` does not know about Inventory/Skills.
+        - [x] Fixed `InventoryUI` drag-and-drop bug (CanvasLayer removal).
+        - [x] Fixed `BuildManager` scene transition crash.
+
+- [x] **Phase 24: NPC & Dialogue System** <!-- id: 24 -->
+    - [x] **System Architecture**
+        - [x] Install `Dialogue Manager` plugin (Done).
+        - [x] Create `CustomBalloon` UI (Scene & Script).
+        - [x] Create `NPCResource` datas (Static/Dynamic).
+    - [x] **Content: Talula (Prototype)**
+        - [x] Create `talula.dialogue` script.
+        - [x] Create `Talula` NPC scene.
+        - [x] Integrate interaction logic in `Town.gd`.
+    - [x] **Verification**
+        - [x] Speak to Talula -> UI opens.
+        - [x] Portrait updates based on tags.
+        - [x] Choices work and affect variables.
+
+- [x] **Phase 25: Save/Load Integration (Social)** <!-- id: 25 -->
+    - [x] **Data Architecture**
+        - [x] Update `GameData` to include `npc_save_data`.
+        - [x] Verify `NPCManager.get_save_data()` logic.
+    - [x] **System Integration**
+        - [x] Connect `SaveManager.save_game()` to `NPCManager`.
+        - [x] Connect `SaveManager.load_game()` to `NPCManager`.
+        - [x] Implement `Reset` logic for New Game.
+    - [x] **Verification (Persistence)**
+        - [x] Run QA Test Plan (Phase 25).
+        - [x] Verify Affection persists across restart.
+- [x] **Phase 26: NPC Scheduling** <!-- id: 26 -->
+    - [x] **Data Architecture**
+        - [x] Create `Schedule` resource structure.
+        - [x] Add `time_of_day` checks to `NPCManager`.
+    - [x] **Implementation**
+        - [x] Implement `NPCMovement` logic.
+        - [x] Integrate with `TimeManager`.
+    - [x] **Polish**
+        - [x] Add Time UI (GameUI).
+        - [x] Refactor Town scene logic.
+        - [x] Create NPC Manual.
+
+- [x] **Phase 27: Scalability & Polish** <!-- id: 27 -->
+    - [x] **Refactoring**
+        - [x] Implement `Location Registration System` in `Town.gd`.
+        - [x] Rename `Talula.gd` to `NPC.gd` for reuse.
+    - [x] **Content**
+        - [x] Add new NPC `Gobo` with custom schedule.
+    - [x] **UX/Bugfix**
+        - [x] Fix Inspector Dictionary UX (Typed Dictionary).
+        - [x] Fix "No Destination" bug (Update ref in Town).
+        - [x] Fix "Move Resume" after dialogue.
+        - [x] Fix "Missing Dialogue" crash.
+
+- [x] **Phase 28: NPC Persistence** <!-- id: 28 -->
+    - [x] **NPCManager**
+        - [x] Add `npc_states` dictionary for position tracking.
+        - [x] Implement `register/unregister` logic.
+        - [x] Update save/load logic to include positions.
+    - [x] **NPC**
+        - [x] Restore position on `_ready`.
+        - [x] Save position on `_exit_tree`.
+    - [x] **Verification**
+        - [x] Test Save/Load preserves exact NPC location.

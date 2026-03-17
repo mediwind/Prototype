@@ -1,9 +1,10 @@
-[gd_scene load_steps=23 format=3 uid="uid://ckqu5kqln2reb"]
+[gd_scene load_steps=24 format=3 uid="uid://ckqu5kqln2reb"]
 
 [ext_resource type="PackedScene" uid="uid://csg26h1cays7o" path="res://scenes/component/shooter_component.tscn" id="1_8hbit"]
 [ext_resource type="Script" uid="uid://ya4yd837nddx" path="res://scenes/game_object/turret/turret.gd" id="1_27sfv"]
 [ext_resource type="PackedScene" uid="uid://c8esnr6wiyyjb" path="res://scenes/game_object/projectile/bullet/basic_bullet.tscn" id="2_27sfv"]
-[ext_resource type="Script" uid="uid://dxdxhyyeptl8a" path="res://scenes/resources/bullet/bullet_data.gd" id="3_tj4l4"]
+[ext_resource type="PackedScene" uid="uid://6xnv6v7dxe43" path="res://scenes/component/auto_attack_component.tscn" id="2_tj4l4"]
+[ext_resource type="Script" uid="uid://dxdxhyyeptl8a" path="res://resources/bullet/bullet_data.gd" id="3_tj4l4"]
 [ext_resource type="Texture2D" uid="uid://dkwudthn8d7q4" path="res://assets/turret/ground_shaker_asset/Blue/Bodies/body_tracks.png" id="4_2uh5c"]
 [ext_resource type="Texture2D" uid="uid://chf2qoo7ltb7" path="res://assets/turret/ground_shaker_asset/Blue/Weapons/turret_01_mk1.png" id="5_aoo01"]
 [ext_resource type="AudioStream" uid="uid://cl3trf7u84x58" path="res://assets/sound/072807_heavy-machine-gun-50-caliber-39765.mp3" id="6_gvheg"]
@@ -97,6 +98,13 @@ colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 1)
 scale = Vector2(0.5, 0.5)
 script = ExtResource("1_27sfv")
 
+[node name="AutoAttackComponent" parent="." instance=ExtResource("2_tj4l4")]
+attack_range_path = NodePath("../AttackRange")
+shooter_component_path = NodePath("../ShooterComponent")
+shoot_cool_time_path = NodePath("../ShootCooltime")
+turret_sprite_path = NodePath("../TurretSprite")
+audio_stream_player_path = NodePath("../AudioStreamPlayer")
+
 [node name="ShooterComponent" parent="." node_paths=PackedStringArray("muzzle") instance=ExtResource("1_8hbit")]
 bullet_data = SubResource("Resource_8hbit")
 muzzle = NodePath("../TurretSprite/Muzzle")
@@ -116,7 +124,7 @@ position = Vector2(51, 0)
 
 [node name="AttackRange" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 8
+collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackRange"]
 shape = SubResource("CircleShape2D_27sfv")

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://csg26h1cays7o"]
 
 [ext_resource type="Script" uid="uid://cwcivyd8mk5kc" path="res://scenes/component/shooter_component.gd" id="1_ujjdi"]
-[ext_resource type="Script" uid="uid://dxdxhyyeptl8a" path="res://scenes/resources/bullet/bullet_data.gd" id="2_t1n4g"]
+[ext_resource type="Script" uid="uid://dxdxhyyeptl8a" path="res://resources/bullet/bullet_data.gd" id="2_t1n4g"]
 [ext_resource type="PackedScene" uid="uid://c8esnr6wiyyjb" path="res://scenes/game_object/projectile/bullet/basic_bullet.tscn" id="2_xp8fv"]
 
 [sub_resource type="Resource" id="Resource_xp8fv"]

@@ -1,0 +1,90 @@
+[gd_scene load_steps=5 format=3 uid="uid://dbihe5ydr615c"]
+
+[ext_resource type="Script" uid="uid://bbpy7wd68wd7o" path="res://scenes/ui/crafting/crafting_ui.gd" id="1_ofhe1"]
+[ext_resource type="PackedScene" uid="uid://c351ie0oomb1y" path="res://scenes/ui/inventory/slot.tscn" id="1_oxfa4"]
+[ext_resource type="Resource" uid="uid://b67b0mntyy8q3" path="res://resources/item/consumables/health_potion.tres" id="2_ofhe1"]
+[ext_resource type="Resource" uid="uid://btqlrsumgi3yc" path="res://resources/item/weapons/sword.tres" id="3_ceir7"]
+
+[node name="CraftingUI" type="PanelContainer"]
+process_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ofhe1")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Crafting"
+horizontal_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+text = "Recipes"
+
+[node name="RecipeList" type="ItemList" parent="VBoxContainer/HBoxContainer2/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+auto_width = true
+item_count = 2
+item_0/text = "First Recipe"
+item_1/text = "Second Recipe"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+text = "Ingredients"
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+columns = 5
+
+[node name="Slot" parent="VBoxContainer/HBoxContainer2/VBoxContainer2/GridContainer" instance=ExtResource("1_oxfa4")]
+layout_mode = 2
+item_data = ExtResource("2_ofhe1")
+amount = 3
+
+[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+text = "Results"
+
+[node name="GridContainer2" type="GridContainer" parent="VBoxContainer/HBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+columns = 5
+
+[node name="Slot" parent="VBoxContainer/HBoxContainer2/VBoxContainer2/GridContainer2" instance=ExtResource("1_oxfa4")]
+layout_mode = 2
+item_data = ExtResource("3_ceir7")
+amount = 1
+
+[node name="ControlForSpace" type="Control" parent="VBoxContainer/HBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CraftButton" type="Button" parent="VBoxContainer/HBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Craft"

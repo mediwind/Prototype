@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=5 format=3 uid="uid://chf7ak3a1yms0"]
+
+[ext_resource type="Resource" path="res://resources/farming/nutrients/data_quality_fertilizer.tres" id="1_b4jgq"]
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/definitions/item_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dtmg8fuwtfuey" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Harvested Crops, Seed Packets, Minerals, Food, Equipment, & Miscellaneous Objects.png" id="2_icon"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cx8ij"]
+atlas = ExtResource("2_icon")
+region = Rect2(144, 240, 16, 16)
+
+[resource]
+script = ExtResource("1_script")
+id = "quality_fertilizer"
+name = "Quality Fertilizer"
+icon = SubResource("AtlasTexture_cx8ij")
+description = "Improves soil quality moderately."
+max_stack = 99
+fertilizer_data = ExtResource("1_b4jgq")
+interaction_type = 0
+interaction_range = 1
+metadata/_custom_type_script = "uid://c5x21ww1vgp4q"

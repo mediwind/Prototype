@@ -16,7 +16,13 @@ func shoot(target_position: Vector2):
 	bullet.rotation = atan2(bullet.direction.y, bullet.direction.x)
 
 	# BulletData 리소스를 설정
-	bullet.bullet_data = bullet_data
+	bullet.bullet_data = bullet_data.duplicate()  # 리소스 복제
+
+	# 플레이어인 경우 스탯 반영 (예: 원거리 공격력)
+	var damage = bullet_data.damage
+	if owner.is_in_group("player"):
+		damage += StatManager.player_stat.get_stat("attack")
+	bullet.bullet_data.damage = damage
 
 	var foreground = get_tree().get_first_node_in_group("foreground_layer")
 	foreground.add_child(bullet)

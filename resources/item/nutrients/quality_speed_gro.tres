@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=5 format=3 uid="uid://dbmbbtdil3jry"]
+
+[ext_resource type="Resource" path="res://resources/farming/nutrients/data_quality_speed_gro.tres" id="1_nmr05"]
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/definitions/item_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dtmg8fuwtfuey" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Harvested Crops, Seed Packets, Minerals, Food, Equipment, & Miscellaneous Objects.png" id="2_icon"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_SpeedGro_Quality_Unique"]
+atlas = ExtResource("2_icon")
+region = Rect2(160, 304, 16, 16)
+
+[resource]
+script = ExtResource("1_script")
+id = "quality_speed_gro"
+name = "Quality Speed-Gro"
+icon = SubResource("AtlasTexture_SpeedGro_Quality_Unique")
+description = "Stimulates leaf production. Increases growth rate by 20%."
+max_stack = 99
+fertilizer_data = ExtResource("1_nmr05")
+interaction_type = 0
+interaction_range = 1

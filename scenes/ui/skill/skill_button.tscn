@@ -2,18 +2,11 @@
 
 [ext_resource type="Texture2D" uid="uid://bp0n2qwqrdekb" path="res://icon.svg" id="1_k84fr"]
 [ext_resource type="Script" uid="uid://dx8gn5ph1pdfp" path="res://scenes/ui/skill/skill_button.gd" id="2_8y057"]
-[ext_resource type="Script" uid="uid://cqk4ufmwwyse2" path="res://scenes/resources/skill/skill_template.gd" id="3_dj7ws"]
-
-[sub_resource type="Resource" id="Resource_pyaae"]
-resource_local_to_scene = true
-script = ExtResource("3_dj7ws")
-id = "not assigned yet"
-max_level = 1
-skill_point_cost = 1
-title = "not assigned yet"
-description = "not assigned yet"
+[ext_resource type="Script" uid="uid://cqk4ufmwwyse2" path="res://resources/skill/skill_template.gd" id="3_dj7ws"]
+[ext_resource type="Texture2D" uid="uid://brsdiwr6ky3tg" path="res://scenes/ui/skill/spell_progress.png" id="4_progress"]
 
 [node name="SkillButton" type="TextureButton" groups=["skill_button"]]
+custom_minimum_size = Vector2(40, 40)
 offset_right = 40.0
 offset_bottom = 40.0
 toggle_mode = true
@@ -21,7 +14,7 @@ texture_normal = ExtResource("1_k84fr")
 ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("2_8y057")
-skill_template = SubResource("Resource_pyaae")
+skill_template = ExtResource("3_dj7ws")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
@@ -48,3 +41,30 @@ top_level = true
 z_index = -1
 width = 3.0
 default_color = Color(0.219608, 0.219608, 0.219608, 1)
+
+[node name="CooldownBar" type="TextureProgressBar" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+step = 0.01
+fill_mode = 5
+nine_patch_stretch = true
+texture_progress = ExtResource("4_progress")
+tint_progress = Color(0, 0, 0, 0.784314)
+
+[node name="KeyBindLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -15.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = 25.0
+grow_horizontal = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 14
+text = "1"
+horizontal_alignment = 2

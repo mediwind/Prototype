@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://dp07t485dgy4d"]
+
+[ext_resource type="Script" uid="uid://c5x21ww1vgp4q" path="res://resources/item/definitions/item_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dtmg8fuwtfuey" path="res://assets/tile/PC _ Computer - Stardew Valley - Miscellaneous - Harvested Crops, Seed Packets, Minerals, Food, Equipment, & Miscellaneous Objects.png" id="1_uxeeh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_82yaw"]
+atlas = ExtResource("1_uxeeh")
+region = Rect2(64, 256, 16, 16)
+
+[resource]
+script = ExtResource("1_script")
+id = "wood"
+name = "Wood"
+icon = SubResource("AtlasTexture_82yaw")
+description = "A sturdy piece of wood."
+max_stack = 99
+interaction_type = 0
+interaction_range = 1

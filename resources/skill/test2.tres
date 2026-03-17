@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SkillTemplate" load_steps=2 format=3 uid="uid://b7o3eaxiwfipd"]
+
+[ext_resource type="Script" uid="uid://cqk4ufmwwyse2" path="res://resources/skill/skill_template.gd" id="1_1an20"]
+
+[resource]
+script = ExtResource("1_1an20")
+id = "test2"
+max_level = 3
+skill_point_cost = 1
+title = "test2"
+description = "test2"
+skill_type = "passive"
+cooldown = 0.0
+base_value = 0.0
+damage_type = "physical"
+cost = 0
